@@ -7,6 +7,7 @@ import {
 import { useRoutes } from "react-router-dom";
 import routes from "./routes";
 import { customTheme } from "./themes";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   const allPages = useRoutes(routes);
@@ -21,8 +22,7 @@ function App() {
   const appTheme = customTheme({
     theme: "light",
     direction: "ltr",
-    // responsiveFontSizes: settings.responsiveFontSizes
-  }); // to
+  });
 
   return (
     <React.Fragment>
@@ -31,7 +31,6 @@ function App() {
           <CssBaseline />
           <Toaster toastOptions={toasterOptions} />
           {allPages}
-          <p>dklk</p>
         </ThemeProvider>
       </StyledEngineProvider>
     </React.Fragment>

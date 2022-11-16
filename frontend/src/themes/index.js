@@ -43,7 +43,7 @@ const baseOptions = {
           borderRadius: "4px",
           color: "inherit",
           boxShadow: "none",
-          padding: "0.6rem 1.5rem",
+          // padding: "0.6rem 1.5rem",
         },
         outlinedPrimary: {
           borderColor: primary.main,
@@ -230,7 +230,7 @@ const baseOptions = {
     MuiButtonBase: {
       styleOverrides: {
         root: {
-          fontFamily: "'Montserrat', sans-serif",
+          fontFamily: "'Poppins', sans-serif",
         },
       },
     },
@@ -254,7 +254,7 @@ const baseOptions = {
     button: {
       fontWeight: 600,
     },
-    fontFamily: "'Montserrat', sans-serif",
+    fontFamily: "'Poppins', sans-serif",
     h1: {
       fontWeight: 800,
       fontSize: "4.25rem",

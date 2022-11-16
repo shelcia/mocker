@@ -1,3 +1,4 @@
+import React from "react";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Collection from "./pages/Collection";
@@ -12,7 +13,7 @@ const routes = [
     element: <Dashboard />,
   },
   {
-    path: ":userId/:id",
+    path: ":userId/:projectId",
     element: <Collection />,
   },
 ];
