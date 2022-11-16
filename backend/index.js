@@ -10,6 +10,7 @@ const PORT = process.env.PORT || 4050;
 const authRoute = require("./routes/auth/auth");
 const projectRoute = require("./routes/project/project");
 const resourceRoute = require("./routes/resource/resource");
+const userRoute = require("./routes/user/user");
 
 dotenv.config();
 
@@ -29,6 +30,7 @@ app.use(express.json(), cors());
 app.use("/api/auth", authRoute);
 app.use("/api/project", projectRoute);
 app.use("/api/resource", resourceRoute);
+app.use("/api/user", userRoute);
 
 app.get("/", (req, res) => {
   res.send(`<h3>Hey! Mock API Backend is up !</h3>`);

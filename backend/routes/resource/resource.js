@@ -1,11 +1,10 @@
 const router = require("express").Router();
-// import { faker } from "@faker-js/faker";
 const { faker } = require("@faker-js/faker");
 const { v4: uuidv4 } = require("uuid");
 
 const Resource = require("../../models/Resource");
-// const { schema } = require("../../models/User");
 
+// more can be added
 const fakerFuncs = (item) => {
   switch (item) {
     case "firstName":
@@ -91,6 +90,55 @@ router.get("/project/:id", async (req, res) => {
     res.status(200).send({ status: "200", message: resources });
   } catch (err) {
     res.status(200).send({ status: "500", message: err });
+  }
+});
+
+router.get("/:id", async (req, res) => {
+  try {
+    const resources = await Resource.findById(req.params.id);
+    res.status(200).send({ status: "200", message: resources });
+  } catch (err) {
+    res.status(200).send({ status: "500", message: err });
+  }
+});
+
+router.put("/:id", async (req, res) => {
+  try {
+    let resource = await Resource.findById(req.params.id).exec();
+
+    let data = [];
+
+    for (let i = 0; i < req.body.number; i++) {
+      let schema = { id: uuidv4() };
+      req.body.schema.forEach((item) => {
+        schema = { ...schema, [item.label]: fakerFuncs(item.field) };
+      });
+      data = [...data, schema];
+    }
+
+    const body = {
+      name: req.body.name,
+      schema: req.body.schema,
+      data: data,
+      number: req.body.number,
+      userId: req.body.userId,
+      projectId: req.body.projectId,
+    };
+    resource.set(body);
+    await resource.save();
+
+    res.status(200).send({ status: "200", message: "Successfull" });
+  } catch (error) {
+    res.status(200).send({ status: "500", message: error });
+  }
+});
+
+router.delete("/:id", async (req, res) => {
+  try {
+    await Post.deleteById(req.params.id);
+    res.status(200).send({ status: "200", message: "Successfull" });
+  } catch (error) {
+    res.status(200).send({ status: "500", message: error });
   }
 });
 
