@@ -466,7 +466,7 @@ const EditResourceModal = ({ open, setOpen, result, fetchResult }) => {
 
   const deleteSchema = (id) => {
     setSchema(schema.filter((item) => item.id !== id));
-    setInputs();
+    // setInputs();
   };
 
   const fetchResource = (signal) => {

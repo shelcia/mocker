@@ -40,17 +40,12 @@ const Dashboard = () => {
   const { userId } = useParams();
 
   const fetchProjects = (signal) => {
-    axios
-      .get(`${BACKEND_URL}project/${userId}`, {
-        signal: signal,
-      })
-      .then((res) => {
-        if (res.data.status === "200") {
-          setProjects(res.data.message);
-          // toast.success(res.data.message);
-          // setOpen(false);
-        }
-      });
+    axios.get(`${BACKEND_URL}project/${userId}`).then((res) => {
+      // console.log(res.data);
+      if (res.data.status === "200") {
+        setProjects(res.data.message);
+      }
+    });
   };
 
   useEffect(() => {
