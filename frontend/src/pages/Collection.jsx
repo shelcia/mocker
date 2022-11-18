@@ -157,7 +157,7 @@ const Collection = () => {
           </Typography>
           <Alert severity="info" sx={{ mb: 2 }}>
             <AlertTitle>API endpoint</AlertTitle>
-            <b>http://localhost:4050/api/user/:endpoint</b>
+            <b>{BACKEND_URL}user/:endpoint</b>
           </Alert>
           <Button variant="contained" onClick={() => setOpen(true)}>
             New Resource
