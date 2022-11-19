@@ -137,12 +137,12 @@ export default Dashboard;
 const NewProjectModal = ({ open, setOpen, name, setName, addProject }) => {
   return (
     <CustomModal open={open} setOpen={setOpen}>
-      <Typography variant="h4" component="h2" color="primary" sx={{ mb: 2 }}>
+      <Typography variant="h4" component="h2" color="primary" sx={{ mb: 3 }}>
         New Project
       </Typography>
       <TextField
         label="Project name"
-        sx={{ mb: 2 }}
+        sx={{ mb: 3 }}
         size="small"
         fullWidth
         value={name}

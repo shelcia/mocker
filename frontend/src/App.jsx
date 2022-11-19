@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext } from "react";
 import {
   CssBaseline,
   StyledEngineProvider,
@@ -8,8 +8,9 @@ import { useRoutes } from "react-router-dom";
 import routes from "./routes";
 import { customTheme } from "./themes";
 import { Toaster } from "react-hot-toast";
+import { ThemeContext } from "./context/ThemeContext";
 
-function App() {
+const App = () => {
   const allPages = useRoutes(routes);
 
   const toasterOptions = {
@@ -19,8 +20,10 @@ function App() {
     },
   };
 
+  const [darkTheme] = useContext(ThemeContext);
+
   const appTheme = customTheme({
-    theme: "light",
+    theme: darkTheme ? "dark" : "light",
     direction: "ltr",
   });
 
@@ -35,6 +38,6 @@ function App() {
       </StyledEngineProvider>
     </React.Fragment>
   );
-}
+};
 
 export default App;
