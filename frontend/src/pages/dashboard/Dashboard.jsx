@@ -12,7 +12,7 @@ import {
   Box,
 } from "@mui/material";
 import { FaPlus } from "react-icons/fa";
-import { Link, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { blue } from "@mui/material/colors";
 import { apiProject } from "../../services/models/projectModel";
@@ -27,6 +27,7 @@ const Dashboard = () => {
   const [projects, setProjects] = useState([]);
 
   const { userId } = useParams();
+  const navigate = useNavigate();
 
   const fetchProjects = (signal) => {
     apiProject.getSingle(userId, signal).then((res) => {
@@ -60,6 +61,7 @@ const Dashboard = () => {
   };
 
   const delProject = (id) => {
+    toast("Deleting !");
     apiProject.remove(id).then((res) => {
       if (res.status === "200") {
         fetchProjects();
@@ -89,10 +91,11 @@ const Dashboard = () => {
             <ListItem
               sx={{ justifyContent: "space-between" }}
               key={project._id}
-              component={Link}
-              to={`/${userId}/${project._id}`}
             >
-              <Box sx={{ display: "flex" }}>
+              <Box
+                sx={{ display: "flex", cursor: "pointer" }}
+                onClick={() => navigate(`/${userId}/${project._id}`)}
+              >
                 <ListItemAvatar>
                   <Avatar sx={{ bgcolor: blue[500] }}>
                     {project?.name?.charAt(0)}

@@ -31,4 +31,13 @@ router.get("/single/:id", async (req, res) => {
   }
 });
 
+router.delete("/:id", async (req, res) => {
+  try {
+    await Project.findByIdAndDelete(req.params.id);
+    res.status(200).send({ status: "200", message: "Successful" });
+  } catch (err) {
+    res.status(200).send({ status: "500", message: err });
+  }
+});
+
 module.exports = router;

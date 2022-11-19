@@ -135,20 +135,11 @@ router.put("/:id", async (req, res) => {
 
 router.delete("/:id", async (req, res) => {
   try {
-    await Resource.deleteOne({ _id: req.params.id });
+    await Resource.findByIdAndDelete(req.params.id);
     res.status(200).send({ status: "200", message: "Successful" });
   } catch (error) {
     res.status(200).send({ status: "500", message: error });
   }
 });
-
-// router.get("/:id", async (req, res) => {
-//   try {
-//     const resource = await Resource.findById(req.params.id);
-//     res.status(200).send({ status: "200", message: resource });
-//   } catch (err) {
-//     res.status(200).send({ status: "500", message: err });
-//   }
-// });
 
 module.exports = router;

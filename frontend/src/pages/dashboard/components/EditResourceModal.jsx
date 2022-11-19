@@ -14,6 +14,7 @@ import CustomModal from "../../../components/CustomModal";
 import { apiResource } from "../../../services/models/resourceModal";
 import { choices } from "./ResourceModal";
 import { useParams } from "react-router-dom";
+import { toast } from "react-hot-toast";
 
 const EditResourceModal = ({ open, setOpen, result, fetchResult }) => {
   const { userId, projectId } = useParams();

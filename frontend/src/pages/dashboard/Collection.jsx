@@ -68,6 +68,8 @@ const Collection = () => {
   };
 
   const createProject = () => {
+    toast("Adding");
+    setOpen(false);
     const body = {
       name: inputs.name,
       number: parseInt(inputs.number),
@@ -81,11 +83,16 @@ const Collection = () => {
       // console.log(res);
       if (res.status === "200") {
         toast.success("Added Successfully");
-        setOpen(false);
         fetchResource();
+        setSchema([]);
+        setInputs({
+          name: "",
+          number: 1,
+          userId: userId,
+          projectId: projectId,
+        });
       } else {
         toast.error("Error");
-        setOpen(false);
       }
     });
   };
@@ -100,7 +107,7 @@ const Collection = () => {
     apiProject.getSingle(`single/${projectId}`).then((res) => {
       if (res.status === "200") {
         // console.log(res.message.name);
-        setProjectName(res.message.name);
+        setProjectName(res.message?.name);
       }
     });
   };
@@ -113,7 +120,7 @@ const Collection = () => {
 
   const delResource = (id) => {
     apiResource.remove(id).then((res) => {
-      console.log(res);
+      // console.log(res);
       if (res.status === "200") {
         fetchResource();
       } else {
