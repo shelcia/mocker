@@ -1,6 +1,6 @@
-# Mock Api Generator
+# Mocker
 
-![Mock Api Generator](https://socialify.git.ci/shelcia/mockapi/image?description=1&font=KoHo&forks=1&issues=1&language=1&owner=1&pattern=Brick%20Wall&pulls=1&stargazers=1&theme=Dark)
+![Mock Api Generator](https://socialify.git.ci/shelcia/mocker/image?description=1&font=KoHo&forks=1&issues=1&language=1&owner=1&pattern=Brick%20Wall&pulls=1&stargazers=1&theme=Dark)
 
 <p align="center">
 <img src="https://img.shields.io/badge/language-React-blue?style=for-the-badge">
@@ -10,10 +10,10 @@
  </p>
  
 <p align="center">
-<img src="https://img.shields.io/github/stars/shelcia/mockapi?style=for-the-badge" />
-<img src="https://img.shields.io/github/forks/shelcia/mockapi?style=for-the-badge" />  
-<img src="https://img.shields.io/github/issues-raw/shelcia/mockapi?style=for-the-badge"/>
-<img src="https://img.shields.io/github/issues-pr-closed-raw/shelcia/mockapi?style=for-the-badge" >
+<img src="https://img.shields.io/github/stars/shelcia/mocker?style=for-the-badge" />
+<img src="https://img.shields.io/github/forks/shelcia/mocker?style=for-the-badge" />  
+<img src="https://img.shields.io/github/issues-raw/shelcia/mocker?style=for-the-badge"/>
+<img src="https://img.shields.io/github/issues-pr-closed-raw/shelcia/mocker?style=for-the-badge" >
 </p>
 
 ## 📌 Introduction
@@ -59,9 +59,16 @@ For major changes, you are welcome to open an issue to discuss what you would li
 
 ## Deployement
 
-### Deployment
+### Web App
 
 https://mockapi-flax.vercel.app/
+
+#### Demo
+
+```
+email: demo@gmail.com
+password: password
+```
 
 ### To work with this repo
 
@@ -77,7 +84,7 @@ https://mockapi-flax.vercel.app/
 
 - Run <code>npm install</code>
 
-- Then run <code>node run dev</code>
+- Then run <code>npm run dev</code>
 
 Addtionally within BE folder you will have include MongoDB URL and Token in <code>.env</code> if you want to work on your local
 ```
