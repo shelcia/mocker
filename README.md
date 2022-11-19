@@ -10,15 +10,23 @@
  </p>
  
 <p align="center">
-<img src="https://img.shields.io/github/stars/shelcia/mockapi?style=for-the-badge" >
-<img src="https://img.shields.io/github/forks/shelcia/mockapi?style=for-the-badge" >  
-<img src="https://img.shields.io/github/issues-raw/shelcia/mockapi?style=for-the-badge" >
-<img src="https://img.shields.io/github/issues-pr-closed-raw/mockapi/Socialgram?style=for-the-badge" >
+<img src="https://img.shields.io/github/stars/shelcia/mockapi?style=for-the-badge" />
+<img src="https://img.shields.io/github/forks/shelcia/mockapi?style=for-the-badge" />  
+<img src="https://img.shields.io/github/issues-raw/shelcia/mockapi?style=for-the-badge"/>
+<img src="https://img.shields.io/github/issues-pr-closed-raw/shelcia/mockapi?style=for-the-badge" >
 </p>
 
 ## 📌 Introduction
 
 A Web app which lets you generate data with API endpoints
+
+# Demo
+
+
+
+https://user-images.githubusercontent.com/31156685/202836788-9d8725a1-1974-487c-a278-742476318ad2.mov
+
+
 
 ## ⭐ How to get started?
 
@@ -72,9 +80,10 @@ https://mockapi-flax.vercel.app/
 - Then run <code>node run dev</code>
 
 Addtionally within BE folder you will have include MongoDB URL and Token in <code>.env</code> if you want to work on your local
-
+```
 DB_CONNECT = mongodb+srv://{username}:{password}@cluster0.hfdhy.mongodb.net/{collection name}?retryWrites=true&w=majority
 TOKEN_SECRET = {some gibberish}
+```
 
 ## 💼 Code of Conduct
 
