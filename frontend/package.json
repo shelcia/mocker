@@ -21,6 +21,7 @@
     "react-hot-toast": "^2.4.0",
     "react-icons": "^4.6.0",
     "react-json-pretty": "^2.2.0",
+    "react-loader-spinner": "^5.3.4",
     "react-router-dom": "^6.4.3"
   },
   "devDependencies": {

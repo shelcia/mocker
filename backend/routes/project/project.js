@@ -22,4 +22,13 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+router.get("/single/:id", async (req, res) => {
+  try {
+    const projects = await Project.findById(req.params.id);
+    res.status(200).send({ status: "200", message: projects });
+  } catch (err) {
+    res.status(200).send({ status: "500", message: err });
+  }
+});
+
 module.exports = router;
