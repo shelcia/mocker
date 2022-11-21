@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   Box,
   Table,
@@ -9,8 +9,11 @@ import {
 } from "@mui/material";
 import CustomModal from "../../../components/CustomModal";
 import { green, grey } from "@mui/material/colors";
+import { ThemeContext } from "../../../context/ThemeContext";
 
 const EndpointModal = ({ open, setOpen, result }) => {
+  const [darkTheme] = useContext(ThemeContext);
+
   const points = [
     {
       method: "GET",
@@ -34,14 +37,12 @@ const EndpointModal = ({ open, setOpen, result }) => {
     },
   ];
 
-  // console.log(points);
-
   return (
     <CustomModal open={open} setOpen={setOpen} width={600}>
       <Typography variant="h5" component="h2" color="primary" sx={{ mb: 2 }}>
         Endpoints
       </Typography>
-      <Box sx={{ bgcolor: grey[100], p: 2 }}>
+      <Box sx={{ bgcolor: darkTheme ? grey[900] : grey[100], p: 2 }}>
         <Table>
           <TableBody>
             {points.map((point, idx) => (
