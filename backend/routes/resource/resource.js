@@ -44,6 +44,44 @@ const fakerFuncs = (item) => {
     case "sentences":
       return faker.lorem.sentences(2);
 
+    case "chemicalElement":
+      return faker.science.chemicalElement();
+    case "unit":
+      return faker.science.unit();
+
+    case "hsl":
+      return faker.color.hsl();
+    case "humanColor":
+      return faker.color.human();
+    case "rgb":
+      return faker.color.rgb();
+
+    case "genre":
+      return faker.music.genre();
+    case "songName":
+      return faker.music.songName();
+
+    case "amount":
+      return faker.finance.amount();
+    case "bitcoinAddress":
+      return faker.finance.bitcoinAddress();
+    case "creditCardCVV":
+      return faker.finance.creditCardCVV();
+    case "creditCardIssuer":
+      return faker.finance.creditCardIssuer();
+    case "creditCardNumber":
+      return faker.finance.creditCardNumber();
+    case "currencyName":
+      return faker.finance.currencyName();
+    case "currencySymbol":
+      return faker.finance.currencySymbol();
+    case "ethereumAddress":
+      return faker.finance.ethereumAddress();
+    case "transactionDescription":
+      return faker.finance.transactionDescription();
+    case "transactionType":
+      return faker.finance.transactionType();
+
     case "default":
       return () => {};
   }

@@ -4,7 +4,6 @@ import JSONPretty from "react-json-pretty";
 import CustomModal from "../../../components/CustomModal";
 import { grey } from "@mui/material/colors";
 import { ThemeContext } from "../../../context/ThemeContext";
-import { MdOutlineContentCopy } from "react-icons/md";
 import { CopyButton } from "../../../components/CustomButtons";
 import { toast } from "react-hot-toast";
 
