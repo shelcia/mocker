@@ -23,9 +23,7 @@ A Web app which lets you generate data with API endpoints
 # Demo
 
 
-
-https://user-images.githubusercontent.com/31156685/202836788-9d8725a1-1974-487c-a278-742476318ad2.mov
-
+https://user-images.githubusercontent.com/31156685/204107605-ab2c71b3-a2dd-4542-acd3-b09fd5d180ea.mov
 
 
 ## ⭐ How to get started?
@@ -61,7 +59,9 @@ For major changes, you are welcome to open an issue to discuss what you would li
 
 ### Web App
 
-https://mockapi-flax.vercel.app/
+https://mocker-gen.vercel.app/
+
+![Vercel](https://vercelbadge.vercel.app/api/shelcia/mocker?style=for-the-badge)
 
 #### Demo
 
