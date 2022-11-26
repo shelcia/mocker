@@ -1,7 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button, TextField, Typography } from "@mui/material";
-import { useState } from "react";
-import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { apiAuth } from "../../services/models/authModel";
 import { toast } from "react-hot-toast";
@@ -25,11 +23,6 @@ const Login = () => {
         toast.error(res.message);
       }
     });
-    // axios.post(`${BACKEND_URL}auth/signin`, body).then((res) => {
-    //   if (res.data.status === "200") {
-    //     navigate(`/${res.data.message.userId}`);
-    //   }
-    // });
   };
 
   return (
@@ -60,9 +53,11 @@ const Login = () => {
       >
         Login
       </Button>
-      <Typography variant="h6" component="p" sx={{ mb: 2 }}>
-        Don't have an account Then
-        <Link to="/signup">Signup</Link>
+      <Typography variant="h6" component="p" sx={{ my: 2 }}>
+        Don't have an account Then{"  "}
+        <Link to="/signup" style={{ color: "deepskyblue" }}>
+          Signup
+        </Link>
       </Typography>
     </React.Fragment>
   );

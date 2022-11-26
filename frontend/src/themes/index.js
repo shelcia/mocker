@@ -320,6 +320,18 @@ const themesOptions = {
           },
         },
       },
+      MuiAppBar: {
+        styleOverrides: {
+          root: {
+            // backgroundColor: "red",
+            // backgroundColor: "rgba(207, 207, 207, 0.5)",
+            backgroundColor: "rgba(255, 255, 255)",
+            backdropFilter: "saturate(180%) blur(5px)",
+            boxShadow: "inset 0 -1px 0 0 hsla(0,0%,100%,.1)",
+            color: secondary[500],
+          },
+        },
+      },
     },
   },
   [THEMES.DARK]: {
@@ -330,8 +342,11 @@ const themesOptions = {
       success,
       info,
       background: {
-        default: "#1e2732",
-        paper: "#222b36",
+        // default: "#1e2732",
+        default: "rgb(10, 20, 28)",
+        // default: "#191d20",
+        // paper: "#222b36",
+        paper: "rgb(10, 20, 28)",
       },
       mode: "dark",
     },
@@ -349,6 +364,24 @@ const themesOptions = {
             "& .MuiPopover-paper": {
               border: "1px solid rgba(255, 255, 255, 0.12)",
             },
+          },
+        },
+      },
+      MuiAppBar: {
+        styleOverrides: {
+          root: {
+            backgroundColor: "rgba(10, 20, 2,.5)",
+            backdropFilter: "saturate(180%) blur(5px)",
+            boxShadow: "inset 0 -1px 0 0 hsla(0,0%,100%,.1)",
+          },
+        },
+      },
+      MuiCard: {
+        styleOverrides: {
+          root: {
+            backgroundColor: "rgba(10, 20, 2, 0)",
+            backdropFilter: "saturate(100%) blur(10px)",
+            boxShadow: "inset 1px -1px 2px 2px hsla(0,0%,100%,.1)",
           },
         },
       },

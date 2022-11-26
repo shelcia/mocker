@@ -10,6 +10,7 @@ import {
 import CustomModal from "../../../components/CustomModal";
 import { green, grey } from "@mui/material/colors";
 import { ThemeContext } from "../../../context/ThemeContext";
+import { secondary } from "../../../themes/themeColors";
 
 const EndpointModal = ({ open, setOpen, result }) => {
   const [darkTheme] = useContext(ThemeContext);
@@ -42,7 +43,13 @@ const EndpointModal = ({ open, setOpen, result }) => {
       <Typography variant="h5" component="h2" color="primary" sx={{ mb: 2 }}>
         Endpoints
       </Typography>
-      <Box sx={{ bgcolor: darkTheme ? grey[900] : grey[100], p: 2 }}>
+      <Box
+        sx={{
+          bgcolor: darkTheme ? secondary[900] : grey[100],
+          p: 2,
+          overflowX: "auto",
+        }}
+      >
         <Table>
           <TableBody>
             {points.map((point, idx) => (

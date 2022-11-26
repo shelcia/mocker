@@ -155,7 +155,7 @@ const Collection = () => {
         <Button variant="contained" onClick={() => setOpen(true)}>
           New Resource
         </Button>
-        <List>
+        <List sx={{ overflowX: "auto" }}>
           {resources?.map((resource) => (
             <Resource
               key={resource._id}

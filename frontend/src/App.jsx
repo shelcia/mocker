@@ -9,6 +9,7 @@ import routes from "./routes";
 import { customTheme } from "./themes";
 import { Toaster } from "react-hot-toast";
 import { ThemeContext } from "./context/ThemeContext";
+import "./styles/style.css";
 
 const App = () => {
   const allPages = useRoutes(routes);

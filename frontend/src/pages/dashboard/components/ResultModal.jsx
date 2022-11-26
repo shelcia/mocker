@@ -6,6 +6,7 @@ import { grey } from "@mui/material/colors";
 import { ThemeContext } from "../../../context/ThemeContext";
 import { CopyButton } from "../../../components/CustomButtons";
 import { toast } from "react-hot-toast";
+import { secondary } from "../../../themes/themeColors";
 
 const ResultModal = ({ open, setOpen, result }) => {
   const [darkTheme] = useContext(ThemeContext);
@@ -45,7 +46,7 @@ const ResultModal = ({ open, setOpen, result }) => {
       </Typography>
       <Box
         sx={{
-          bgcolor: darkTheme ? grey[900] : grey[100],
+          bgcolor: darkTheme ? secondary[900] : grey[100],
           p: 2,
           overflowX: "auto",
         }}

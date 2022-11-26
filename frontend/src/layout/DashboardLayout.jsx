@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import {
   AppBar,
   Box,
@@ -8,21 +8,21 @@ import {
   Typography,
   Divider,
   Card,
-  Stack,
   Button,
+  useMediaQuery,
+  Stack,
 } from "@mui/material";
 import { HiMenuAlt3 } from "react-icons/hi";
-import { FaSun, FaMoon } from "react-icons/fa";
-import { ThemeContext } from "../context/ThemeContext";
 import { useNavigate } from "react-router-dom";
+import CustomToggle from "../components/CustomToggle";
 
 const drawerWidth = 240;
 
 const DashboardLayout = ({ children }, props) => {
+  const mobileMatches = useMediaQuery("(max-width:425px)");
+
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
-
-  const [darkTheme, setDarkTheme] = useContext(ThemeContext);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -37,34 +37,18 @@ const DashboardLayout = ({ children }, props) => {
 
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
-      <Typography
-        variant="h6"
-        sx={{ my: 2, fontWeight: 800, textTransform: "uppercase" }}
-      >
-        Mocker
-      </Typography>
+      <Stack direction="horizontal" sx={{ justifyContent: "center", my: 2 }}>
+        <Typography
+          variant="h6"
+          sx={{ mr: 1, fontWeight: 900, textTransform: "uppercase" }}
+        >
+          Mocker
+        </Typography>
+        <CustomToggle />
+      </Stack>
+
       <Divider />
-      {darkTheme ? (
-        <FaMoon
-          onClick={() => {
-            setDarkTheme(!darkTheme);
-            localStorage.setItem("mockapi-theme", darkTheme);
-          }}
-          size={"1.2rem"}
-          style={{ cursor: "pointer" }}
-        />
-      ) : (
-        <FaSun
-          onClick={() => {
-            setDarkTheme(!darkTheme);
-            localStorage.setItem("mockapi-theme", darkTheme);
-          }}
-          size={"1.2rem"}
-          color="rgb(255,214,0)"
-          style={{ cursor: "pointer" }}
-        />
-      )}
-      <Button sx={{ ml: 2 }} onClick={logout}>
+      <Button variant="contained" onClick={logout} sx={{ mt: 4 }}>
         Logout
       </Button>
     </Box>
@@ -79,8 +63,7 @@ const DashboardLayout = ({ children }, props) => {
         <Toolbar>
           <Typography
             variant="h6"
-            // component="div"
-            sx={{ flexGrow: 1, fontWeight: 800, textTransform: "uppercase" }}
+            sx={{ flexGrow: 1, fontWeight: 900, textTransform: "uppercase" }}
           >
             Mocker
           </Typography>
@@ -93,39 +76,11 @@ const DashboardLayout = ({ children }, props) => {
           >
             <HiMenuAlt3 />
           </IconButton>
-          <Box sx={{ display: { sx: "none" } }}>
-            <Stack
-              direction="row"
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              {darkTheme ? (
-                <FaMoon
-                  onClick={() => {
-                    setDarkTheme(!darkTheme);
-                    localStorage.setItem("mockapi-theme", false);
-                  }}
-                  size={"1.2rem"}
-                  style={{ cursor: "pointer" }}
-                />
-              ) : (
-                <FaSun
-                  onClick={() => {
-                    setDarkTheme(!darkTheme);
-                    localStorage.setItem("mockapi-theme", true);
-                  }}
-                  size={"1.2rem"}
-                  color="rgb(255,214,0)"
-                  style={{ cursor: "pointer" }}
-                />
-              )}
-              <Button sx={{ ml: 2 }} onClick={logout}>
-                Logout
-              </Button>
-            </Stack>
+          <Box sx={{ display: { xs: "none", sm: "flex" } }}>
+            <CustomToggle />
+            <Button sx={{ ml: 2 }} onClick={logout}>
+              Logout
+            </Button>
           </Box>
         </Toolbar>
       </AppBar>
@@ -152,7 +107,9 @@ const DashboardLayout = ({ children }, props) => {
       <Box component="main" className="w-100">
         <Toolbar />
         <Box className="row w-100" sx={{ px: 2, pt: 2 }}>
-          <Card sx={{ m: 4, p: 4 }}>{children}</Card>
+          <Card sx={{ m: mobileMatches ? 1 : 4, p: mobileMatches ? 1 : 4 }}>
+            {children}
+          </Card>
         </Box>
       </Box>
     </Box>

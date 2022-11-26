@@ -1,36 +1,47 @@
 import React from "react";
+import { Box } from "@mui/material";
 import { Rings } from "react-loader-spinner";
 
 const Loading = ({ children }) => {
   return (
-    <div
-      className="w-100 h-100 d-flex"
-      style={{ alignItems: "center", justifyContent: "center" }}
+    <Box
+      sx={{
+        alignItems: "center",
+        justifyContent: "center",
+        width: "100%",
+        height: "100%",
+        display: "flex",
+      }}
     >
-      <Rings type="TailSpin" color="#2499EF" height={150} width={150} />
+      <Rings
+        type="TailSpin"
+        color="#2499EF"
+        height={150}
+        width={150}
+        wrapperStyle={{
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      />
       {children}
-    </div>
+    </Box>
   );
 };
 
 export default Loading;
 
 export const PartLoader = ({ children }) => (
-  <div
-    style={{
-      alignItems: "center",
-      justifyContent: "center",
-    }}
-  >
+  <Box>
     <Rings
       type="TailSpin"
       color="#2499EF"
       height={150}
       width={150}
-      style={{
+      wrapperStyle={{
         justifyContent: "center",
+        alignItems: "center",
       }}
     />
     {children}
-  </div>
+  </Box>
 );

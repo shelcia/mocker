@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "./context/ThemeContext";
 import App from "./App";
 import "@fontsource/poppins";
+import "@fontsource/jetbrains-mono";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
