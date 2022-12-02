@@ -37,7 +37,7 @@ const DashboardLayout = ({ children }, props) => {
 
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
-      <Stack direction="horizontal" sx={{ justifyContent: "center", my: 2 }}>
+      <Stack direction="row" sx={{ justifyContent: "center", my: 2 }}>
         <Typography
           variant="h6"
           sx={{ mr: 1, fontWeight: 900, textTransform: "uppercase" }}
