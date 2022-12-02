@@ -22,9 +22,7 @@ A Web app which lets you generate data with API endpoints
 
 # Demo
 
-
 https://user-images.githubusercontent.com/31156685/204107605-ab2c71b3-a2dd-4542-acd3-b09fd5d180ea.mov
-
 
 ## ⭐ How to get started?
 
@@ -54,14 +52,19 @@ For major changes, you are welcome to open an issue to discuss what you would li
 
 </p>
 
-
 ## Deployement
 
 ### Web App
 
-https://mocker-gen.vercel.app/
+#### Frontend
 
-![Vercel](https://vercelbadge.vercel.app/api/shelcia/mocker?style=for-the-badge)
+https://mocker-gen.netlify.app/
+
+[![Netlify Status](https://api.netlify.com/api/v1/badges/26eb34f4-5250-4bf3-86f4-dcb70b2cd822/deploy-status)](https://app.netlify.com/sites/mocker-gen/deploys)
+
+#### Backend
+
+![Vercel Status](https://vercelbadge.vercel.app/api/shelcia/mocker?style=for-the-badge)
 
 #### Demo
 
@@ -97,4 +100,5 @@ TOKEN_SECRET = {some gibberish}
 ## 💼 Code of Conduct
 
 We want to facilitate a healthy and constructive community behavior by adopting and enforcing our code of conduct.
+
 <!-- Please adhere toward our [Code-of-Conduct](code-of-conduct.md). -->
