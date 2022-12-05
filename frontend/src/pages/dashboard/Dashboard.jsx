@@ -14,7 +14,7 @@ import {
 import { FaPlus } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
-import { blue } from "@mui/material/colors";
+import { blue, deepOrange } from "@mui/material/colors";
 import { apiProject } from "../../services/models/projectModel";
 import CustomModal from "../../components/CustomModal";
 import { FiTrash } from "react-icons/fi";
@@ -97,12 +97,12 @@ const Dashboard = () => {
                 onClick={() => navigate(`/${userId}/${project._id}`)}
               >
                 <ListItemAvatar>
-                  <Avatar sx={{ bgcolor: blue[500] }}>
+                  <Avatar sx={{ bgcolor: blue[500],":hover":{bgcolor:blue[800]}}}>
                     {project?.name?.charAt(0)}
                   </Avatar>
                 </ListItemAvatar>
                 <Typography
-                  sx={{ display: "inline", mt: 1 }}
+                  sx={{ display: "inline", mt: 1, ":hover":{color:blue[800]}}}
                   component="h1"
                   variant="h6"
                   color="text.primary"
