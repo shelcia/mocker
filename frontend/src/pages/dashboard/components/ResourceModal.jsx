@@ -10,6 +10,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import LinearProgress from '@mui/material/LinearProgress';
 import CustomModal from "../../../components/CustomModal";
 
 const ResourceModal = ({
@@ -22,7 +23,11 @@ const ResourceModal = ({
   addSchema,
   deleteSchema,
   createProject,
+  loading
 }) => {
+
+  console.log(loading);
+
   return (
     <CustomModal open={open} setOpen={setOpen} width={600}>
       <Typography variant="h5" component="h2" color="primary" sx={{ mb: 2 }}>
@@ -110,6 +115,16 @@ const ResourceModal = ({
           Cancel
         </Button>
       </Stack>
+
+      {loading &&
+        <Stack direction="column" spacing={3} mt={4}>
+          <LinearProgress sx={{ mb: -2 }} />
+          <Typography variant="p" component="p" color="primary" align="center">
+            Creating JSON ...
+          </Typography>
+        </Stack>
+      }
+
     </CustomModal>
   );
 };

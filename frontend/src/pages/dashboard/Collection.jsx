@@ -29,6 +29,7 @@ import ResultModal from "./components/ResultModal";
 
 const Collection = () => {
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const [projectName, setProjectName] = useState("");
   const [resources, setResources] = useState([]);
@@ -69,8 +70,10 @@ const Collection = () => {
   };
 
   const createProject = () => {
+    console.log("Hello");
+    setLoading(true);
     toast("Adding");
-    setOpen(false);
+
     const body = {
       name: inputs.name,
       number: parseInt(inputs.number),
@@ -92,7 +95,10 @@ const Collection = () => {
           userId: userId,
           projectId: projectId,
         });
+        setLoading(false);
+        setOpen(false);
       } else {
+        setOpen(false);
         toast.error("Error");
       }
     });
@@ -175,6 +181,8 @@ const Collection = () => {
         addSchema={addSchema}
         deleteSchema={deleteSchema}
         createProject={createProject}
+        loading={loading}
+        setLoading={setLoading}
       />
     </React.Fragment>
   );
