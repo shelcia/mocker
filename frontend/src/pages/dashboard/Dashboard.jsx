@@ -97,12 +97,12 @@ const Dashboard = () => {
                 onClick={() => navigate(`/${userId}/${project._id}`)}
               >
                 <ListItemAvatar>
-                  <Avatar sx={{ bgcolor: blue[500],":hover":{bgcolor:deepOrange[500]}}}>
+                  <Avatar sx={{ bgcolor: blue[500],":hover":{bgcolor:blue[800]}}}>
                     {project?.name?.charAt(0)}
                   </Avatar>
                 </ListItemAvatar>
                 <Typography
-                  sx={{ display: "inline", mt: 1, ":hover":{color:deepOrange[500]}}}
+                  sx={{ display: "inline", mt: 1, ":hover":{color:blue[800]}}}
                   component="h1"
                   variant="h6"
                   color="text.primary"
