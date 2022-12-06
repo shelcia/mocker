@@ -21,7 +21,8 @@ import { FiTrash } from "react-icons/fi";
 
 const Dashboard = () => {
   const [open, setOpen] = useState(false);
-
+  const [confirmDeleteModal, setConfirmDeleteModal] = useState(false);
+  const [toBeDeleted, setToBeDeleted] = useState({});
   const [name, setName] = useState("");
   const [prefix, setPrefix] = useState("");
   const [projects, setProjects] = useState([]);
@@ -63,6 +64,7 @@ const Dashboard = () => {
   const delProject = (id) => {
     toast("Deleting !");
     apiProject.remove(id).then((res) => {
+      setConfirmDeleteModal(false);
       if (res.status === "200") {
         fetchProjects();
       }
@@ -97,12 +99,12 @@ const Dashboard = () => {
                 onClick={() => navigate(`/${userId}/${project._id}`)}
               >
                 <ListItemAvatar>
-                  <Avatar sx={{ bgcolor: blue[500],":hover":{bgcolor:blue[800]}}}>
+                  <Avatar sx={{ bgcolor: blue[500], ":hover": { bgcolor: blue[800] } }}>
                     {project?.name?.charAt(0)}
                   </Avatar>
                 </ListItemAvatar>
                 <Typography
-                  sx={{ display: "inline", mt: 1, ":hover":{color:blue[800]}}}
+                  sx={{ display: "inline", mt: 1, ":hover": { color: blue[800] } }}
                   component="h1"
                   variant="h6"
                   color="text.primary"
@@ -113,7 +115,10 @@ const Dashboard = () => {
               <Button
                 color="error"
                 variant="contained"
-                onClick={() => delProject(project._id)}
+                onClick={() => {
+                  setToBeDeleted(project);
+                  setConfirmDeleteModal(true);
+                }}
               >
                 <FiTrash color="#fff" />
               </Button>
@@ -127,6 +132,12 @@ const Dashboard = () => {
         name={name}
         setName={setName}
         addProject={addProject}
+      />
+      <ConfirmDeleteModal
+        confirmDeleteModal={confirmDeleteModal}
+        setConfirmDeleteModal={setConfirmDeleteModal}
+        deleteProject={delProject}
+        project={toBeDeleted}
       />
     </React.Fragment>
   );
@@ -172,6 +183,81 @@ const NewProjectModal = ({ open, setOpen, name, setName, addProject }) => {
           Cancel
         </Button>
       </Stack>
+    </CustomModal>
+  );
+};
+
+
+const ConfirmDeleteModal = ({ confirmDeleteModal, setConfirmDeleteModal, project, deleteProject }) => {
+
+  const [formData, setFormData] = useState("");
+  const [disabled, setDisabled] = useState(true);
+
+  const checkProjectName = () => {
+    if (project.name === formData) {
+      setDisabled(false);
+    } else {
+      setDisabled(true);
+    }
+  }
+
+  useEffect(() => {
+    checkProjectName();
+  }, [formData])
+
+
+  return (
+    <CustomModal open={confirmDeleteModal} setOpen={setConfirmDeleteModal}>
+      <Typography variant="h4" component="h2" color="primary" sx={{ mb: 3 }}>
+        Delete Project
+      </Typography>
+      <Typography variant="p" component="p" color="text.primary" sx={{ mb: 3 }}>
+        This action cannot be undone. This will permanently delete the <i><b>{project.name}</b></i> project and it's associated resources.
+      </Typography>
+      <Typography variant="p" component="p" color="text.primary" sx={{ mb: 3 }}>
+        Please type <i><b>{project.name}</b></i> to confirm.
+      </Typography>
+
+      <TextField
+        label="Project name"
+        sx={{ mb: 3 }}
+        size="small"
+        fullWidth
+        value={formData}
+        onChange={(e) => {
+          setFormData(e.target.value);
+          checkProjectName();
+        }}
+      />
+
+      <Stack direction="row" spacing={3}>
+        <Button
+          variant="contained"
+          disabled={disabled}
+          color="error"
+          size="wide"
+          onClick={() => {
+            deleteProject(project._id);
+            setFormData("");
+            setDisabled(true);
+          }}
+        >
+          Confirm Delete
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          onClick={() => {
+            setFormData("");
+            setDisabled(true);
+            setConfirmDeleteModal(false);
+          }}
+        >
+          Cancel
+        </Button>
+      </Stack>
+
     </CustomModal>
   );
 };
