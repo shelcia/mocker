@@ -1,15 +1,13 @@
-import React, { useState } from "react";
+import React from "react";
 import { Box, Button, TextField, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { apiAuth } from "../../services/models/authModel";
 import { toast } from "react-hot-toast";
 import * as Yup from "yup";
 import { useFormik } from "formik";
-import { ColorRing } from 'react-loader-spinner'
 
 const Login = () => {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false)
 
   const initialValues = {
     email: "",
@@ -32,7 +30,7 @@ const Login = () => {
       initialValues,
       validationSchema,
       onSubmit: (values) => {
-        setLoading(true);
+        // setLoading(true);
         loginUser(values.email, values.password);
       },
     });
@@ -54,7 +52,6 @@ const Login = () => {
       } else {
         toast.error("Error");
       }
-      setLoading(false)
     });
   };
 
@@ -100,15 +97,8 @@ const Login = () => {
           variant="contained"
           sx={ { display: "block", mt: 2, mx: "auto" } }
           type="submit"
-          disabled={ loading }
-        >{ loading ? <ColorRing
-          visible={ true }
-          height="30"
-          width="30"
-          wrapperStyle={ {} }
-          wrapperClass="blocks-wrapper"
-          colors={ [''] }
-        /> : "Login" }
+        >
+          Login
         </Button>
         <Typography variant="h6" component="p" sx={ { my: 2 } }>
           Don't have an account ? Then{ "  " }
