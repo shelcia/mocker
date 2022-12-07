@@ -30,19 +30,21 @@ const Dashboard = () => {
   const { userId } = useParams();
   const navigate = useNavigate();
 
-  const fetchProjects = (signal) => {
+  const fetchProjects = () => {
+    const ac = new AbortController();
+    const signal = ac.signal
     apiProject.getSingle(userId, signal).then((res) => {
       if (res.status === "200") {
         setProjects(res.message);
       }
     });
+    return () => ac.abort();
   };
 
+
   useEffect(() => {
-    const ac = new AbortController();
-    fetchProjects(ac.signal);
-    return () => ac.abort();
-  });
+    fetchProjects();
+  }, []);
 
   const addProject = () => {
     const body = {
@@ -74,7 +76,7 @@ const Dashboard = () => {
   return (
     <React.Fragment>
       <CardContent>
-        <Stack direction="row" spacing={2}>
+        <Stack direction="row" spacing={ 2 }>
           <Typography variant="h5" component="h1" color="primary">
             Projects
           </Typography>
@@ -82,21 +84,21 @@ const Dashboard = () => {
             color="primary"
             variant="contained"
             size="small"
-            sx={{ borderRadius: "50ex", py: 0.2, px: 1.2, minWidth: 0 }}
-            onClick={() => setOpen(true)}
+            sx={ { borderRadius: "50ex", py: 0.2, px: 1.2, minWidth: 0 } }
+            onClick={ () => setOpen(true) }
           >
-            <FaPlus size={"0.8rem"} />
+            <FaPlus size={ "0.8rem" } />
           </Button>
         </Stack>
         <List>
-          {projects.map((project) => (
+          { projects && projects.map((project) => (
             <ListItem
-              sx={{ justifyContent: "space-between" }}
-              key={project._id}
+              sx={ { justifyContent: "space-between" } }
+              key={ project._id }
             >
               <Box
-                sx={{ display: "flex", cursor: "pointer" }}
-                onClick={() => navigate(`/${userId}/${project._id}`)}
+                sx={ { display: "flex", cursor: "pointer" } }
+                onClick={ () => navigate(`/${userId}/${project._id}`) }
               >
                 <ListItemAvatar>
                   <Avatar sx={{ bgcolor: blue[500], ":hover": { bgcolor: blue[800] } }}>
@@ -109,7 +111,7 @@ const Dashboard = () => {
                   variant="h6"
                   color="text.primary"
                 >
-                  {project.name}
+                  { project.name }
                 </Typography>
               </Box>
               <Button
@@ -123,15 +125,15 @@ const Dashboard = () => {
                 <FiTrash color="#fff" />
               </Button>
             </ListItem>
-          ))}
+          )) }
         </List>
       </CardContent>
       <NewProjectModal
-        open={open}
-        setOpen={setOpen}
-        name={name}
-        setName={setName}
-        addProject={addProject}
+        open={ open }
+        setOpen={ setOpen }
+        name={ name }
+        setName={ setName }
+        addProject={ addProject }
       />
       <ConfirmDeleteModal
         confirmDeleteModal={confirmDeleteModal}
@@ -147,17 +149,17 @@ export default Dashboard;
 
 const NewProjectModal = ({ open, setOpen, name, setName, addProject }) => {
   return (
-    <CustomModal open={open} setOpen={setOpen}>
-      <Typography variant="h4" component="h2" color="primary" sx={{ mb: 3 }}>
+    <CustomModal open={ open } setOpen={ setOpen }>
+      <Typography variant="h4" component="h2" color="primary" sx={ { mb: 3 } }>
         New Project
       </Typography>
       <TextField
         label="Project name"
-        sx={{ mb: 3 }}
+        sx={ { mb: 3 } }
         size="small"
         fullWidth
-        value={name}
-        onChange={(e) => setName(e.target.value)}
+        value={ name }
+        onChange={ (e) => setName(e.target.value) }
       />
       {/* <TextField
       label="API Prefix (optional)"
@@ -167,18 +169,18 @@ const NewProjectModal = ({ open, setOpen, name, setName, addProject }) => {
       value={prefix}
       onChange={(e) => setPrefix(e.target.value)}
     /> */}
-      <Stack direction="row" spacing={3}>
-        <Button variant="contained" size="small" onClick={addProject}>
+      <Stack direction="row" spacing={ 3 }>
+        <Button variant="contained" size="small" onClick={ addProject }>
           Create
         </Button>
         <Button
           variant="contained"
           color="secondary"
           size="small"
-          onClick={() => {
+          onClick={ () => {
             setOpen(false);
             setName("");
-          }}
+          } }
         >
           Cancel
         </Button>
