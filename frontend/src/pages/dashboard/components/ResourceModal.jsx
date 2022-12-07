@@ -4,6 +4,7 @@ import {
   Button,
   FormControl,
   InputLabel,
+  ListSubheader,
   MenuItem,
   Select,
   Stack,
@@ -79,10 +80,15 @@ const ResourceModal = ({
                 handleSchema(item.id, item.label, e.target.value)
               }
             >
-              {choices?.map((choice) => (
-                <MenuItem value={choice} key={choice}>
-                  {choice}
-                </MenuItem>
+              {choices?.map((person) => (
+                <>
+                <ListSubheader>{person.category}</ListSubheader>
+                {person.list?.map((choice) => (
+                  <MenuItem value={choice} key={choice}>
+                    {choice}
+                  </MenuItem>
+                ))}
+                </>
               ))}
             </Select>
           </FormControl>
@@ -132,38 +138,71 @@ const ResourceModal = ({
 export default ResourceModal;
 
 export const choices = [
-  "firstName",
-  "lastName",
-  "sex",
-  "jobArea",
-  "jobTitle",
-  "avatar",
-  "fashion",
-  "product",
-  "productDescription",
-  "price",
-  "productAdjective",
-  "boolean",
-  "past",
-  "lines",
-  "domainName",
-  "imageUrl",
-  "sentences",
-  "chemicalElement",
-  "unit",
-  "hsl",
-  "humanColor",
-  "rgb",
-  "genre",
-  "songName",
-  "amount",
-  "bitcoinAddress",
-  "creditCardCVV",
-  "creditCardIssuer",
-  "creditCardNumber",
-  "currencyName",
-  "currencySymbol",
-  "ethereumAddress",
-  "transactionDescription",
-  "transactionType"
-];
+  {category: "Name",
+  list :[
+    "firstName",
+    "lastName",
+    "sex",
+    "jobArea",
+    "jobTitle"
+    ]},
+  {category: "Image",
+  list : [
+    "avatar",
+    "fashion",
+    "imageUrl"
+    ]},
+  {category: "Datatype",
+  list :[
+    "boolean"
+    ]},
+  {category: "Commerce",
+  list : [
+    "product",
+    "productDescription",
+    "price",
+    "productAdjective"
+    ]},
+  {category: "Date",
+  list :[
+    "past"
+    ]},
+  {category: "Lorem",
+  list :[
+    "lines",
+    "sentences",
+    ]},
+  {category: "Internet",
+  list :[
+    "domainName",
+    ]},
+  { category: "Science",
+    list :[
+    "chemicalElement",
+    "unit",
+    ]},
+  { category: "Color",
+    list : [
+    "hsl",
+    "humanColor",
+    "rgb",
+    ]},
+  { category: "Music",
+    list: [
+    "genre",
+    "songName",
+    ]},
+  { category: "Finance",
+    list : [
+    "amount",
+    "bitcoinAddress",
+    "creditCardCVV",
+    "creditCardIssuer",
+    "creditCardNumber",
+    "currencyName",
+    "currencySymbol",
+    "ethereumAddress",
+    "transactionDescription",
+    "transactionType"
+    ]}
+  ];
