@@ -56,6 +56,7 @@ const Dashboard = () => {
     apiProject.post(body).then((res) => {
       if (res.status === "200") {
         toast.success(res.message);
+        fetchProjects()
         setOpen(false);
       } else {
         toast.error(res.message);
