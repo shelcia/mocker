@@ -6,6 +6,7 @@ export const CopyButton = styled(Button)(({ theme }) => ({
   padding: "1px 5px",
   fontSize: "0.8rem",
   background: blue[500],
+  color: "white",
   "&:hover": {
     backgroundColor: blue[900],
   },

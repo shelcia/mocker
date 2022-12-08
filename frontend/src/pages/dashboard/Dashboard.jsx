@@ -32,7 +32,7 @@ const Dashboard = () => {
 
   const fetchProjects = () => {
     const ac = new AbortController();
-    const signal = ac.signal
+    const signal = ac.signal;
     apiProject.getSingle(userId, signal).then((res) => {
       if (res.status === "200") {
         setProjects(res.message);
@@ -40,7 +40,6 @@ const Dashboard = () => {
     });
     return () => ac.abort();
   };
-
 
   useEffect(() => {
     fetchProjects();
@@ -56,7 +55,7 @@ const Dashboard = () => {
     apiProject.post(body).then((res) => {
       if (res.status === "200") {
         toast.success(res.message);
-        fetchProjects()
+        fetchProjects();
         setOpen(false);
       } else {
         toast.error(res.message);
@@ -65,7 +64,7 @@ const Dashboard = () => {
   };
 
   const delProject = (id) => {
-    toast("Deleting !");
+    toast.error("Deleting !");
     apiProject.remove(id).then((res) => {
       setConfirmDeleteModal(false);
       if (res.status === "200") {
@@ -77,7 +76,7 @@ const Dashboard = () => {
   return (
     <React.Fragment>
       <CardContent>
-        <Stack direction="row" spacing={ 2 }>
+        <Stack direction="row" spacing={2}>
           <Typography variant="h5" component="h1" color="primary">
             Projects
           </Typography>
@@ -85,56 +84,66 @@ const Dashboard = () => {
             color="primary"
             variant="contained"
             size="small"
-            sx={ { borderRadius: "50ex", py: 0.2, px: 1.2, minWidth: 0 } }
-            onClick={ () => setOpen(true) }
+            sx={{ borderRadius: "50ex", py: 0.2, px: 1.2, minWidth: 0 }}
+            onClick={() => setOpen(true)}
           >
-            <FaPlus size={ "0.8rem" } />
+            <FaPlus size={"0.8rem"} />
           </Button>
         </Stack>
         <List>
-          { projects && projects.map((project) => (
-            <ListItem
-              sx={ { justifyContent: "space-between" } }
-              key={ project._id }
-            >
-              <Box
-                sx={ { display: "flex", cursor: "pointer" } }
-                onClick={ () => navigate(`/${userId}/${project._id}`) }
+          {projects &&
+            projects.map((project) => (
+              <ListItem
+                sx={{ justifyContent: "space-between" }}
+                key={project._id}
               >
-                <ListItemAvatar>
-                  <Avatar sx={{ bgcolor: blue[500], ":hover": { bgcolor: blue[800] } }}>
-                    {project?.name?.charAt(0)}
-                  </Avatar>
-                </ListItemAvatar>
-                <Typography
-                  sx={{ display: "inline", mt: 1, ":hover": { color: blue[800] } }}
-                  component="h1"
-                  variant="h6"
-                  color="text.primary"
+                <Box
+                  sx={{ display: "flex", cursor: "pointer" }}
+                  onClick={() => navigate(`/${userId}/${project._id}`)}
                 >
-                  { project.name }
-                </Typography>
-              </Box>
-              <Button
-                color="error"
-                variant="contained"
-                onClick={() => {
-                  setToBeDeleted(project);
-                  setConfirmDeleteModal(true);
-                }}
-              >
-                <FiTrash color="#fff" />
-              </Button>
-            </ListItem>
-          )) }
+                  <ListItemAvatar>
+                    <Avatar
+                      sx={{
+                        bgcolor: blue[500],
+                        ":hover": { bgcolor: blue[800] },
+                      }}
+                    >
+                      {project?.name?.charAt(0)}
+                    </Avatar>
+                  </ListItemAvatar>
+                  <Typography
+                    sx={{
+                      display: "inline",
+                      mt: 1,
+                      ":hover": { color: blue[800] },
+                    }}
+                    component="h1"
+                    variant="h6"
+                    color="text.primary"
+                  >
+                    {project.name}
+                  </Typography>
+                </Box>
+                <Button
+                  color="error"
+                  variant="contained"
+                  onClick={() => {
+                    setToBeDeleted(project);
+                    setConfirmDeleteModal(true);
+                  }}
+                >
+                  <FiTrash color="#fff" />
+                </Button>
+              </ListItem>
+            ))}
         </List>
       </CardContent>
       <NewProjectModal
-        open={ open }
-        setOpen={ setOpen }
-        name={ name }
-        setName={ setName }
-        addProject={ addProject }
+        open={open}
+        setOpen={setOpen}
+        name={name}
+        setName={setName}
+        addProject={addProject}
       />
       <ConfirmDeleteModal
         confirmDeleteModal={confirmDeleteModal}
@@ -150,17 +159,17 @@ export default Dashboard;
 
 const NewProjectModal = ({ open, setOpen, name, setName, addProject }) => {
   return (
-    <CustomModal open={ open } setOpen={ setOpen }>
-      <Typography variant="h4" component="h2" color="primary" sx={ { mb: 3 } }>
+    <CustomModal open={open} setOpen={setOpen}>
+      <Typography variant="h4" component="h2" color="primary" sx={{ mb: 3 }}>
         New Project
       </Typography>
       <TextField
         label="Project name"
-        sx={ { mb: 3 } }
+        sx={{ mb: 3 }}
         size="small"
         fullWidth
-        value={ name }
-        onChange={ (e) => setName(e.target.value) }
+        value={name}
+        onChange={(e) => setName(e.target.value)}
       />
       {/* <TextField
       label="API Prefix (optional)"
@@ -170,18 +179,18 @@ const NewProjectModal = ({ open, setOpen, name, setName, addProject }) => {
       value={prefix}
       onChange={(e) => setPrefix(e.target.value)}
     /> */}
-      <Stack direction="row" spacing={ 3 }>
-        <Button variant="contained" size="small" onClick={ addProject }>
+      <Stack direction="row" spacing={3}>
+        <Button variant="contained" size="small" onClick={addProject}>
           Create
         </Button>
         <Button
           variant="contained"
           color="secondary"
           size="small"
-          onClick={ () => {
+          onClick={() => {
             setOpen(false);
             setName("");
-          } }
+          }}
         >
           Cancel
         </Button>
@@ -190,9 +199,12 @@ const NewProjectModal = ({ open, setOpen, name, setName, addProject }) => {
   );
 };
 
-
-const ConfirmDeleteModal = ({ confirmDeleteModal, setConfirmDeleteModal, project, deleteProject }) => {
-
+const ConfirmDeleteModal = ({
+  confirmDeleteModal,
+  setConfirmDeleteModal,
+  project,
+  deleteProject,
+}) => {
   const [formData, setFormData] = useState("");
   const [disabled, setDisabled] = useState(true);
 
@@ -202,12 +214,11 @@ const ConfirmDeleteModal = ({ confirmDeleteModal, setConfirmDeleteModal, project
     } else {
       setDisabled(true);
     }
-  }
+  };
 
   useEffect(() => {
     checkProjectName();
-  }, [formData])
-
+  }, [formData]);
 
   return (
     <CustomModal open={confirmDeleteModal} setOpen={setConfirmDeleteModal}>
@@ -215,10 +226,18 @@ const ConfirmDeleteModal = ({ confirmDeleteModal, setConfirmDeleteModal, project
         Delete Project
       </Typography>
       <Typography variant="p" component="p" color="text.primary" sx={{ mb: 3 }}>
-        This action cannot be undone. This will permanently delete the <i><b>{project.name}</b></i> project and it's associated resources.
+        This action cannot be undone. This will permanently delete the{" "}
+        <i>
+          <b>{project.name}</b>
+        </i>{" "}
+        project and it's associated resources.
       </Typography>
       <Typography variant="p" component="p" color="text.primary" sx={{ mb: 3 }}>
-        Please type <i><b>{project.name}</b></i> to confirm.
+        Please type{" "}
+        <i>
+          <b>{project.name}</b>
+        </i>{" "}
+        to confirm.
       </Typography>
 
       <TextField
@@ -260,7 +279,6 @@ const ConfirmDeleteModal = ({ confirmDeleteModal, setConfirmDeleteModal, project
           Cancel
         </Button>
       </Stack>
-
     </CustomModal>
   );
 };

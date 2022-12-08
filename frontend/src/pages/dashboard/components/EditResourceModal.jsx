@@ -85,7 +85,7 @@ const EditResourceModal = ({ open, setOpen, result, fetchResult }) => {
       if (res.status === "200") {
         toast.success("Edited Successfully");
         setOpen(false);
-        fetchResource();
+        // fetchResource();
         fetchResult();
       } else {
         toast.error("Error");
@@ -133,10 +133,10 @@ const EditResourceModal = ({ open, setOpen, result, fetchResult }) => {
             onChange={(e) => handleSchema(item.id, e.target.value, item.field)}
           />
           <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">Field</InputLabel>
+            <InputLabel id="field-select">Field</InputLabel>
             <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
+              labelId="field-select"
+              id="field-select"
               sx={{ mb: 2 }}
               size="small"
               label="Field"

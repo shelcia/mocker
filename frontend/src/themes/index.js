@@ -41,7 +41,7 @@ const baseOptions = {
         root: {
           textTransform: "none",
           borderRadius: "4px",
-          color: "inherit",
+          // color: "inherit",
           boxShadow: "none",
           // padding: "0.6rem 1.5rem",
         },
@@ -55,6 +55,12 @@ const baseOptions = {
             backgroundColor: primary.dark,
             boxShadow: "none",
           },
+        },
+        containedError: {
+          color: "white",
+        },
+        outlinedSuccess: {
+          color: success,
         },
       },
     },
@@ -323,8 +329,6 @@ const themesOptions = {
       MuiAppBar: {
         styleOverrides: {
           root: {
-            // backgroundColor: "red",
-            // backgroundColor: "rgba(207, 207, 207, 0.5)",
             backgroundColor: "rgba(255, 255, 255)",
             backdropFilter: "saturate(180%) blur(5px)",
             boxShadow: "inset 0 -1px 0 0 hsla(0,0%,100%,.1)",
@@ -342,10 +346,7 @@ const themesOptions = {
       success,
       info,
       background: {
-        // default: "#1e2732",
         default: "rgb(10, 20, 28)",
-        // default: "#191d20",
-        // paper: "#222b36",
         paper: "rgb(10, 20, 28)",
       },
       mode: "dark",
@@ -373,6 +374,17 @@ const themesOptions = {
             backgroundColor: "rgba(10, 20, 2,.5)",
             backdropFilter: "saturate(180%) blur(5px)",
             boxShadow: "inset 0 -1px 0 0 hsla(0,0%,100%,.1)",
+          },
+        },
+      },
+      MuiButton: {
+        styleOverrides: {
+          containedSecondary: {
+            backgroundColor: secondary[900],
+            "&:hover": {
+              backgroundColor: secondary[500],
+              boxShadow: "none",
+            },
           },
         },
       },

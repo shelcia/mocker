@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import { MdArrowBackIosNew } from "react-icons/md";
+import { VscGraph } from "react-icons/vsc";
 import { BACKEND_URL } from "../../services/api";
 import { toast } from "react-hot-toast";
 import { blue } from "@mui/material/colors";
@@ -26,6 +27,7 @@ import ResourceModal from "./components/ResourceModal";
 import EndpointModal from "./components/EndpointModal";
 import EditResourceModal from "./components/EditResourceModal";
 import ResultModal from "./components/ResultModal";
+import ViewAnalytics from "./components/ViewAnalytics";
 
 const Collection = () => {
   const [open, setOpen] = useState(false);
@@ -191,16 +193,23 @@ const Collection = () => {
 export default Collection;
 
 const Resource = ({ resource, delResource }) => {
+  const [loading, setloading] = useState(true);
+
   const [openModal, setOpenModal] = useState(false);
   const [endModal, setEndModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
+  const [analyticsModal, setAnalyticsModal] = useState(false);
 
   const [result, setResult] = useState({});
 
   const fetchResult = (signal) => {
+    setloading(true);
     apiUser.getSingle(resource._id, signal).then((res) => {
       if (res.status === "200") {
         setResult(res.message);
+        setloading(false);
+      } else {
+        setloading(false);
       }
     });
   };
@@ -238,6 +247,13 @@ const Resource = ({ resource, delResource }) => {
             <Button variant="outlined" onClick={() => setEditModal(true)}>
               <FiEdit2 />
             </Button>
+            {/* <Button
+              variant="outlined"
+              color="success"
+              onClick={() => setAnalyticsModal(true)}
+            >
+              <VscGraph />
+            </Button> */}
             <Button
               variant="contained"
               color="error"
@@ -251,7 +267,12 @@ const Resource = ({ resource, delResource }) => {
           </Stack>
         </Box>
       </ListItem>
-      <ResultModal open={openModal} setOpen={setOpenModal} result={result} />
+      <ResultModal
+        open={openModal}
+        setOpen={setOpenModal}
+        result={result}
+        loading={loading}
+      />
       <EndpointModal
         open={endModal}
         setOpen={setEndModal}
@@ -260,6 +281,12 @@ const Resource = ({ resource, delResource }) => {
       <EditResourceModal
         open={editModal}
         setOpen={setEditModal}
+        result={resource._id}
+        fetchResult={fetchResult}
+      />
+      <ViewAnalytics
+        open={analyticsModal}
+        setOpen={setAnalyticsModal}
         result={resource._id}
         fetchResult={fetchResult}
       />

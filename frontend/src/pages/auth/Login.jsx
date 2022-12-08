@@ -7,8 +7,7 @@ import * as Yup from "yup";
 import { useFormik } from "formik";
 import { ColorRing } from "react-loader-spinner";
 import { InputAdornment, IconButton } from "@mui/material";
-import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -49,8 +48,6 @@ const Login = () => {
       email: email,
       password: password,
     };
-
-    // console.log({ body });
 
     apiAuth.post(body, "signin").then((res) => {
       if (res.status === "200") {
@@ -110,7 +107,7 @@ const Login = () => {
                   onClick={handleClickShowPassword}
                   onMouseDown={handleMouseDownPassword}
                 >
-                  {showPassword ? <Visibility /> : <VisibilityOff />}
+                  {showPassword ? <MdVisibility /> : <MdVisibilityOff />}
                 </IconButton>
               </InputAdornment>
             ),
@@ -123,14 +120,7 @@ const Login = () => {
           disabled={loading}
         >
           {loading ? (
-            <ColorRing
-              visible={true}
-              height="30"
-              width="30"
-              wrapperStyle={{}}
-              wrapperClass="blocks-wrapper"
-              colors={[""]}
-            />
+            <ColorRing visible={true} height="30" width="30" colors={[""]} />
           ) : (
             "Login"
           )}
