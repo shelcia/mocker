@@ -3,11 +3,9 @@ const mongoose = require("mongoose");
 const analyticsSchema = new mongoose.Schema({
   userId: {
     type: String,
-    // required: true,
   },
   projectId: {
     type: String,
-    // required: true,
   },
   resourceId: {
     type: String,
