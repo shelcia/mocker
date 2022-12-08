@@ -153,7 +153,6 @@ router.put("/:id", async (req, res) => {
       });
       data = [...data, schema];
     }
-
     const body = {
       name: req.body.name,
       schema: req.body.schema,

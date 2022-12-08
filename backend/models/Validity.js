@@ -25,7 +25,11 @@ let schema = yup.object().shape({
   }),
 });
 
-schema.validate(Resource).catch(function (err) {
+return schema.isValid(Resource)
+.then((valid)=>{
+  return true;
+})
+.catch(function (err) {
     err.name; // => 'ValidationError'
     err.errors; // => ['Deve ser maior que 18']
 });
