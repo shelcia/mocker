@@ -380,6 +380,7 @@ const themesOptions = {
       MuiButton: {
         styleOverrides: {
           containedSecondary: {
+            color: "white",
             backgroundColor: secondary[900],
             "&:hover": {
               backgroundColor: secondary[500],

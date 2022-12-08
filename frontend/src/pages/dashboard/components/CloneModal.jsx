@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -10,19 +10,13 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import LinearProgress from "@mui/material/LinearProgress";
 import CustomModal from "../../../components/CustomModal";
+import { apiResource } from "../../../services/models/resourceModal";
+import { choices } from "./ResourceModal";
 import { useParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
-import { apiResource } from "../../../services/models/resourceModal";
 
-const ResourceModal = ({
-  open,
-  setOpen,
-  fetchResource,
-  loading,
-  setLoading,
-}) => {
+const CloneModal = ({ open, setOpen, result, fetchResources }) => {
   const { userId, projectId } = useParams();
 
   const [inputs, setInputs] = useState({
@@ -46,7 +40,6 @@ const ResourceModal = ({
       return obj;
     });
     setSchema(newArr);
-    // setSchema([ ...schema, [e.target.name]: e.target.value ]);
   };
 
   const addSchema = () => {
@@ -57,10 +50,29 @@ const ResourceModal = ({
     setSchema(schema.filter((item) => item.id !== id));
   };
 
-  const createProject = () => {
-    setLoading(true);
-    toast("Adding");
+  const fetchResource = (signal) => {
+    apiResource.getSingle(result, signal).then((res) => {
+      // console.log(res.data);
+      if (res.status === "200") {
+        setInputs({
+          name: res.message?.name,
+          number: res.message?.number,
+          userId: userId,
+          projectId: projectId,
+          id: res.message._id,
+        });
+        setSchema(res.message?.schema);
+      }
+    });
+  };
 
+  useEffect(() => {
+    const ac = new AbortController();
+    fetchResource(ac.signal);
+    return () => ac.abort();
+  }, []);
+
+  const cloneResource = () => {
     const body = {
       name: inputs.name,
       number: parseInt(inputs.number),
@@ -69,31 +81,26 @@ const ResourceModal = ({
       schema: schema,
     };
 
-    apiResource.post(body).then((res) => {
-      // console.log(res);
-      if (res.status === "200") {
-        toast.success("Added Successfully");
-        fetchResource();
-        setSchema([]);
-        setInputs({
-          name: "",
-          number: 1,
-          userId: userId,
-          projectId: projectId,
-        });
-        setLoading(false);
-        setOpen(false);
-      } else {
-        setOpen(false);
-        toast.error("Error");
-      }
-    });
+    apiResource
+      .post(body)
+      .then((res) => {
+        console.log(res);
+        if (res.status === "200") {
+          toast.success("Cloned Successfully");
+          setOpen(false);
+          fetchResources();
+        } else {
+          setOpen(false);
+          toast.error("Error");
+        }
+      })
+      .catch((err) => console.log(err));
   };
 
   return (
     <CustomModal open={open} setOpen={setOpen} width={600}>
       <Typography variant="h5" component="h2" color="primary" sx={{ mb: 2 }}>
-        New Resource
+        Clone Resource
       </Typography>
       <TextField
         label="Resource name"
@@ -129,10 +136,10 @@ const ResourceModal = ({
             onChange={(e) => handleSchema(item.id, e.target.value, item.field)}
           />
           <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">Field</InputLabel>
+            <InputLabel id="field-select">Field</InputLabel>
             <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
+              labelId="field-select"
+              id="field-select"
               sx={{ mb: 2 }}
               size="small"
               label="Field"
@@ -165,8 +172,8 @@ const ResourceModal = ({
       </Button>
 
       <Stack direction="row" spacing={3} mt={2}>
-        <Button variant="contained" size="small" onClick={createProject}>
-          Create
+        <Button variant="contained" size="small" onClick={cloneResource}>
+          Clone
         </Button>
         <Button
           variant="contained"
@@ -177,54 +184,8 @@ const ResourceModal = ({
           Cancel
         </Button>
       </Stack>
-
-      {loading && (
-        <Stack direction="column" spacing={3} mt={4}>
-          <LinearProgress sx={{ mb: -2 }} />
-          <Typography variant="p" component="p" color="primary" align="center">
-            Generating Data...
-          </Typography>
-        </Stack>
-      )}
     </CustomModal>
   );
 };
 
-export default ResourceModal;
-
-export const choices = [
-  "firstName",
-  "lastName",
-  "sex",
-  "jobArea",
-  "jobTitle",
-  "avatar",
-  "fashion",
-  "product",
-  "productDescription",
-  "price",
-  "productAdjective",
-  "boolean",
-  "past",
-  "lines",
-  "domainName",
-  "imageUrl",
-  "sentences",
-  "chemicalElement",
-  "unit",
-  "hsl",
-  "humanColor",
-  "rgb",
-  "genre",
-  "songName",
-  "amount",
-  "bitcoinAddress",
-  "creditCardCVV",
-  "creditCardIssuer",
-  "creditCardNumber",
-  "currencyName",
-  "currencySymbol",
-  "ethereumAddress",
-  "transactionDescription",
-  "transactionType",
-];
+export default CloneModal;

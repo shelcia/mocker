@@ -88,31 +88,31 @@ const fakerFuncs = (item) => {
 };
 
 router.post("/", async (req, res) => {
+  let resource = [];
+
+  // console.log(req.body);
+
+  for (let i = 0; i < req.body.number; i++) {
+    let schema = { id: uuidv4() };
+    req.body.schema.forEach((item) => {
+      schema = { ...schema, [item.label]: fakerFuncs(item.field) };
+    });
+    resource = [...resource, schema];
+  }
+  // console.log(resource);
+
+  const body = {
+    name: req.body.name,
+    schema: req.body.schema,
+    data: resource,
+    number: req.body.number,
+    userId: req.body.userId,
+    projectId: req.body.projectId,
+  };
+
+  const newResource = new Resource(body);
+  await newResource.save();
   try {
-    let resource = [];
-
-    // console.log(req.body);
-
-    for (let i = 0; i < req.body.number; i++) {
-      let schema = { id: uuidv4() };
-      req.body.schema.forEach((item) => {
-        schema = { ...schema, [item.label]: fakerFuncs(item.field) };
-      });
-      resource = [...resource, schema];
-    }
-    // console.log(resource);
-
-    const body = {
-      name: req.body.name,
-      schema: req.body.schema,
-      data: resource,
-      number: req.body.number,
-      userId: req.body.userId,
-      projectId: req.body.projectId,
-    };
-
-    const newResource = new Resource(body);
-    await newResource.save();
     // res.status(200).send({ status: "200", message: body });
     res
       .status(200)
