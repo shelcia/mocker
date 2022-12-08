@@ -5,11 +5,18 @@ import { apiAuth } from "../../services/models/authModel";
 import { toast } from "react-hot-toast";
 import * as Yup from "yup";
 import { useFormik } from "formik";
-import { ColorRing } from 'react-loader-spinner'
+import { ColorRing } from "react-loader-spinner";
+import { InputAdornment, IconButton } from "@mui/material";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 const Login = () => {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
+
+  const [showPassword, setShowPassword] = useState(false);
+  const handleClickShowPassword = () => setShowPassword(!showPassword);
+  const handleMouseDownPassword = () => setShowPassword(!showPassword);
 
   const initialValues = {
     email: "",
@@ -54,65 +61,83 @@ const Login = () => {
       } else {
         toast.error("Error");
       }
-      setLoading(false)
+      setLoading(false);
     });
   };
 
   return (
     <React.Fragment>
-      <Typography variant="h4" component="h1" sx={ { mb: 2 } }>
+      <Typography variant="h4" component="h1" sx={{ mb: 2 }}>
         Login
       </Typography>
       <Box
         component="form"
         noValidate
-        onSubmit={ handleSubmit }
-        style={ {
+        onSubmit={handleSubmit}
+        style={{
           width: "100%",
-        } }
+        }}
       >
         <TextField
           label="email"
           size="small"
           type="email"
-          sx={ { mb: 2 } }
+          sx={{ mb: 2 }}
           fullWidth
           name="email"
-          onBlur={ handleBlur }
-          onChange={ handleChange }
-          value={ values.email || "" }
-          error={ Boolean(touched.email && errors.email) }
-          helperText={ touched.email && errors.email }
+          onBlur={handleBlur}
+          onChange={handleChange}
+          value={values.email || ""}
+          error={Boolean(touched.email && errors.email)}
+          helperText={touched.email && errors.email}
         />
         <TextField
           label="password"
           size="small"
-          type="password"
+          type={showPassword ? "text" : "password"}
           fullWidth
           name="password"
-          onBlur={ handleBlur }
-          onChange={ handleChange }
-          value={ values.password || "" }
-          error={ Boolean(touched.password && errors.password) }
-          helperText={ touched.password && errors.password }
+          onBlur={handleBlur}
+          onChange={handleChange}
+          value={values.password || ""}
+          error={Boolean(touched.password && errors.password)}
+          helperText={touched.password && errors.password}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={handleClickShowPassword}
+                  onMouseDown={handleMouseDownPassword}
+                >
+                  {showPassword ? <Visibility /> : <VisibilityOff />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
         />
         <Button
           variant="contained"
-          sx={ { display: "block", mt: 2, mx: "auto" } }
+          sx={{ display: "block", mt: 2, mx: "auto" }}
           type="submit"
-          disabled={ loading }
-        >{ loading ? <ColorRing
-          visible={ true }
-          height="30"
-          width="30"
-          wrapperStyle={ {} }
-          wrapperClass="blocks-wrapper"
-          colors={ [''] }
-        /> : "Login" }
+          disabled={loading}
+        >
+          {loading ? (
+            <ColorRing
+              visible={true}
+              height="30"
+              width="30"
+              wrapperStyle={{}}
+              wrapperClass="blocks-wrapper"
+              colors={[""]}
+            />
+          ) : (
+            "Login"
+          )}
         </Button>
-        <Typography variant="h6" component="p" sx={ { my: 2 } }>
-          Don't have an account ? Then{ "  " }
-          <Link to="/signup" style={ { color: "deepskyblue" } }>
+        <Typography variant="h6" component="p" sx={{ my: 2 }}>
+          Don't have an account ? Then{"  "}
+          <Link to="/signup" style={{ color: "deepskyblue" }}>
             Signup
           </Link>
         </Typography>
