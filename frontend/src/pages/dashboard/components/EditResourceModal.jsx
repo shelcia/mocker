@@ -9,15 +9,36 @@ import {
   Stack,
   TextField,
   Typography,
+  ListSubheader
 } from "@mui/material";
 import CustomModal from "../../../components/CustomModal";
 import { apiResource } from "../../../services/models/resourceModal";
 import { choices } from "./ResourceModal";
 import { useParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 const EditResourceModal = ({ open, setOpen, result, fetchResult }) => {
   const { userId, projectId } = useParams();
+
+  const [darkTheme, setDarkTheme] = useState(false);
+
+  useEffect(() => {
+    const darkThemeLocal = localStorage.getItem("mockapi-theme");
+    if (darkThemeLocal === "true") {
+      setDarkTheme(true);
+    }
+    else {
+      setDarkTheme(false)
+    }
+
+  }, [localStorage.getItem("mockapi-theme")])
+
+  const theme = createTheme({
+    palette: {
+      mode: darkTheme === true ? 'dark' : 'light',
+    },
+  });
 
   const [inputs, setInputs] = useState({
     name: "",
@@ -125,42 +146,49 @@ const EditResourceModal = ({ open, setOpen, result, fetchResult }) => {
 
       {schema?.map((item, idx) => (
         <Stack direction="row" spacing={1} key={item.id}>
-          <TextField
-            sx={{ mb: 2 }}
-            size="small"
-            value={item.label}
-            label="Label"
-            onChange={(e) => handleSchema(item.id, e.target.value, item.field)}
-          />
-          <FormControl fullWidth>
-            <InputLabel id="field-select">Field</InputLabel>
-            <Select
-              labelId="field-select"
-              id="field-select"
+          <ThemeProvider theme={theme}>
+            <TextField
               sx={{ mb: 2 }}
               size="small"
-              label="Field"
-              value={item.field}
-              onChange={(e) =>
-                handleSchema(item.id, item.label, e.target.value)
-              }
-            >
-              {choices?.map((choice) => (
-                <MenuItem value={choice} key={choice}>
-                  {choice}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <Box>
-            <Button
-              variant="contained"
-              color="error"
-              onClick={() => deleteSchema(item.id)}
-            >
-              Delete
-            </Button>
-          </Box>
+              value={item.label}
+              label="Label"
+              onChange={(e) => handleSchema(item.id, e.target.value, item.field)}
+            />
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Field</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                sx={{ mb: 2 }}
+                size="small"
+                label="Field"
+                value={item.field}
+                onChange={(e) =>
+                  handleSchema(item.id, item.label, e.target.value)
+                }
+              >
+                {choices?.map((group) => (
+                  [
+                    <ListSubheader>{group.category}</ListSubheader>,
+                    group.list?.map((choice) => (
+                      <MenuItem value={choice} key={choice}>
+                        {choice}
+                      </MenuItem>
+                    ))
+                  ]
+                ))}
+              </Select>
+            </FormControl>
+            <Box>
+              <Button
+                variant="contained"
+                color="error"
+                onClick={() => deleteSchema(item.id)}
+              >
+                Delete
+              </Button>
+            </Box>
+          </ThemeProvider>
         </Stack>
       ))}
 

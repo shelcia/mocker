@@ -9,15 +9,36 @@ import {
   Stack,
   TextField,
   Typography,
+  ListSubheader
 } from "@mui/material";
 import CustomModal from "../../../components/CustomModal";
 import { apiResource } from "../../../services/models/resourceModal";
 import { choices } from "./ResourceModal";
 import { useParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 const CloneModal = ({ open, setOpen, result, fetchResources }) => {
   const { userId, projectId } = useParams();
+
+  const [darkTheme, setDarkTheme] = useState(false);
+
+  useEffect(() => {
+    const darkThemeLocal = localStorage.getItem("mockapi-theme");
+    if (darkThemeLocal === "true") {
+      setDarkTheme(true);
+    }
+    else {
+      setDarkTheme(false)
+    }
+
+  }, [localStorage.getItem("mockapi-theme")])
+
+  const theme = createTheme({
+    palette: {
+      mode: darkTheme === true ? 'dark' : 'light',
+    },
+  });
 
   const [inputs, setInputs] = useState({
     name: "",
@@ -128,6 +149,7 @@ const CloneModal = ({ open, setOpen, result, fetchResources }) => {
 
       {schema?.map((item, idx) => (
         <Stack direction="row" spacing={1} key={item.id}>
+          <ThemeProvider theme={theme}>
           <TextField
             sx={{ mb: 2 }}
             size="small"
@@ -148,11 +170,16 @@ const CloneModal = ({ open, setOpen, result, fetchResources }) => {
                 handleSchema(item.id, item.label, e.target.value)
               }
             >
-              {choices?.map((choice) => (
-                <MenuItem value={choice} key={choice}>
-                  {choice}
-                </MenuItem>
-              ))}
+              {choices?.map((group) => (
+                  [
+                    <ListSubheader>{group.category}</ListSubheader>,
+                    group.list?.map((choice) => (
+                      <MenuItem value={choice} key={choice}>
+                        {choice}
+                      </MenuItem>
+                    ))
+                  ]
+                ))}
             </Select>
           </FormControl>
           <Box>
@@ -164,6 +191,7 @@ const CloneModal = ({ open, setOpen, result, fetchResources }) => {
               Delete
             </Button>
           </Box>
+          </ThemeProvider>
         </Stack>
       ))}
 
