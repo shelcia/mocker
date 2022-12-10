@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -9,8 +9,10 @@ import {
   Stack,
   TextField,
   Typography,
+  ListSubheader
 } from "@mui/material";
-import LinearProgress from "@mui/material/LinearProgress";
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import LinearProgress from '@mui/material/LinearProgress';
 import CustomModal from "../../../components/CustomModal";
 import { useParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
@@ -90,6 +92,25 @@ const ResourceModal = ({
     });
   };
 
+  const [darkTheme, setDarkTheme] = useState(false);
+
+  useEffect(() => {
+    const darkThemeLocal = localStorage.getItem("mockapi-theme");
+    if (darkThemeLocal === "true") {
+      setDarkTheme(true);
+    }
+    else {
+      setDarkTheme(false)
+    }
+
+  }, [localStorage.getItem("mockapi-theme")])
+
+  const theme = createTheme({
+    palette: {
+      mode: darkTheme === true ? 'dark' : 'light',
+    },
+  });
+
   return (
     <CustomModal open={open} setOpen={setOpen} width={600}>
       <Typography variant="h5" component="h2" color="primary" sx={{ mb: 2 }}>
@@ -121,42 +142,49 @@ const ResourceModal = ({
 
       {schema?.map((item, idx) => (
         <Stack direction="row" spacing={1} key={item.id}>
-          <TextField
-            sx={{ mb: 2 }}
-            size="small"
-            value={item.label}
-            label="Label"
-            onChange={(e) => handleSchema(item.id, e.target.value, item.field)}
-          />
-          <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">Field</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
+          <ThemeProvider theme={theme}>
+            <TextField
               sx={{ mb: 2 }}
               size="small"
-              label="Field"
-              value={item.field}
-              onChange={(e) =>
-                handleSchema(item.id, item.label, e.target.value)
-              }
-            >
-              {choices?.map((choice) => (
-                <MenuItem value={choice} key={choice}>
-                  {choice}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <Box>
-            <Button
-              variant="contained"
-              color="error"
-              onClick={() => deleteSchema(item.id)}
-            >
-              Delete
-            </Button>
-          </Box>
+              value={item.label}
+              label="Label"
+              onChange={(e) => handleSchema(item.id, e.target.value, item.field)}
+            />
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Field</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                sx={{ mb: 2 }}
+                size="small"
+                label="Fsield"
+                value={item.field}
+                onChange={(e) =>
+                  handleSchema(item.id, item.label, e.target.value)
+                }
+              >
+                {choices?.map((group) => (
+                  [
+                    <ListSubheader>{group.category}</ListSubheader>,
+                    group.list?.map((choice) => (
+                      <MenuItem value={choice} key={choice}>
+                        {choice}
+                      </MenuItem>
+                    ))
+                  ]
+                ))}
+              </Select>
+            </FormControl>
+            <Box>
+              <Button
+                variant="contained"
+                color="error"
+                onClick={() => deleteSchema(item.id)}
+              >
+                Delete
+              </Button>
+            </Box>
+          </ThemeProvider>
         </Stack>
       ))}
 
@@ -193,38 +221,93 @@ const ResourceModal = ({
 export default ResourceModal;
 
 export const choices = [
-  "firstName",
-  "lastName",
-  "sex",
-  "jobArea",
-  "jobTitle",
-  "avatar",
-  "fashion",
-  "product",
-  "productDescription",
-  "price",
-  "productAdjective",
-  "boolean",
-  "past",
-  "lines",
-  "domainName",
-  "imageUrl",
-  "sentences",
-  "chemicalElement",
-  "unit",
-  "hsl",
-  "humanColor",
-  "rgb",
-  "genre",
-  "songName",
-  "amount",
-  "bitcoinAddress",
-  "creditCardCVV",
-  "creditCardIssuer",
-  "creditCardNumber",
-  "currencyName",
-  "currencySymbol",
-  "ethereumAddress",
-  "transactionDescription",
-  "transactionType",
+  {
+    category: "Name",
+    list: [
+      "firstName",
+      "lastName",
+      "sex",
+      "jobArea",
+      "jobTitle"
+    ]
+  },
+  {
+    category: "Image",
+    list: [
+      "avatar",
+      "fashion",
+      "imageUrl"
+    ]
+  },
+  {
+    category: "Datatype",
+    list: [
+      "boolean"
+    ]
+  },
+  {
+    category: "Commerce",
+    list: [
+      "product",
+      "productDescription",
+      "price",
+      "productAdjective"
+    ]
+  },
+  {
+    category: "Date",
+    list: [
+      "past"
+    ]
+  },
+  {
+    category: "Lorem",
+    list: [
+      "lines",
+      "sentences",
+    ]
+  },
+  {
+    category: "Internet",
+    list: [
+      "domainName",
+    ]
+  },
+  {
+    category: "Science",
+    list: [
+      "chemicalElement",
+      "unit",
+    ]
+  },
+  {
+    category: "Color",
+    list: [
+      "hsl",
+      "humanColor",
+      "rgb",
+    ]
+  },
+  {
+    category: "Music",
+    list: [
+      "genre",
+      "songName",
+    ]
+  },
+  {
+    category: "Finance",
+    list: [
+      "amount",
+      "bitcoinAddress",
+      "creditCardCVV",
+      "creditCardIssuer",
+      "creditCardNumber",
+      "currencyName",
+      "currencySymbol",
+      "ethereumAddress",
+      "transactionDescription",
+      "transactionType"
+    ]
+  }
 ];
