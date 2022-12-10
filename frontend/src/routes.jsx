@@ -15,6 +15,7 @@ const Loadable = (Component) => (props) =>
 
 const LoginPage = Loadable(lazy(() => import("./pages/auth/Login")));
 const SignupPage = Loadable(lazy(() => import("./pages/auth/Signup")));
+const Custom404 = Loadable(lazy(() => import("./components/Custom404")));
 
 const ProjectsPage = Loadable(
   lazy(() => import("./pages/dashboard/Dashboard"))
@@ -39,6 +40,10 @@ const routes = [
       {
         path: "/signup",
         element: <SignupPage />,
+      },
+      {
+        path: "/404",
+        element: <Custom404 />,
       },
     ],
   },
