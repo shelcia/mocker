@@ -3,3 +3,19 @@ code,
 pre {
   font-family: "JetBrains Mono", monospace;
 }
+
+.lang-dark span.__json-key__ {
+  color: #ff6b93;
+}
+
+.lang-dark span.__json-string__ {
+  color: #7ad2fa;
+}
+
+.lang-light span.__json-key__ {
+  color: #fd396d;
+}
+
+.lang-light span.__json-string__ {
+  color: rgb(9, 33, 53);
+}
