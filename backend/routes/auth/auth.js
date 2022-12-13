@@ -80,7 +80,11 @@ router.post("/signin", async (req, res) => {
       return;
     } else {
       //CREATE TOKEN
-      const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET);
+      const token = jwt.sign({
+        _id: user._id,
+        email:user.email
+      }, process.env.TOKEN_SECRET);
+
       res
         .status(200)
         .header("auth-token", token)
@@ -97,5 +101,35 @@ router.post("/signin", async (req, res) => {
     res.status(200).send({ status: "500", error });
   }
 });
+
+router.get('/auth_token/:token/', async(req,res)=>{
+  var payload = await new Promise(async(resolve, reject)=>{
+    try {
+        let _payload = jwt.verify(req.params.token,
+                  process.env.TOKEN_SECRET)
+        resolve(_payload)
+        
+    } catch (error) {
+        console.log(error)
+        return res.send({
+          status: "400",
+          message: 'Something wrong' })
+    }
+  })
+  
+  const user = await User.findById(payload._id)
+
+  if (!user) {
+    return res.status(200).send({
+      status: "400",
+      message: 'Email doesn"t exist' });
+  }
+  user.emailVerified = true
+  user.save()
+  return res.send({
+    status: "200",
+    message: 'Verified' })
+
+})
 
 module.exports = router;
