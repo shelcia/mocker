@@ -140,10 +140,10 @@ const EditResourceModal = ({ open, setOpen, result, fetchResult }) => {
             onChange={(e) => handleSchema(item.id, e.target.value, item.field)}
           />
           <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">Field</InputLabel>
+            <InputLabel id="resource-label-edit">Field</InputLabel>
             <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
+              labelId="resource-label-edit"
+              id="resource-id-edit"
               sx={{ mb: 2 }}
               size="small"
               label="Field"

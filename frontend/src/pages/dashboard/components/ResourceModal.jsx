@@ -153,13 +153,13 @@ const ResourceModal = ({
             onChange={(e) => handleSchema(item.id, e.target.value, item.field)}
           />
           <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">Field</InputLabel>
+            <InputLabel id="resource-label">Field</InputLabel>
             <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
+              labelId="resource-label"
+              id="resource-id"
               sx={{ mb: 2 }}
               size="small"
-              label="Fsield"
+              label="Field"
               value={item.field}
               onChange={(e) =>
                 handleSchema(item.id, item.label, e.target.value)
