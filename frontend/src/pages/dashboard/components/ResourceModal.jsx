@@ -9,14 +9,17 @@ import {
   Stack,
   TextField,
   Typography,
-  ListSubheader
+  ListSubheader,
 } from "@mui/material";
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import LinearProgress from '@mui/material/LinearProgress';
+import LinearProgress from "@mui/material/LinearProgress";
 import CustomModal from "../../../components/CustomModal";
 import { useParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { apiResource } from "../../../services/models/resourceModal";
+import { useContext } from "react";
+import { ThemeContext } from "../../../context/ThemeContext";
+import { blueGrey } from "@mui/material/colors";
+import { secondary } from "../../../themes/themeColors";
 
 const ResourceModal = ({
   open,
@@ -92,24 +95,24 @@ const ResourceModal = ({
     });
   };
 
-  const [darkTheme, setDarkTheme] = useState(false);
+  const [darkTheme] = useContext(ThemeContext);
 
-  useEffect(() => {
-    const darkThemeLocal = localStorage.getItem("mockapi-theme");
-    if (darkThemeLocal === "true") {
-      setDarkTheme(true);
-    }
-    else {
-      setDarkTheme(false)
-    }
+  // useEffect(() => {
+  //   const darkThemeLocal = localStorage.getItem("mockapi-theme");
+  //   if (darkThemeLocal === "true") {
+  //     setDarkTheme(true);
+  //   }
+  //   else {
+  //     setDarkTheme(false)
+  //   }
 
-  }, [localStorage.getItem("mockapi-theme")])
+  // }, [localStorage.getItem("mockapi-theme")])
 
-  const theme = createTheme({
-    palette: {
-      mode: darkTheme === true ? 'dark' : 'light',
-    },
-  });
+  // const theme = createTheme({
+  //   palette: {
+  //     mode: darkTheme === true ? 'dark' : 'light',
+  //   },
+  // });
 
   return (
     <CustomModal open={open} setOpen={setOpen} width={600}>
@@ -142,49 +145,53 @@ const ResourceModal = ({
 
       {schema?.map((item, idx) => (
         <Stack direction="row" spacing={1} key={item.id}>
-          <ThemeProvider theme={theme}>
-            <TextField
+          <TextField
+            sx={{ mb: 2 }}
+            size="small"
+            value={item.label}
+            label="Label"
+            onChange={(e) => handleSchema(item.id, e.target.value, item.field)}
+          />
+          <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">Field</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
               sx={{ mb: 2 }}
               size="small"
-              value={item.label}
-              label="Label"
-              onChange={(e) => handleSchema(item.id, e.target.value, item.field)}
-            />
-            <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">Field</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                sx={{ mb: 2 }}
-                size="small"
-                label="Fsield"
-                value={item.field}
-                onChange={(e) =>
-                  handleSchema(item.id, item.label, e.target.value)
-                }
-              >
-                {choices?.map((group) => (
-                  [
-                    <ListSubheader>{group.category}</ListSubheader>,
-                    group.list?.map((choice) => (
-                      <MenuItem value={choice} key={choice}>
-                        {choice}
-                      </MenuItem>
-                    ))
-                  ]
-                ))}
-              </Select>
-            </FormControl>
-            <Box>
-              <Button
-                variant="contained"
-                color="error"
-                onClick={() => deleteSchema(item.id)}
-              >
-                Delete
-              </Button>
-            </Box>
-          </ThemeProvider>
+              label="Fsield"
+              value={item.field}
+              onChange={(e) =>
+                handleSchema(item.id, item.label, e.target.value)
+              }
+            >
+              {choices?.map((group) => [
+                <ListSubheader
+                  sx={{
+                    color: darkTheme ? "#fff" : "#1d2438",
+                    fontWeight: 600,
+                    backgroundColor: darkTheme ? secondary[900] : blueGrey[50],
+                  }}
+                >
+                  {group.category}
+                </ListSubheader>,
+                group.list?.map((choice) => (
+                  <MenuItem value={choice} key={choice}>
+                    {choice}
+                  </MenuItem>
+                )),
+              ])}
+            </Select>
+          </FormControl>
+          <Box>
+            <Button
+              variant="contained"
+              color="error"
+              onClick={() => deleteSchema(item.id)}
+            >
+              Delete
+            </Button>
+          </Box>
         </Stack>
       ))}
 
@@ -223,77 +230,43 @@ export default ResourceModal;
 export const choices = [
   {
     category: "Name",
-    list: [
-      "firstName",
-      "lastName",
-      "sex",
-      "jobArea",
-      "jobTitle"
-    ]
+    list: ["firstName", "lastName", "sex", "jobArea", "jobTitle"],
   },
   {
     category: "Image",
-    list: [
-      "avatar",
-      "fashion",
-      "imageUrl"
-    ]
+    list: ["avatar", "fashion", "imageUrl"],
   },
   {
     category: "Datatype",
-    list: [
-      "boolean"
-    ]
+    list: ["boolean"],
   },
   {
     category: "Commerce",
-    list: [
-      "product",
-      "productDescription",
-      "price",
-      "productAdjective"
-    ]
+    list: ["product", "productDescription", "price", "productAdjective"],
   },
   {
     category: "Date",
-    list: [
-      "past"
-    ]
+    list: ["past"],
   },
   {
     category: "Lorem",
-    list: [
-      "lines",
-      "sentences",
-    ]
+    list: ["lines", "sentences"],
   },
   {
     category: "Internet",
-    list: [
-      "domainName",
-    ]
+    list: ["domainName"],
   },
   {
     category: "Science",
-    list: [
-      "chemicalElement",
-      "unit",
-    ]
+    list: ["chemicalElement", "unit"],
   },
   {
     category: "Color",
-    list: [
-      "hsl",
-      "humanColor",
-      "rgb",
-    ]
+    list: ["hsl", "humanColor", "rgb"],
   },
   {
     category: "Music",
-    list: [
-      "genre",
-      "songName",
-    ]
+    list: ["genre", "songName"],
   },
   {
     category: "Finance",
@@ -307,7 +280,7 @@ export const choices = [
       "currencySymbol",
       "ethereumAddress",
       "transactionDescription",
-      "transactionType"
-    ]
-  }
+      "transactionType",
+    ],
+  },
 ];
