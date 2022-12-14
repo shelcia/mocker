@@ -7,10 +7,12 @@ const jwt = require('jsonwebtoken')
  * sensitive activity
  */
 const userAuth = async(req,res,next)=>{
-    const token = req.body.token
+    const token = req.headers['auth-token']
 
     if(!token){
-        return res.status(401).send({ status: "401", message: 'Token is needed' })
+        return res.status(401).send({
+            status: "401",
+            message: 'Token is needed' })
     }
     var payload = await new Promise(async(resolve, reject)=>{
         try {
@@ -20,7 +22,9 @@ const userAuth = async(req,res,next)=>{
 
         } catch (error) {
             console.log(error)
-            return res.send({ status: "400", message: 'Something wrong' })
+            return res.send({
+                status: "400",
+                message: 'Something wrong' })
         }
     })
 

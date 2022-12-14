@@ -51,6 +51,8 @@ const Login = () => {
 
     apiAuth.post(body, "signin").then((res) => {
       if (res.status === "200") {
+        localStorage.setItem('MockAPI-Token',
+          res.message.token)
         navigate(`/${res.message.userId}`);
         toast.success("Login successful");
       } else if (res.status === "400") {

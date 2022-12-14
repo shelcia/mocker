@@ -2,10 +2,11 @@ const nodemailer = require('nodemailer')
 const jwt = require('jsonwebtoken')
 const router = require('express').Router()
 const crypto = require('crypto')
+const User = require('../../models/User')
 
 router.post('/verify_email', async(req, res)=>{
-    const authRouterUrl = req.protocol+'://'+req.hostname+'/api/auth'
     const {email} = req.body.user
+    const {fEndUrl} = req.body
 
     //GENERATE TOKEN
     const token = await new Promise(async(resolve, reject)=>{
@@ -47,7 +48,7 @@ router.post('/verify_email', async(req, res)=>{
         to: email,
         subject: 'EMAIL VERIFICATION',
         text: `click on the link to verify:
-          ${authRouterUrl}/auth_token/${token}`
+        ${req.body.fEndUrl}/emailverify/?auth=${token}&ref=${req.body.currentHref}`
     };
     
     transporter.sendMail(mailOptions, (error, info) => {
@@ -59,8 +60,33 @@ router.post('/verify_email', async(req, res)=>{
             message: `Verification link sent to ${email}. \nCheck your inbox`
         })
     });
+
+})
+
+router.post('/am_i_email_verified', async(req,res)=>{
+    let user;
+    try {
+        user = await User.findById(req.body.user._id)
+        
+    } catch (error) {
+        console.log(error)
+        return res.send({
+            status: "400",
+            message: 'Something wrong'
+        })
+    }
+    if(!user){
+        return res.status(200).send({
+            status: "400",
+            message: 'User_id doesn"t exist'
+        });
+    }
     
-    
+    return res.send({
+        status: "200",
+        message: user.emailVerified?'true':'false'
+    })
+
 })
 
 module.exports = router
