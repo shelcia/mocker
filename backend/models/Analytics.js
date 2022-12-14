@@ -11,9 +11,9 @@ const analyticsSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  data: {
-    type: Array,
-    default: [],
+  method: {
+    type: String,
+    required: true,
   },
   date: {
     type: Date,
