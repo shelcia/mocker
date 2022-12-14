@@ -9,22 +9,36 @@ import {
   Stack,
   TextField,
   Typography,
-  ListSubheader,
+  ListSubheader
 } from "@mui/material";
 import CustomModal from "../../../components/CustomModal";
 import { apiResource } from "../../../services/models/resourceModal";
 import { choices } from "./ResourceModal";
 import { useParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
-import { useContext } from "react";
-import { ThemeContext } from "../../../context/ThemeContext";
-import { blueGrey } from "@mui/material/colors";
-import { secondary } from "../../../themes/themeColors";
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 
-const EditResourceModal = ({ open, setOpen, result, fetchResult }) => {
+const CloneModal = ({ open, setOpen, result, fetchResources }) => {
   const { userId, projectId } = useParams();
 
-  const [darkTheme] = useContext(ThemeContext);
+  const [darkTheme, setDarkTheme] = useState(false);
+
+  useEffect(() => {
+    const darkThemeLocal = localStorage.getItem("mockapi-theme");
+    if (darkThemeLocal === "true") {
+      setDarkTheme(true);
+    }
+    else {
+      setDarkTheme(false)
+    }
+
+  }, [localStorage.getItem("mockapi-theme")])
+
+  const theme = createTheme({
+    palette: {
+      mode: darkTheme === true ? 'dark' : 'light',
+    },
+  });
 
   const [inputs, setInputs] = useState({
     name: "",
@@ -79,7 +93,7 @@ const EditResourceModal = ({ open, setOpen, result, fetchResult }) => {
     return () => ac.abort();
   }, []);
 
-  const updateResource = () => {
+  const cloneResource = () => {
     const body = {
       name: inputs.name,
       number: parseInt(inputs.number),
@@ -88,23 +102,26 @@ const EditResourceModal = ({ open, setOpen, result, fetchResult }) => {
       schema: schema,
     };
 
-    apiResource.putById(result, body).then((res) => {
-      if (res.status === "200") {
-        toast.success("Edited Successfully");
-        setOpen(false);
-        // fetchResource();
-        fetchResult();
-      } else {
-        toast.error("Error");
-        setOpen(false);
-      }
-    });
+    apiResource
+      .post(body)
+      .then((res) => {
+        console.log(res);
+        if (res.status === "200") {
+          toast.success("Cloned Successfully");
+          setOpen(false);
+          fetchResources();
+        } else {
+          setOpen(false);
+          toast.error("Error");
+        }
+      })
+      .catch((err) => console.log(err));
   };
 
   return (
     <CustomModal open={open} setOpen={setOpen} width={600}>
       <Typography variant="h5" component="h2" color="primary" sx={{ mb: 2 }}>
-        Update Resource
+        Clone Resource
       </Typography>
       <TextField
         label="Resource name"
@@ -132,6 +149,7 @@ const EditResourceModal = ({ open, setOpen, result, fetchResult }) => {
 
       {schema?.map((item, idx) => (
         <Stack direction="row" spacing={1} key={item.id}>
+          <ThemeProvider theme={theme}>
           <TextField
             sx={{ mb: 2 }}
             size="small"
@@ -140,10 +158,10 @@ const EditResourceModal = ({ open, setOpen, result, fetchResult }) => {
             onChange={(e) => handleSchema(item.id, e.target.value, item.field)}
           />
           <FormControl fullWidth>
-            <InputLabel id="resource-label-edit">Field</InputLabel>
+            <InputLabel id="field-select">Field</InputLabel>
             <Select
-              labelId="resource-label-edit"
-              id="resource-id-edit"
+              labelId="field-select"
+              id="field-select"
               sx={{ mb: 2 }}
               size="small"
               label="Field"
@@ -152,22 +170,16 @@ const EditResourceModal = ({ open, setOpen, result, fetchResult }) => {
                 handleSchema(item.id, item.label, e.target.value)
               }
             >
-              {choices?.map((group) => [
-                <ListSubheader
-                  sx={{
-                    color: darkTheme ? "#fff" : "#1d2438",
-                    fontWeight: 600,
-                    backgroundColor: darkTheme ? secondary[900] : blueGrey[50],
-                  }}
-                >
-                  {group.category}
-                </ListSubheader>,
-                group.list?.map((choice) => (
-                  <MenuItem value={choice} key={choice}>
-                    {choice}
-                  </MenuItem>
-                )),
-              ])}
+              {choices?.map((group) => (
+                  [
+                    <ListSubheader>{group.category}</ListSubheader>,
+                    group.list?.map((choice) => (
+                      <MenuItem value={choice} key={choice}>
+                        {choice}
+                      </MenuItem>
+                    ))
+                  ]
+                ))}
             </Select>
           </FormControl>
           <Box>
@@ -179,6 +191,7 @@ const EditResourceModal = ({ open, setOpen, result, fetchResult }) => {
               Delete
             </Button>
           </Box>
+          </ThemeProvider>
         </Stack>
       ))}
 
@@ -187,8 +200,8 @@ const EditResourceModal = ({ open, setOpen, result, fetchResult }) => {
       </Button>
 
       <Stack direction="row" spacing={3} mt={2}>
-        <Button variant="contained" size="small" onClick={updateResource}>
-          Update
+        <Button variant="contained" size="small" onClick={cloneResource}>
+          Clone
         </Button>
         <Button
           variant="contained"
@@ -203,4 +216,4 @@ const EditResourceModal = ({ open, setOpen, result, fetchResult }) => {
   );
 };
 
-export default EditResourceModal;
+export default CloneModal;

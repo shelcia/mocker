@@ -1,16 +1,15 @@
-import React,{useState} from "react";
+import React, { useState } from "react";
 import { Box, Button, TextField, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { apiAuth } from "../../services/models/authModel";
 import { toast } from "react-hot-toast";
 import * as Yup from "yup";
 import { useFormik } from "formik";
-import { ColorRing } from 'react-loader-spinner'
+import { ColorRing } from "react-loader-spinner";
 
 const Signup = () => {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false)
-
+  const [loading, setLoading] = useState(false);
 
   const initialValues = {
     email: "",
@@ -44,8 +43,6 @@ const Signup = () => {
       password: password,
     };
 
-    // console.log({ body });
-
     apiAuth.post(body, "register").then((res) => {
       if (res.status === "200") {
         navigate(`/`);
@@ -55,8 +52,7 @@ const Signup = () => {
       } else {
         toast.error("Error");
       }
-      setLoading(false)
-
+      setLoading(false);
     });
   };
 
@@ -104,14 +100,11 @@ const Signup = () => {
           type="submit"
           disabled={loading}
         >
-        {loading ? <ColorRing
-          visible={ true }
-          height="30"
-          width="30"
-          wrapperStyle={ {} }
-          wrapperClass="blocks-wrapper"
-          colors={ [''] }
-        /> : 'Signup' }
+          {loading ? (
+            <ColorRing visible={true} height="30" width="30" colors={[""]} />
+          ) : (
+            "Signup"
+          )}
         </Button>
         <Typography variant="h6" component="p" sx={{ my: 2 }}>
           Have an account already ? Then{"  "}

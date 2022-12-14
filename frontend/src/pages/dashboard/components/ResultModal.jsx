@@ -7,26 +7,16 @@ import { ThemeContext } from "../../../context/ThemeContext";
 import { CopyButton } from "../../../components/CustomButtons";
 import { toast } from "react-hot-toast";
 import { secondary } from "../../../themes/themeColors";
+import { copyTextToClipboard } from "../../../utils/utils";
+import { PartLoader } from "../../../components/CustomLoading";
 
-const ResultModal = ({ open, setOpen, result }) => {
+const ResultModal = ({ open, setOpen, result, loading }) => {
   const [darkTheme] = useContext(ThemeContext);
-
   const [isCopied, setIsCopied] = useState(false);
 
-  async function copyTextToClipboard(text) {
-    if ("clipboard" in navigator) {
-      return await navigator.clipboard.writeText(text);
-    } else {
-      return document.execCommand("copy", true, text);
-    }
-  }
-
-  // onClick handler function for the copy button
   const handleCopyClick = () => {
-    // Asynchronously call copyTextToClipboard
     copyTextToClipboard(JSON.stringify(result))
       .then(() => {
-        // If successful, update the isCopied state value
         setIsCopied(true);
         toast.success("Copied !");
         setTimeout(() => {
@@ -58,7 +48,13 @@ const ResultModal = ({ open, setOpen, result }) => {
         >
           {isCopied ? "Done" : "Copy"}
         </CopyButton>
-        <JSONPretty id="json-pretty" data={result}></JSONPretty>
+        {loading ? (
+          <PartLoader />
+        ) : (
+          <Box className={darkTheme ? "lang-dark" : "lang-light"}>
+            <JSONPretty id="json-pretty" data={result}></JSONPretty>
+          </Box>
+        )}
       </Box>
     </CustomModal>
   );

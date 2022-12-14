@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -9,24 +9,110 @@ import {
   Stack,
   TextField,
   Typography,
+  ListSubheader,
 } from "@mui/material";
-import LinearProgress from '@mui/material/LinearProgress';
+import LinearProgress from "@mui/material/LinearProgress";
 import CustomModal from "../../../components/CustomModal";
+import { useParams } from "react-router-dom";
+import { toast } from "react-hot-toast";
+import { apiResource } from "../../../services/models/resourceModal";
+import { useContext } from "react";
+import { ThemeContext } from "../../../context/ThemeContext";
+import { blueGrey } from "@mui/material/colors";
+import { secondary } from "../../../themes/themeColors";
 
 const ResourceModal = ({
   open,
   setOpen,
-  inputs,
-  handleInputs,
-  schema,
-  handleSchema,
-  addSchema,
-  deleteSchema,
-  createProject,
-  loading
+  fetchResource,
+  loading,
+  setLoading,
 }) => {
+  const { userId, projectId } = useParams();
 
-  console.log(loading);
+  const [inputs, setInputs] = useState({
+    name: "",
+    number: 1,
+    userId: userId,
+    projectId: projectId,
+  });
+
+  const handleInputs = (e) => {
+    setInputs({ ...inputs, [e.target.name]: e.target.value });
+  };
+
+  const [schema, setSchema] = useState([]);
+
+  const handleSchema = (id, label, field) => {
+    const newArr = schema?.map((obj) => {
+      if (obj.id === id) {
+        return { ...obj, label: label, field: field };
+      }
+      return obj;
+    });
+    setSchema(newArr);
+    // setSchema([ ...schema, [e.target.name]: e.target.value ]);
+  };
+
+  const addSchema = () => {
+    setSchema([...schema, { id: Date.now(), label: "", field: "" }]);
+  };
+
+  const deleteSchema = (id) => {
+    setSchema(schema.filter((item) => item.id !== id));
+  };
+
+  const createProject = () => {
+    setLoading(true);
+    toast("Adding");
+
+    const body = {
+      name: inputs.name,
+      number: parseInt(inputs.number),
+      userId: userId,
+      projectId: projectId,
+      schema: schema,
+    };
+
+    apiResource.post(body).then((res) => {
+      // console.log(res);
+      if (res.status === "200") {
+        toast.success("Added Successfully");
+        fetchResource();
+        setSchema([]);
+        setInputs({
+          name: "",
+          number: 1,
+          userId: userId,
+          projectId: projectId,
+        });
+        setLoading(false);
+        setOpen(false);
+      } else {
+        setOpen(false);
+        toast.error("Error");
+      }
+    });
+  };
+
+  const [darkTheme] = useContext(ThemeContext);
+
+  // useEffect(() => {
+  //   const darkThemeLocal = localStorage.getItem("mockapi-theme");
+  //   if (darkThemeLocal === "true") {
+  //     setDarkTheme(true);
+  //   }
+  //   else {
+  //     setDarkTheme(false)
+  //   }
+
+  // }, [localStorage.getItem("mockapi-theme")])
+
+  // const theme = createTheme({
+  //   palette: {
+  //     mode: darkTheme === true ? 'dark' : 'light',
+  //   },
+  // });
 
   return (
     <CustomModal open={open} setOpen={setOpen} width={600}>
@@ -67,10 +153,10 @@ const ResourceModal = ({
             onChange={(e) => handleSchema(item.id, e.target.value, item.field)}
           />
           <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">Field</InputLabel>
+            <InputLabel id="resource-label">Field</InputLabel>
             <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
+              labelId="resource-label"
+              id="resource-id"
               sx={{ mb: 2 }}
               size="small"
               label="Field"
@@ -79,11 +165,22 @@ const ResourceModal = ({
                 handleSchema(item.id, item.label, e.target.value)
               }
             >
-              {choices?.map((choice) => (
-                <MenuItem value={choice} key={choice}>
-                  {choice}
-                </MenuItem>
-              ))}
+              {choices?.map((group) => [
+                <ListSubheader
+                  sx={{
+                    color: darkTheme ? "#fff" : "#1d2438",
+                    fontWeight: 600,
+                    backgroundColor: darkTheme ? secondary[900] : blueGrey[50],
+                  }}
+                >
+                  {group.category}
+                </ListSubheader>,
+                group.list?.map((choice) => (
+                  <MenuItem value={choice} key={choice}>
+                    {choice}
+                  </MenuItem>
+                )),
+              ])}
             </Select>
           </FormControl>
           <Box>
@@ -116,15 +213,14 @@ const ResourceModal = ({
         </Button>
       </Stack>
 
-      {loading &&
+      {loading && (
         <Stack direction="column" spacing={3} mt={4}>
           <LinearProgress sx={{ mb: -2 }} />
           <Typography variant="p" component="p" color="primary" align="center">
-            Creating JSON ...
+            Generating Data...
           </Typography>
         </Stack>
-      }
-
+      )}
     </CustomModal>
   );
 };
@@ -132,38 +228,59 @@ const ResourceModal = ({
 export default ResourceModal;
 
 export const choices = [
-  "firstName",
-  "lastName",
-  "sex",
-  "jobArea",
-  "jobTitle",
-  "avatar",
-  "fashion",
-  "product",
-  "productDescription",
-  "price",
-  "productAdjective",
-  "boolean",
-  "past",
-  "lines",
-  "domainName",
-  "imageUrl",
-  "sentences",
-  "chemicalElement",
-  "unit",
-  "hsl",
-  "humanColor",
-  "rgb",
-  "genre",
-  "songName",
-  "amount",
-  "bitcoinAddress",
-  "creditCardCVV",
-  "creditCardIssuer",
-  "creditCardNumber",
-  "currencyName",
-  "currencySymbol",
-  "ethereumAddress",
-  "transactionDescription",
-  "transactionType"
+  {
+    category: "Name",
+    list: ["firstName", "lastName", "sex", "jobArea", "jobTitle"],
+  },
+  {
+    category: "Image",
+    list: ["avatar", "fashion", "imageUrl"],
+  },
+  {
+    category: "Datatype",
+    list: ["boolean"],
+  },
+  {
+    category: "Commerce",
+    list: ["product", "productDescription", "price", "productAdjective"],
+  },
+  {
+    category: "Date",
+    list: ["past"],
+  },
+  {
+    category: "Lorem",
+    list: ["lines", "sentences"],
+  },
+  {
+    category: "Internet",
+    list: ["domainName"],
+  },
+  {
+    category: "Science",
+    list: ["chemicalElement", "unit"],
+  },
+  {
+    category: "Color",
+    list: ["hsl", "humanColor", "rgb"],
+  },
+  {
+    category: "Music",
+    list: ["genre", "songName"],
+  },
+  {
+    category: "Finance",
+    list: [
+      "amount",
+      "bitcoinAddress",
+      "creditCardCVV",
+      "creditCardIssuer",
+      "creditCardNumber",
+      "currencyName",
+      "currencySymbol",
+      "ethereumAddress",
+      "transactionDescription",
+      "transactionType",
+    ],
+  },
 ];

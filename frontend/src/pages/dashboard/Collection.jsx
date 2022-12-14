@@ -15,10 +15,12 @@ import {
 } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import { MdArrowBackIosNew } from "react-icons/md";
+import { VscGraph } from "react-icons/vsc";
 import { BACKEND_URL } from "../../services/api";
 import { toast } from "react-hot-toast";
 import { blue } from "@mui/material/colors";
 import { FiEye, FiEdit2, FiTrash } from "react-icons/fi";
+import { FaRegClone } from "react-icons/fa";
 import { apiResource } from "../../services/models/resourceModal";
 import { apiUser } from "../../services/models/userModal";
 import { apiProject } from "../../services/models/projectModel";
@@ -26,6 +28,9 @@ import ResourceModal from "./components/ResourceModal";
 import EndpointModal from "./components/EndpointModal";
 import EditResourceModal from "./components/EditResourceModal";
 import ResultModal from "./components/ResultModal";
+import ViewAnalytics from "./components/ViewAnalytics";
+import CloneModal from "./components/CloneModal";
+import { CustomTooltip } from "../../components/CustomTooltip";
 
 const Collection = () => {
   const [open, setOpen] = useState(false);
@@ -35,77 +40,10 @@ const Collection = () => {
   const [resources, setResources] = useState([]);
 
   const navigate = useNavigate();
-  const { userId, projectId } = useParams();
 
-  const [inputs, setInputs] = useState({
-    name: "",
-    number: 1,
-    userId: userId,
-    projectId: projectId,
-  });
-
-  const handleInputs = (e) => {
-    setInputs({ ...inputs, [e.target.name]: e.target.value });
-  };
-
-  const [schema, setSchema] = useState([]);
-
-  const handleSchema = (id, label, field) => {
-    const newArr = schema?.map((obj) => {
-      if (obj.id === id) {
-        return { ...obj, label: label, field: field };
-      }
-      return obj;
-    });
-    setSchema(newArr);
-    // setSchema([ ...schema, [e.target.name]: e.target.value ]);
-  };
-
-  const addSchema = () => {
-    setSchema([...schema, { id: Date.now(), label: "", field: "" }]);
-  };
-
-  const deleteSchema = (id) => {
-    setSchema(schema.filter((item) => item.id !== id));
-  };
-
-  const createProject = () => {
-    console.log("Hello");
-    setLoading(true);
-    toast("Adding");
-
-    const body = {
-      name: inputs.name,
-      number: parseInt(inputs.number),
-      userId: userId,
-      projectId: projectId,
-      schema: schema,
-    };
-
-    // console.log(body);
-    apiResource.post(body).then((res) => {
-      // console.log(res);
-      if (res.status === "200") {
-        toast.success("Added Successfully");
-        fetchResource();
-        setSchema([]);
-        setInputs({
-          name: "",
-          number: 1,
-          userId: userId,
-          projectId: projectId,
-        });
-        setLoading(false);
-        setOpen(false);
-      } else {
-        setOpen(false);
-        toast.error("Error");
-      }
-    });
-  };
+  const { projectId } = useParams();
 
   const fetchResource = (signal) => {
-    // console.log(`${BACKEND_URL}resource/project/${projectId}`);
     apiResource.getSingle(`project/${projectId}`).then((res) => {
       if (res.status === "200") {
         setResources(res.message);
@@ -126,6 +64,7 @@ const Collection = () => {
   }, []);
 
   const delResource = (id) => {
+    toast("Deleting ...");
     apiResource.remove(id).then((res) => {
       // console.log(res);
       if (res.status === "200") {
@@ -166,6 +105,7 @@ const Collection = () => {
             <Resource
               key={resource._id}
               resource={resource}
+              fetchResource={fetchResource}
               delResource={delResource}
             />
           ))}
@@ -174,13 +114,7 @@ const Collection = () => {
       <ResourceModal
         open={open}
         setOpen={setOpen}
-        inputs={inputs}
-        handleInputs={handleInputs}
-        schema={schema}
-        handleSchema={handleSchema}
-        addSchema={addSchema}
-        deleteSchema={deleteSchema}
-        createProject={createProject}
+        fetchResource={fetchResource}
         loading={loading}
         setLoading={setLoading}
       />
@@ -190,17 +124,25 @@ const Collection = () => {
 
 export default Collection;
 
-const Resource = ({ resource, delResource }) => {
+const Resource = ({ resource, fetchResource, delResource }) => {
+  const [loading, setloading] = useState(true);
+
   const [openModal, setOpenModal] = useState(false);
   const [endModal, setEndModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
+  const [analyticsModal, setAnalyticsModal] = useState(false);
+  const [cloneModal, setCloneModal] = useState(false);
 
   const [result, setResult] = useState({});
 
   const fetchResult = (signal) => {
+    setloading(true);
     apiUser.getSingle(resource._id, signal).then((res) => {
       if (res.status === "200") {
         setResult(res.message);
+        setloading(false);
+      } else {
+        setloading(false);
       }
     });
   };
@@ -232,26 +174,55 @@ const Resource = ({ resource, delResource }) => {
 
         <Box>
           <Stack spacing={2} direction="row" sx={{ mt: 1.8, ml: 6 }}>
-            <Button variant="contained" onClick={() => setOpenModal(true)}>
-              <FiEye />
-            </Button>
-            <Button variant="outlined" onClick={() => setEditModal(true)}>
-              <FiEdit2 />
-            </Button>
-            <Button
-              variant="contained"
-              color="error"
-              onClick={() => delResource(resource._id)}
+            <CustomTooltip title="View generated JSON data" arrow>
+              <Button variant="contained" onClick={() => setOpenModal(true)}>
+                <FiEye />
+              </Button>
+            </CustomTooltip>
+            <CustomTooltip title="Edit Resource" arrow>
+              <Button variant="outlined" onClick={() => setEditModal(true)}>
+                <FiEdit2 />
+              </Button>
+            </CustomTooltip>
+            {/* <Button
+              variant="outlined"
+              color="success"
+              onClick={() => setAnalyticsModal(true)}
             >
-              <FiTrash />
-            </Button>
-            <Button variant="contained" onClick={() => setEndModal(true)}>
-              View Endpoints
-            </Button>
+              <VscGraph />
+            </Button> */}
+            <CustomTooltip title="Clone Resource" arrow>
+              <Button
+                variant="outlined"
+                color="info"
+                onClick={() => setCloneModal(true)}
+              >
+                <FaRegClone />
+              </Button>
+            </CustomTooltip>
+            <CustomTooltip title="Delete Resource" arrow>
+              <Button
+                variant="contained"
+                color="error"
+                onClick={() => delResource(resource._id)}
+              >
+                <FiTrash />
+              </Button>
+            </CustomTooltip>
+            <CustomTooltip title="View generated API endpoints" arrow>
+              <Button variant="contained" onClick={() => setEndModal(true)}>
+                View Endpoints
+              </Button>
+            </CustomTooltip>
           </Stack>
         </Box>
       </ListItem>
-      <ResultModal open={openModal} setOpen={setOpenModal} result={result} />
+      <ResultModal
+        open={openModal}
+        setOpen={setOpenModal}
+        result={result}
+        loading={loading}
+      />
       <EndpointModal
         open={endModal}
         setOpen={setEndModal}
@@ -262,6 +233,18 @@ const Resource = ({ resource, delResource }) => {
         setOpen={setEditModal}
         result={resource._id}
         fetchResult={fetchResult}
+      />
+      <ViewAnalytics
+        open={analyticsModal}
+        setOpen={setAnalyticsModal}
+        result={resource._id}
+        fetchResult={fetchResult}
+      />
+      <CloneModal
+        open={cloneModal}
+        setOpen={setCloneModal}
+        result={resource._id}
+        fetchResources={fetchResource}
       />
     </React.Fragment>
   );
