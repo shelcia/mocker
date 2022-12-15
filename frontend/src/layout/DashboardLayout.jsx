@@ -169,12 +169,15 @@ const verifyEmail = () => {
       )
       .then((result)=>{
         console.log(result)
-        res()
+        if(result.status==='200'){
+          res()
+        }
+        rej()
       })
 
   }), {
     loading: 'Sending...',
-    success: 'Done',
+    success: 'Verification link sent',
     error: 'Error'
   })
 }
