@@ -11,7 +11,7 @@ import { BACKEND_URL } from "../api";
 
 const BASE_URL = BACKEND_URL;
 
-const token = localStorage.getItem("MockAPI-Token");
+let token = localStorage.getItem("MockAPI-Token");
 
 /** @param {string} resource */
 const getAll = async (resource, signal, isAuthorized = false) => {
@@ -317,6 +317,19 @@ const remove = async (
   }
 };
 
+/**
+ * @description Since token is initialised on login
+ * API call or before if any. But token value get updated
+ * in local storage after token is fetch from server. So to
+ * make token value update, this method is necessary. So that
+ * future API call that needs authorization can have the updated
+ * token
+ * 
+ */
+const updateToken = ()=>{
+  token = localStorage.getItem("MockAPI-Token");
+}
+
 export const apiProvider = {
   getAll,
   getSingle,
@@ -329,4 +342,5 @@ export const apiProvider = {
   patch,
   patchByParams,
   remove,
+  updateToken,
 };

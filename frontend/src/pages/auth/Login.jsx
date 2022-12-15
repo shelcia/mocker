@@ -8,6 +8,7 @@ import { useFormik } from "formik";
 import { ColorRing } from "react-loader-spinner";
 import { InputAdornment, IconButton } from "@mui/material";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
+import { apiProvider } from "../../services/utilities/provider";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -53,6 +54,7 @@ const Login = () => {
       if (res.status === "200") {
         localStorage.setItem('MockAPI-Token',
           res.message.token)
+        apiProvider.updateToken()
         navigate(`/${res.message.userId}`);
         toast.success("Login successful");
       } else if (res.status === "400") {

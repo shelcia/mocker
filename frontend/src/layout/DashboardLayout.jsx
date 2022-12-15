@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import CustomToggle from "../components/CustomToggle";
 import { toast } from 'react-hot-toast'
 import { apiProvider } from "../services/utilities/provider";
+import { serviceModel } from "../services/models/serviceModel";
 
 const drawerWidth = 240;
 
@@ -39,8 +40,7 @@ const DashboardLayout = ({ children }, props) => {
   };
 
   const am_I_email_verified = async()=>{
-    apiProvider.post(
-      'service',
+    serviceModel.post(
       {},
       'am_i_email_verified',
       true
