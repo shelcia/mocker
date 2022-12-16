@@ -82,6 +82,19 @@ const fakerFuncs = (item) => {
     case "transactionType":
       return faker.finance.transactionType();
 
+    case "alpha":
+      return faker.random.alpha(10);
+    case "alphaNumeric":
+      return faker.random.alphaNumeric(10)
+    case "locale":
+      return faker.random.locale()
+    case "numeric":
+      return faker.random.numeric(10)
+    case "word":
+      return faker.random.word()
+    case "words":
+      return faker.random.words()
+
     case "default":
       return () => {};
   }
