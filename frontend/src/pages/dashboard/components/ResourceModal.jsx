@@ -283,4 +283,15 @@ export const choices = [
       "transactionType",
     ],
   },
+  {
+    category: "Random",
+    list: [
+      "alpha",
+      "alphaNumeric",
+      "locale",
+      "numeric",
+      "word",
+      "words",
+    ],
+  },
 ];
