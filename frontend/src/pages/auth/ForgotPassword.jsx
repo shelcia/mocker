@@ -74,6 +74,7 @@ const SetPasswordForm = ({ auth_token }) => {
       validationSchema,
       onSubmit: (values) => {
         setLoading(true);
+        setIsResponse(false)
         resetPassword(values.confirmPassword);
       },
     });
