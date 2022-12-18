@@ -129,10 +129,15 @@ const Login = () => {
             "Login"
           )}
         </Button>
-        <Typography variant="h6" component="p" sx={{ my: 2 }}>
+        <Typography variant="h6" component="p" sx={{ mt: 2, mb:1 }}>
           Don't have an account ? Then{"  "}
           <Link to="/signup" style={{ color: "deepskyblue" }}>
             Signup
+          </Link>
+        </Typography>
+        <Typography variant="h6" component="p">
+          <Link to="/resetpassword" style={{ color: "deepskyblue" }}>
+          Forgot password ?
           </Link>
         </Typography>
       </Box>
