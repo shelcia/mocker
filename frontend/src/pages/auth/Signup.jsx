@@ -45,7 +45,7 @@ const Signup = () => {
 
     apiAuth.post(body, "register").then((res) => {
       if (res.status === "200") {
-        navigate(`/`);
+        navigate("/");
         toast.success("Registration successful");
       } else if (res.status === "400") {
         toast.error(res.message);

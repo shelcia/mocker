@@ -23,23 +23,23 @@ const EndpointModal = ({ open, setOpen, result }) => {
   const points = [
     {
       method: "GET",
-      endpoint: ``,
+      endpoint: "",
     },
     {
       method: "GET",
-      endpoint: `/:id`,
+      endpoint: "/:id",
     },
     {
       method: "POST",
-      endpoint: ``,
+      endpoint: "",
     },
     {
       method: "PUT",
-      endpoint: `/:id`,
+      endpoint: "/:id",
     },
     {
       method: "DELETE",
-      endpoint: `/:id`,
+      endpoint: "/:id",
     },
   ];
 

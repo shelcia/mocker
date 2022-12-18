@@ -1,12 +1,18 @@
 import React, { useState } from "react";
-import { Box, Button, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  InputAdornment,
+  IconButton,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { apiAuth } from "../../services/models/authModel";
 import { toast } from "react-hot-toast";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { ColorRing } from "react-loader-spinner";
-import { InputAdornment, IconButton } from "@mui/material";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { apiProvider } from "../../services/utilities/provider";
 
@@ -52,9 +58,8 @@ const Login = () => {
 
     apiAuth.post(body, "signin").then((res) => {
       if (res.status === "200") {
-        localStorage.setItem('MockAPI-Token',
-          res.message.token)
-        apiProvider.updateToken()
+        localStorage.setItem("MockAPI-Token", res.message.token);
+        apiProvider.updateToken();
         navigate(`/${res.message.userId}`);
         toast.success("Login successful");
       } else if (res.status === "400") {
@@ -129,7 +134,8 @@ const Login = () => {
             "Login"
           )}
         </Button>
-        <Typography variant="h6" component="p" sx={{ mt: 2, mb:1 }}>
+        <Typography variant="h6" component="p" sx={{ mt: 2, mb: 1 }}>
+          {/*  eslint-disable-next-line react/no-unescaped-entities */}
           Don't have an account ? Then{"  "}
           <Link to="/signup" style={{ color: "deepskyblue" }}>
             Signup
@@ -137,7 +143,7 @@ const Login = () => {
         </Typography>
         <Typography variant="h6" component="p">
           <Link to="/resetpassword" style={{ color: "deepskyblue" }}>
-          Forgot password ?
+            Forgot password ?
           </Link>
         </Typography>
       </Box>

@@ -17,8 +17,8 @@ import { apiResource } from "../../../services/models/resourceModal";
 import { choices } from "./ResourceModal";
 import { useParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { BiSliderAlt } from 'react-icons/bi'
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { BiSliderAlt } from "react-icons/bi";
 import SchemaOption, { OptionExistFor } from "./SchemaOption";
 
 const CloneModal = ({ open, setOpen, result, fetchResources }) => {
@@ -30,16 +30,14 @@ const CloneModal = ({ open, setOpen, result, fetchResources }) => {
     const darkThemeLocal = localStorage.getItem("mockapi-theme");
     if (darkThemeLocal === "true") {
       setDarkTheme(true);
+    } else {
+      setDarkTheme(false);
     }
-    else {
-      setDarkTheme(false)
-    }
-
-  }, [localStorage.getItem("mockapi-theme")])
+  }, [localStorage.getItem("mockapi-theme")]);
 
   const theme = createTheme({
     palette: {
-      mode: darkTheme === true ? 'dark' : 'light',
+      mode: darkTheme === true ? "dark" : "light",
     },
   });
 
@@ -59,7 +57,7 @@ const CloneModal = ({ open, setOpen, result, fetchResources }) => {
   const handleSchema = (id, label, field, option) => {
     const newArr = schema?.map((obj) => {
       if (obj.id === id) {
-        option ? obj.option = { ...option } : null
+        option ? (obj.option = { ...option }) : null;
         return { ...obj, label: label, field: field };
       }
       return obj;
@@ -122,16 +120,13 @@ const CloneModal = ({ open, setOpen, result, fetchResources }) => {
       .catch((err) => console.log(err));
   };
 
-  const [optionOpen, setOptionOpen] = useState(false)
-  const [option, setOption] = useState({})
-  const [field_info, setField_info] = useState({})
+  const [optionOpen, setOptionOpen] = useState(false);
+  const [option, setOption] = useState({});
+  const [field_info, setField_info] = useState({});
 
   useEffect(() => {
-    handleSchema(field_info.id,
-      field_info.label,
-      field_info.field,
-      option)
-  }, [option])
+    handleSchema(field_info.id, field_info.label, field_info.field, option);
+  }, [option]);
 
   return (
     <CustomModal open={open} setOpen={setOpen} width={600}>
@@ -139,7 +134,8 @@ const CloneModal = ({ open, setOpen, result, fetchResources }) => {
         optionOpen={optionOpen}
         setOptionOpen={setOptionOpen}
         field_name={field_info.field}
-        setOption={setOption} />
+        setOption={setOption}
+      />
       <Typography variant="h5" component="h2" color="primary" sx={{ mb: 2 }}>
         Clone Resource
       </Typography>
@@ -176,11 +172,13 @@ const CloneModal = ({ open, setOpen, result, fetchResources }) => {
                 size="small"
                 value={item.label}
                 label="Label"
-                onChange={(e) => handleSchema(item.id, e.target.value, item.field)}
+                onChange={(e) =>
+                  handleSchema(item.id, e.target.value, item.field)
+                }
               />
             </Grid>
             <Grid item xs={9}>
-              <Stack direction="row" spacing={1} key={item.id} >
+              <Stack direction="row" spacing={1} key={item.id}>
                 <FormControl fullWidth>
                   <InputLabel id="field-select">Field</InputLabel>
                   <Select
@@ -194,20 +192,18 @@ const CloneModal = ({ open, setOpen, result, fetchResources }) => {
                       handleSchema(item.id, item.label, e.target.value)
                     }
                   >
-                    {choices?.map((group) => (
-                      [
-                        <ListSubheader>{group.category}</ListSubheader>,
-                        group.list?.map((choice) => (
-                          <MenuItem value={choice} key={choice}>
-                            {choice}
-                          </MenuItem>
-                        ))
-                      ]
-                    ))}
+                    {choices?.map((group) => [
+                      <ListSubheader>{group.category}</ListSubheader>,
+                      group.list?.map((choice) => (
+                        <MenuItem value={choice} key={choice}>
+                          {choice}
+                        </MenuItem>
+                      )),
+                    ])}
                   </Select>
                 </FormControl>
-                {
-                  OptionExistFor.includes(item.field) && <Box>
+                {OptionExistFor.includes(item.field) && (
+                  <Box>
                     <Button
                       variant="outlined"
                       color="info"
@@ -216,15 +212,16 @@ const CloneModal = ({ open, setOpen, result, fetchResources }) => {
                           id: item.id,
                           label: item.label,
                           field: item.field,
-                        })
-                        setOptionOpen(true)
-                      }} >
+                        });
+                        setOptionOpen(true);
+                      }}
+                    >
                       <Box>
                         <BiSliderAlt />
                       </Box>
                     </Button>
                   </Box>
-                }
+                )}
                 <Box>
                   <Button
                     variant="contained"
@@ -234,11 +231,10 @@ const CloneModal = ({ open, setOpen, result, fetchResources }) => {
                     Delete
                   </Button>
                 </Box>
-              </Stack >
+              </Stack>
             </Grid>
           </Grid>
-        ))
-        }
+        ))}
       </ThemeProvider>
 
       <Button onClick={addSchema} variant="contained" size="small">
@@ -258,7 +254,7 @@ const CloneModal = ({ open, setOpen, result, fetchResources }) => {
           Cancel
         </Button>
       </Stack>
-    </CustomModal >
+    </CustomModal>
   );
 };
 

@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 // provider.js
 
 import axios from "axios";
@@ -197,7 +198,7 @@ const put = async (resource, model, additionalParams, isAuthorized = false) => {
 
 /** @param {string} resource */
 /** @param {object} model */
-const putById = async (resource, id, model, signal, isAuthorized = false) => {
+const putById = async (resource, id, model, signal) => {
   try {
     const response = await axios.put(`${BASE_URL}/${resource}/${id}`, model, {
       signal: signal,
@@ -249,7 +250,7 @@ const putFormData = async (
 
 /** @param {string} resource */
 /** @param {object} model */
-const patch = async (resource, model, signal, isAuthorized = false) => {
+const patch = async (resource, model, signal) => {
   try {
     const response = await axios.patch(`${BASE_URL}/${resource}`, model, {
       signal: signal,
@@ -324,11 +325,11 @@ const remove = async (
  * make token value update, this method is necessary. So that
  * future API call that needs authorization can have the updated
  * token
- * 
+ *
  */
-const updateToken = ()=>{
+const updateToken = () => {
   token = localStorage.getItem("MockAPI-Token");
-}
+};
 
 export const apiProvider = {
   getAll,

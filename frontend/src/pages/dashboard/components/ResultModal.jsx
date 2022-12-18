@@ -9,7 +9,7 @@ import { toast } from "react-hot-toast";
 import { secondary } from "../../../themes/themeColors";
 import { copyTextToClipboard } from "../../../utils/utils";
 import { PartLoader } from "../../../components/CustomLoading";
-import json_beutify from 'json-beautify'
+import json_beutify from "json-beautify";
 
 const ResultModal = ({ open, setOpen, result, loading }) => {
   const [darkTheme] = useContext(ThemeContext);
@@ -32,7 +32,7 @@ const ResultModal = ({ open, setOpen, result, loading }) => {
   };
 
   const copyJsonBeautify = () => {
-    const jsonBeautify = json_beutify(result, null, 1,1)
+    const jsonBeautify = json_beutify(result, null, 1, 1);
     copyTextToClipboard(jsonBeautify)
       .then(() => {
         setIsBeautifyCopied(true);

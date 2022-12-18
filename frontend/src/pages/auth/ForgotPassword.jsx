@@ -2,33 +2,31 @@ import React, { useState } from "react";
 import {
   Box,
   Button,
+  InputAdornment,
+  IconButton,
   TextField,
-  Typography
+  Typography,
 } from "@mui/material";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { apiAuth } from "../../services/models/authModel";
 import { toast } from "react-hot-toast";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { ColorRing } from "react-loader-spinner";
-import { InputAdornment, IconButton } from "@mui/material";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
-import {
-  success,
-  error,
-} from '../../themes/themeColors'
+import { success, error } from "../../themes/themeColors";
 
 const ForgotPassword = () => {
-  const [searchParam] = useSearchParams()
-  const auth_token = searchParam.get('auth')
+  const [searchParam] = useSearchParams();
+  const auth_token = searchParam.get("auth");
 
   return (
     <React.Fragment>
-      {
-        auth_token ?
-          <SetPasswordForm auth_token={auth_token} /> :
-          <VerifyForm />
-      }
+      {auth_token ? (
+        <SetPasswordForm auth_token={auth_token} />
+      ) : (
+        <VerifyForm />
+      )}
     </React.Fragment>
   );
 };
@@ -36,17 +34,19 @@ const ForgotPassword = () => {
 const SetPasswordForm = ({ auth_token }) => {
   const [loading, setLoading] = useState(false);
   const [isResponse, setIsResponse] = useState(false);
-  const [status, setStatus] = useState(false)
+  const [status, setStatus] = useState(false);
 
-  const navigate = useNavigate()
+  // const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => setShowPassword(!showPassword);
   const handleMouseDownPassword = () => setShowPassword(!showPassword);
 
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const handleClickShowConfirmPassword = () => setShowConfirmPassword(!showConfirmPassword);
-  const handleMouseDownConfirmPassword = () => setShowConfirmPassword(!showConfirmPassword);
+  const handleClickShowConfirmPassword = () =>
+    setShowConfirmPassword(!showConfirmPassword);
+  const handleMouseDownConfirmPassword = () =>
+    setShowConfirmPassword(!showConfirmPassword);
 
   const initialValues = {
     password: "",
@@ -58,14 +58,13 @@ const SetPasswordForm = ({ auth_token }) => {
     password: Yup.string()
       .min(6, "Minimum 6 characters required")
       .required("Password is required"),
-    confirmPassword: Yup.string()
-      .when(['password', 'confirmPa'],{
-        is: val => (val && val.length > 0 ? true : false),
-        then: Yup.string().oneOf(
-          [Yup.ref('password')],
-          "Confirm password should be same"
-        )
-      }),
+    confirmPassword: Yup.string().when(["password", "confirmPa"], {
+      is: (val) => (val && val.length > 0 ? true : false),
+      then: Yup.string().oneOf(
+        [Yup.ref("password")],
+        "Confirm password should be same"
+      ),
+    }),
   });
 
   const { errors, values, touched, handleBlur, handleChange, handleSubmit } =
@@ -74,34 +73,31 @@ const SetPasswordForm = ({ auth_token }) => {
       validationSchema,
       onSubmit: (values) => {
         setLoading(true);
-        setIsResponse(false)
+        setIsResponse(false);
         resetPassword(values.confirmPassword);
       },
     });
 
-  const resetPassword = (password)=>{
+  const resetPassword = (password) => {
     const body = {
       password: password,
     };
 
-    apiAuth.post(
-      body,
-      `changepassword/${auth_token}`)
-      .then((res) => {
+    apiAuth.post(body, `changepassword/${auth_token}`).then((res) => {
       if (res.status === "200") {
         toast.success("Successfully reset");
-        setStatus(true)
+        setStatus(true);
       } else if (res.status === "400") {
         toast.error(res.message);
-        setStatus(false)
+        setStatus(false);
       } else {
         toast.error("Error");
-        setStatus(false)
+        setStatus(false);
       }
       setLoading(false);
-      setIsResponse(true)
+      setIsResponse(true);
     });
-  }
+  };
 
   return (
     <>
@@ -167,24 +163,22 @@ const SetPasswordForm = ({ auth_token }) => {
             ),
           }}
         />
-        {
-          isResponse && <Typography
+        {isResponse && (
+          <Typography
             align="center"
             bgcolor={status ? success.main : error.main}
-            color={'#FFFFFF'}
+            color={"#FFFFFF"}
             sx={{
               mt: 1,
-              borderRadius: '.5em',
+              borderRadius: ".5em",
               p: 2,
             }}
           >
-            {
-              status ?
-                'Password successfully changed' :
-                'Failed to reset password'
-            }
+            {status
+              ? "Password successfully changed"
+              : "Failed to reset password"}
           </Typography>
-        }
+        )}
         <Button
           variant="contained"
           sx={{ display: "block", mt: 2, mx: "auto" }}
@@ -197,23 +191,29 @@ const SetPasswordForm = ({ auth_token }) => {
             "Reset password"
           )}
         </Button>
-        {status&&<>
-            <Typography align="center" variant="h6" component="p" sx={{ mt: 4 }}>
+        {status && (
+          <>
+            <Typography
+              align="center"
+              variant="h6"
+              component="p"
+              sx={{ mt: 4 }}
+            >
               <Link to="/" style={{ color: "deepskyblue" }}>
                 Login
               </Link>
             </Typography>
           </>
-        }
+        )}
       </Box>
     </>
-  )
-}
+  );
+};
 
 const VerifyForm = () => {
   const [loading, setLoading] = useState(false);
   const [isMailSent, setIsMailSent] = useState(false);
-  const [status, setStatus] = useState(false)
+  const [status, setStatus] = useState(false);
 
   const initialValues = {
     email: "",
@@ -234,7 +234,7 @@ const VerifyForm = () => {
       validationSchema,
       onSubmit: (values) => {
         setLoading(true);
-        setIsMailSent(false)
+        setIsMailSent(false);
         sendLink(values.email);
       },
     });
@@ -242,22 +242,22 @@ const VerifyForm = () => {
   const sendLink = (email) => {
     const body = {
       email: email,
-      fEndUrl: location.protocol + '//' + location.host,
+      fEndUrl: location.protocol + "//" + location.host,
     };
 
     apiAuth.post(body, "resetpassword").then((res) => {
       if (res.status === "200") {
-        setStatus(true)
-        toast.success('Verification link sent');
+        setStatus(true);
+        toast.success("Verification link sent");
       } else if (res.status === "400") {
         toast.error(res.message);
-        setStatus(false)
+        setStatus(false);
       } else {
         toast.error("Error");
-        setStatus(false)
+        setStatus(false);
       }
       setLoading(false);
-      setIsMailSent(true)
+      setIsMailSent(true);
     });
   };
 
@@ -271,7 +271,7 @@ const VerifyForm = () => {
         noValidate
         onSubmit={handleSubmit}
         style={{
-          width: "100%"
+          width: "100%",
         }}
       >
         <TextField
@@ -286,24 +286,22 @@ const VerifyForm = () => {
           error={Boolean(touched.email && errors.email)}
           helperText={touched.email && errors.email}
         />
-        {
-          isMailSent && <Typography
+        {isMailSent && (
+          <Typography
             align="center"
             bgcolor={status ? success.main : error.main}
-            color={'#FFFFFF'}
+            color={"#FFFFFF"}
             sx={{
               mt: 1,
-              borderRadius: '.5em',
+              borderRadius: ".5em",
               p: 2,
             }}
           >
-            {
-              status ?
-                'Verification link sent' :
-                'Failed to send verification link'
-            }
+            {status
+              ? "Verification link sent"
+              : "Failed to send verification link"}
           </Typography>
-        }
+        )}
         <Button
           variant="contained"
           sx={{ display: "block", mt: 2, mx: "auto" }}
@@ -318,7 +316,7 @@ const VerifyForm = () => {
         </Button>
       </Box>
     </>
-  )
-}
+  );
+};
 
 export default ForgotPassword;
