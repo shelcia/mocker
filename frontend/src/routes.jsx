@@ -70,6 +70,10 @@ const routes = [
       },
     ],
   },
+  {
+    path: "*",
+    element: <Custom404 />
+  }
 ];
 
 export default routes;
