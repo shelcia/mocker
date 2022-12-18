@@ -17,6 +17,7 @@ const LoginPage = Loadable(lazy(() => import("./pages/auth/Login")));
 const SignupPage = Loadable(lazy(() => import("./pages/auth/Signup")));
 const Custom404 = Loadable(lazy(() => import("./components/Custom404")));
 const EmailVerify = Loadable(lazy(() => import("./pages/auth/EmailVerify")));
+const ForgotPassword = Loadable(lazy(() => import("./pages/auth/ForgotPassword")));
 
 const ProjectsPage = Loadable(
   lazy(() => import("./pages/dashboard/Dashboard"))
@@ -49,6 +50,10 @@ const routes = [
       {
         path: "/emailverify",
         element: <EmailVerify />,
+      },
+      {
+        path: "/resetpassword",
+        element: <ForgotPassword />
       }
     ],
   },
