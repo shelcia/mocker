@@ -5,12 +5,16 @@ const { v4: uuidv4 } = require("uuid");
 const Resource = require("../../models/Resource");
 
 // more can be added
-const fakerFuncs = (item) => {
+const fakerFuncs = (item, option) => {
   switch (item) {
     case "firstName":
-      return faker.name.firstName();
+      return faker.name.firstName(
+        option?.gender //"female" | "male"
+      );
     case "lastName":
-      return faker.name.lastName();
+      return faker.name.lastName(
+        option?.gender //"female" | "male"
+      );
     case "sex":
       return faker.name.sex();
     case "jobArea":
@@ -27,22 +31,35 @@ const fakerFuncs = (item) => {
     case "productDescription":
       return faker.commerce.productDescription();
     case "price":
-      return faker.commerce.price();
+      return faker.commerce.price(
+        parseInt(option?option.min:1), // number
+        parseInt(option?option.max:1000) // number
+      );
     case "productAdjective":
       return faker.commerce.productAdjective();
 
     case "boolean":
       return faker.datatype.boolean();
     case "past":
-      return faker.date.past();
+      return faker.date.past(
+        option?.years //number
+      );
     case "lines":
-      return faker.lorem.lines();
+      return faker.lorem.lines(
+        option?.count //number
+      );
     case "domainName":
       return faker.internet.domainName();
     case "imageUrl":
-      return faker.image.imageUrl();
+      return faker.image.imageUrl(
+        option?.width, //number
+        option?.height, //number
+        option?.category //string
+      );
     case "sentences":
-      return faker.lorem.sentences(2);
+      return faker.lorem.sentences(
+        option?.sentenceCount
+      );
 
     case "chemicalElement":
       return faker.science.chemicalElement();
@@ -83,17 +100,25 @@ const fakerFuncs = (item) => {
       return faker.finance.transactionType();
 
     case "alpha":
-      return faker.random.alpha(10);
+      return faker.random.alpha(
+        parseInt(option? option.count: 5)
+      );
     case "alphaNumeric":
-      return faker.random.alphaNumeric(10)
+      return faker.random.alphaNumeric(
+        option?.count
+      )
     case "locale":
       return faker.random.locale()
     case "numeric":
-      return faker.random.numeric(10)
+      return faker.random.numeric(
+        option?.count
+      )
     case "word":
       return faker.random.word()
     case "words":
-      return faker.random.words()
+      return faker.random.words(
+        option?.count
+      )
 
     case "default":
       return () => {};
@@ -108,7 +133,15 @@ router.post("/", async (req, res) => {
   for (let i = 0; i < req.body.number; i++) {
     let schema = { id: uuidv4() };
     req.body.schema.forEach((item) => {
-      schema = { ...schema, [item.label]: fakerFuncs(item.field) };
+      try {
+        schema = { ...schema,
+          [item.label]: fakerFuncs(item.field, item.option)
+        };
+      } catch (error) {
+        schema = { ...schema,
+          [item.label]: fakerFuncs(item.field)
+        };
+      }
     });
     resource = [...resource, schema];
   }
@@ -162,7 +195,15 @@ router.put("/:id", async (req, res) => {
     for (let i = 0; i < req.body.number; i++) {
       let schema = { id: uuidv4() };
       req.body.schema.forEach((item) => {
-        schema = { ...schema, [item.label]: fakerFuncs(item.field) };
+        try {
+          schema = { ...schema,
+            [item.label]: fakerFuncs(item.field, item.option)
+          };
+        } catch (error) {
+          schema = { ...schema,
+            [item.label]: fakerFuncs(item.field)
+          };
+        }
       });
       data = [...data, schema];
     }

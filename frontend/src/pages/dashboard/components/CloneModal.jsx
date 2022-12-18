@@ -9,7 +9,8 @@ import {
   Stack,
   TextField,
   Typography,
-  ListSubheader
+  ListSubheader,
+  Grid,
 } from "@mui/material";
 import CustomModal from "../../../components/CustomModal";
 import { apiResource } from "../../../services/models/resourceModal";
@@ -17,6 +18,8 @@ import { choices } from "./ResourceModal";
 import { useParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { BiSliderAlt } from 'react-icons/bi'
+import SchemaOption, { OptionExistFor } from "./SchemaOption";
 
 const CloneModal = ({ open, setOpen, result, fetchResources }) => {
   const { userId, projectId } = useParams();
@@ -53,9 +56,10 @@ const CloneModal = ({ open, setOpen, result, fetchResources }) => {
 
   const [schema, setSchema] = useState([]);
 
-  const handleSchema = (id, label, field) => {
+  const handleSchema = (id, label, field, option) => {
     const newArr = schema?.map((obj) => {
       if (obj.id === id) {
+        option ? obj.option = { ...option } : null
         return { ...obj, label: label, field: field };
       }
       return obj;
@@ -118,8 +122,24 @@ const CloneModal = ({ open, setOpen, result, fetchResources }) => {
       .catch((err) => console.log(err));
   };
 
+  const [optionOpen, setOptionOpen] = useState(false)
+  const [option, setOption] = useState({})
+  const [field_info, setField_info] = useState({})
+
+  useEffect(() => {
+    handleSchema(field_info.id,
+      field_info.label,
+      field_info.field,
+      option)
+  }, [option])
+
   return (
     <CustomModal open={open} setOpen={setOpen} width={600}>
+      <SchemaOption
+        optionOpen={optionOpen}
+        setOptionOpen={setOptionOpen}
+        field_name={field_info.field}
+        setOption={setOption} />
       <Typography variant="h5" component="h2" color="primary" sx={{ mb: 2 }}>
         Clone Resource
       </Typography>
@@ -147,53 +167,79 @@ const CloneModal = ({ open, setOpen, result, fetchResources }) => {
         <TextField value="uuid" sx={{ mb: 2 }} size="small" disabled />
       </Stack>
 
-      {schema?.map((item, idx) => (
-        <Stack direction="row" spacing={1} key={item.id}>
-          <ThemeProvider theme={theme}>
-          <TextField
-            sx={{ mb: 2 }}
-            size="small"
-            value={item.label}
-            label="Label"
-            onChange={(e) => handleSchema(item.id, e.target.value, item.field)}
-          />
-          <FormControl fullWidth>
-            <InputLabel id="field-select">Field</InputLabel>
-            <Select
-              labelId="field-select"
-              id="field-select"
-              sx={{ mb: 2 }}
-              size="small"
-              label="Field"
-              value={item.field}
-              onChange={(e) =>
-                handleSchema(item.id, item.label, e.target.value)
-              }
-            >
-              {choices?.map((group) => (
-                  [
-                    <ListSubheader>{group.category}</ListSubheader>,
-                    group.list?.map((choice) => (
-                      <MenuItem value={choice} key={choice}>
-                        {choice}
-                      </MenuItem>
-                    ))
-                  ]
-                ))}
-            </Select>
-          </FormControl>
-          <Box>
-            <Button
-              variant="contained"
-              color="error"
-              onClick={() => deleteSchema(item.id)}
-            >
-              Delete
-            </Button>
-          </Box>
-          </ThemeProvider>
-        </Stack>
-      ))}
+      <ThemeProvider theme={theme}>
+        {schema?.map((item, idx) => (
+          <Grid container spacing={2} key={item.id}>
+            <Grid item xs={3}>
+              <TextField
+                sx={{ mb: 2 }}
+                size="small"
+                value={item.label}
+                label="Label"
+                onChange={(e) => handleSchema(item.id, e.target.value, item.field)}
+              />
+            </Grid>
+            <Grid item xs={9}>
+              <Stack direction="row" spacing={1} key={item.id} >
+                <FormControl fullWidth>
+                  <InputLabel id="field-select">Field</InputLabel>
+                  <Select
+                    labelId="field-select"
+                    id="field-select"
+                    sx={{ mb: 2 }}
+                    size="small"
+                    label="Field"
+                    value={item.field}
+                    onChange={(e) =>
+                      handleSchema(item.id, item.label, e.target.value)
+                    }
+                  >
+                    {choices?.map((group) => (
+                      [
+                        <ListSubheader>{group.category}</ListSubheader>,
+                        group.list?.map((choice) => (
+                          <MenuItem value={choice} key={choice}>
+                            {choice}
+                          </MenuItem>
+                        ))
+                      ]
+                    ))}
+                  </Select>
+                </FormControl>
+                {
+                  OptionExistFor.includes(item.field) && <Box>
+                    <Button
+                      variant="outlined"
+                      color="info"
+                      onClick={() => {
+                        setField_info({
+                          id: item.id,
+                          label: item.label,
+                          field: item.field,
+                        })
+                        setOptionOpen(true)
+                      }} >
+                      <Box>
+                        <BiSliderAlt />
+                      </Box>
+                    </Button>
+                  </Box>
+                }
+                <Box>
+                  <Button
+                    variant="contained"
+                    color="error"
+                    onClick={() => deleteSchema(item.id)}
+                  >
+                    Delete
+                  </Button>
+                </Box>
+              </Stack >
+            </Grid>
+          </Grid>
+        ))
+        }
+      </ThemeProvider>
 
       <Button onClick={addSchema} variant="contained" size="small">
         Add Resource
@@ -212,7 +258,7 @@ const CloneModal = ({ open, setOpen, result, fetchResources }) => {
           Cancel
         </Button>
       </Stack>
-    </CustomModal>
+    </CustomModal >
   );
 };
 
