@@ -1,5 +1,7 @@
+import React from "react";
 import { Button, styled } from "@mui/material";
 import { blue, green } from "@mui/material/colors";
+import { ColorRing } from "react-loader-spinner";
 
 export const CopyButton = styled(Button)(({ theme }) => ({
   minWidth: 0,
@@ -15,3 +17,7 @@ export const CopyButton = styled(Button)(({ theme }) => ({
     color: green[50],
   },
 }));
+
+export const CustomLoaderButton = () => {
+  return <ColorRing visible={true} height="30" width="30" colors={[""]} />;
+};

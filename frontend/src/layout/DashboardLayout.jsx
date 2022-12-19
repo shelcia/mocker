@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import {
   AppBar,
   Box,
@@ -15,9 +15,6 @@ import {
 import { HiMenuAlt3 } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 import CustomToggle from "../components/CustomToggle";
-import { toast } from "react-hot-toast";
-import { apiProvider } from "../services/utilities/provider";
-import { serviceModel } from "../services/models/serviceModel";
 
 const drawerWidth = 240;
 
@@ -25,8 +22,8 @@ const DashboardLayout = ({ children }, props) => {
   const mobileMatches = useMediaQuery("(max-width:425px)");
 
   const { window } = props;
-  const [mobileOpen, setMobileOpen] = React.useState(false);
-  const [emailVerified, setEmailVerified] = React.useState(true);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  // const [emailVerified, setEmailVerified] = useState(true);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -39,17 +36,17 @@ const DashboardLayout = ({ children }, props) => {
     navigate("/");
   };
 
-  const am_I_email_verified = async () => {
-    serviceModel.post({}, "am_i_email_verified", true).then((result) => {
-      if (result.message === "false") {
-        setEmailVerified(false);
-      }
-    });
-  };
+  // const isEmailVerified = async () => {
+  //   serviceModel.post({}, "am-i-email-verified", true).then((result) => {
+  //     if (result.message === "false") {
+  //       setEmailVerified(false);
+  //     }
+  //   });
+  // };
 
-  useEffect(() => {
-    am_I_email_verified();
-  }, []);
+  // useEffect(() => {
+  //   isEmailVerified();
+  // }, []);
 
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
@@ -68,11 +65,11 @@ const DashboardLayout = ({ children }, props) => {
         Logout
       </Button>
       <Divider />
-      {!emailVerified && (
+      {/* {!emailVerified && (
         <Button onClick={verifyEmail} variant="contained" sx={{ mt: 1 }}>
           Verify email
         </Button>
-      )}
+      )} */}
     </Box>
   );
 
@@ -89,7 +86,8 @@ const DashboardLayout = ({ children }, props) => {
           >
             Mocker
           </Typography>
-          {!emailVerified && mobileMatches === false && (
+          {/* {!emailVerified && mobileMatches === false && ( */}
+          {/* {mobileMatches === false && (
             <Button
               onClick={verifyEmail}
               variant="contained"
@@ -98,7 +96,7 @@ const DashboardLayout = ({ children }, props) => {
             >
               Verify email
             </Button>
-          )}
+          )} */}
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -150,31 +148,31 @@ const DashboardLayout = ({ children }, props) => {
 
 export default DashboardLayout;
 
-const verifyEmail = () => {
-  toast.promise(
-    new Promise((res, rej) => {
-      apiProvider
-        .post(
-          "service/verify_email",
-          {
-            fEndUrl: location.protocol + "//" + location.host,
-            currentHref: location.href,
-          },
-          "",
-          true
-        )
-        .then((result) => {
-          console.log(result);
-          if (result.status === "200") {
-            res();
-          }
-          rej();
-        });
-    }),
-    {
-      loading: "Sending...",
-      success: "Verification link sent",
-      error: "Error",
-    }
-  );
-};
+// const verifyEmail = () => {
+//   toast.promise(
+//     new Promise((res, rej) => {
+//       apiProvider
+//         .post(
+//           "service/verify_email",
+//           {
+//             fEndUrl: location.protocol + "//" + location.host,
+//             currentHref: location.href,
+//           },
+//           "",
+//           true
+//         )
+//         .then((result) => {
+//           console.log(result);
+//           if (result.status === "200") {
+//             res();
+//           }
+//           rej();
+//         });
+//     }),
+//     {
+//       loading: "Sending...",
+//       success: "Verification link sent",
+//       error: "Error",
+//     }
+//   );
+// };

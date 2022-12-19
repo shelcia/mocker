@@ -2,7 +2,7 @@ import { ApiCore } from "../utilities/core";
 
 const url = "service";
 
-export const serviceModel = new ApiCore({
+export const apiService = new ApiCore({
   getAll: true,
   getSingle: true,
   getByParams: true,
@@ -12,6 +12,4 @@ export const serviceModel = new ApiCore({
   patch: true,
   remove: true,
   url: url,
-  //   plural: plural,
-  //   single: single,
 });

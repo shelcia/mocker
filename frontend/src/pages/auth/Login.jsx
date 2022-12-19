@@ -12,9 +12,9 @@ import { apiAuth } from "../../services/models/authModel";
 import { toast } from "react-hot-toast";
 import * as Yup from "yup";
 import { useFormik } from "formik";
-import { ColorRing } from "react-loader-spinner";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { apiProvider } from "../../services/utilities/provider";
+import { CustomLoaderButton } from "../../components/CustomButtons";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -58,9 +58,16 @@ const Login = () => {
 
     apiAuth.post(body, "signin").then((res) => {
       if (res.status === "200") {
+        if (!res.message.emailVerified) {
+          toast.error(
+            "Email not verified yet !. Please check you inbox for verification"
+          );
+          setLoading(false);
+          return;
+        }
         localStorage.setItem("MockAPI-Token", res.message.token);
         apiProvider.updateToken();
-        navigate(`/${res.message.userId}`);
+        navigate(`/dashboard/${res.message.userId}`);
         toast.success("Login successful");
       } else if (res.status === "400") {
         toast.error(res.message);
@@ -128,11 +135,7 @@ const Login = () => {
           type="submit"
           disabled={loading}
         >
-          {loading ? (
-            <ColorRing visible={true} height="30" width="30" colors={[""]} />
-          ) : (
-            "Login"
-          )}
+          {loading ? <CustomLoaderButton /> : "Login"}
         </Button>
         <Typography variant="h6" component="p" sx={{ mt: 2, mb: 1 }}>
           {/*  eslint-disable-next-line react/no-unescaped-entities */}
@@ -142,7 +145,7 @@ const Login = () => {
           </Link>
         </Typography>
         <Typography variant="h6" component="p">
-          <Link to="/resetpassword" style={{ color: "deepskyblue" }}>
+          <Link to="/reset-password" style={{ color: "deepskyblue" }}>
             Forgot password ?
           </Link>
         </Typography>

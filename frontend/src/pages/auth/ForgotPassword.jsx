@@ -7,26 +7,22 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { Link, useSearchParams } from "react-router-dom";
-import { apiAuth } from "../../services/models/authModel";
+import { Link, useParams } from "react-router-dom";
+// import { apiAuth } from "../../services/models/authModel";
+import { apiService } from "../../services/models/serviceModel";
 import { toast } from "react-hot-toast";
 import * as Yup from "yup";
 import { useFormik } from "formik";
-import { ColorRing } from "react-loader-spinner";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { success, error } from "../../themes/themeColors";
+import { CustomLoaderButton } from "../../components/CustomButtons";
 
 const ForgotPassword = () => {
-  const [searchParam] = useSearchParams();
-  const auth_token = searchParam.get("auth");
+  const { id } = useParams();
 
   return (
     <React.Fragment>
-      {auth_token ? (
-        <SetPasswordForm auth_token={auth_token} />
-      ) : (
-        <VerifyForm />
-      )}
+      {id ? <SetPasswordForm auth_token={id} /> : <VerifyForm />}
     </React.Fragment>
   );
 };
@@ -83,7 +79,7 @@ const SetPasswordForm = ({ auth_token }) => {
       password: password,
     };
 
-    apiAuth.post(body, `changepassword/${auth_token}`).then((res) => {
+    apiService.post(body, `change-password/${auth_token}`).then((res) => {
       if (res.status === "200") {
         toast.success("Successfully reset");
         setStatus(true);
@@ -171,7 +167,8 @@ const SetPasswordForm = ({ auth_token }) => {
             sx={{
               mt: 1,
               borderRadius: ".5em",
-              p: 2,
+              py: 1,
+              px: 1.5,
             }}
           >
             {status
@@ -185,11 +182,7 @@ const SetPasswordForm = ({ auth_token }) => {
           type="submit"
           disabled={loading}
         >
-          {loading ? (
-            <ColorRing visible={true} height="30" width="30" colors={[""]} />
-          ) : (
-            "Reset password"
-          )}
+          {loading ? <CustomLoaderButton /> : "Reset password"}
         </Button>
         {status && (
           <>
@@ -245,10 +238,10 @@ const VerifyForm = () => {
       fEndUrl: location.protocol + "//" + location.host,
     };
 
-    apiAuth.post(body, "resetpassword").then((res) => {
+    apiService.post(body, "reset-password").then((res) => {
       if (res.status === "200") {
         setStatus(true);
-        toast.success("Verification link sent");
+        toast.success("Reset Password link sent");
       } else if (res.status === "400") {
         toast.error(res.message);
         setStatus(false);
@@ -294,7 +287,8 @@ const VerifyForm = () => {
             sx={{
               mt: 1,
               borderRadius: ".5em",
-              p: 2,
+              px: 1.5,
+              py: 1,
             }}
           >
             {status
@@ -308,11 +302,7 @@ const VerifyForm = () => {
           type="submit"
           disabled={loading}
         >
-          {loading ? (
-            <ColorRing visible={true} height="30" width="30" colors={[""]} />
-          ) : (
-            "Verify"
-          )}
+          {loading ? <CustomLoaderButton /> : "Verify"}
         </Button>
       </Box>
     </>

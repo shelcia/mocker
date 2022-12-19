@@ -1,92 +1,116 @@
-const nodemailer = require('nodemailer')
-const jwt = require('jsonwebtoken')
-const router = require('express').Router()
-const crypto = require('crypto')
-const User = require('../../models/User')
+const router = require("express").Router();
 
-router.post('/verify_email', async(req, res)=>{
-    const {email} = req.body.user
-    const {fEndUrl} = req.body
+const User = require("../../models/User");
+
+const bcrypt = require("bcryptjs");
+
+const nodemailer = require("nodemailer");
+const feLink = require("../../feLink");
+const resetPwdTemplate = require("../../templates/resetPwdTemplate");
+
+const Cryptr = require("cryptr");
+const cryptr = new Cryptr("myTotallySecretKey");
+
+const Joi = require("joi");
+
+//GENERATE PASSWORD RESET LINK AND SEND THROUGH EMAIL
+router.post("/reset-password", async (req, res) => {
+  try {
+    const { email } = req.body;
+    //CHECK IF EMAIL EXIST
+    const user = await User.findOne({ email: req.body.email });
+    if (!user) {
+      res.status(200).send({
+        status: "400",
+        message: "Email does not exist",
+      });
+      return;
+    }
 
     //GENERATE TOKEN
-    const token = await new Promise(async(resolve, reject)=>{
-        try {
-            //GENERATE PSEUDO RANDOM STRING FOR EXTRA SECURE TOKEN (OPTIONAL)
-            let randomString = crypto.randomBytes(16).toString()
+    const encryptedString = cryptr.encrypt(req.body.email);
 
-            //SIGN
-            let signedToken = jwt.sign({
-                randomness: randomString,
-                ...req.body.user
-            }, process.env.TOKEN_SECRET)
+    const link = `${feLink}reset-password/${encryptedString}`;
+    // console.log(process.env.EMAIL, process.env.PASSWORD);
 
-            resolve(signedToken)
-            
-        } catch (error) {
-            console.log(error)
-            return res.send({
-                status: "400",
-                message: 'Something wrong' })
-        }
-    })
-    
-
-    // SEND TOKEN THROUGH EMAIL
-    let transporter = nodemailer.createTransport({
-        host: 'smtp.gmail.com',
-        port: 587,
-        secure: false,
-        requireTLS: true,
-        auth: {
-            user: process.env.EMAIL_ID,
-            pass: process.env.EMAIL_PWD
-        }
+    const transporter = await nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_ID,
+        pass: process.env.EMAIL_PWD,
+      },
     });
-    
-    let mailOptions = {
-        from: process.env.EMAIL_ID,
-        to: email,
-        subject: 'EMAIL VERIFICATION',
-        text: `click on the link to verify:
-        ${req.body.fEndUrl}/emailverify/?auth=${token}&ref=${req.body.currentHref}`
+
+    const mailOptions = {
+      from: process.env.EMAIL_ID,
+      to: req.body.email,
+      subject: `Reset Password for Mocker`,
+      html: resetPwdTemplate(link),
     };
-    
-    transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            return console.log(error.message);
-        }
-        return res.send({
-            status: "200",
-            message: `Verification link sent to ${email}. \nCheck your inbox`
-        })
-    });
 
-})
-
-router.post('/am_i_email_verified', async(req,res)=>{
-    let user;
-    try {
-        user = await User.findById(req.body.user._id)
-        
-    } catch (error) {
-        console.log(error)
-        return res.send({
-            status: "400",
-            message: 'Something wrong'
-        })
-    }
-    if(!user){
-        return res.status(200).send({
-            status: "400",
-            message: 'User_id doesn"t exist'
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        console.log(error);
+        // res.status(401).send("error");
+        res.status(200).send({ status: "401", message: "Error" });
+      } else {
+        console.log("Email sent: " + info.response);
+        res.status(200).send({
+          status: "200",
+          message: `Verification link sent to ${email}. \nCheck your inbox`,
         });
+      }
+    });
+  } catch (err) {
+    res.status(200).send({
+      status: "500",
+      message: "Something went wrong",
+    });
+  }
+});
+
+const pwdResetSchema = Joi.object({
+  password: Joi.string().min(6).required(),
+});
+
+//GET TOKEN AND CHANGE PASSWORD OF THE USER
+//IF TOKEN IS VERIFIED
+router.post("/change-password/:token", async (req, res) => {
+  // const auth_token = req.params.token;
+
+  try {
+    //VALIDATION OF USER INPUTS
+
+    const { error } = await pwdResetSchema.validateAsync(req.body);
+    if (error) {
+      res.status(200).send({
+        status: "400",
+        message: error,
+      });
     }
-    
-    return res.send({
-        status: "200",
-        message: user.emailVerified?'true':'false'
-    })
 
-})
+    const decryptedString = cryptr.decrypt(req.params.token);
+    const query = await User.where({ email: decryptedString });
+    if (query.length === 0) {
+      res.status(200).send({ status: "400", message: "Invalid String" });
+      return;
+    }
+    const user = await User.findById(query[0]._id).exec();
 
-module.exports = router
+    //HASHING THE PASSWORD
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(req.body.password, salt);
+
+    user.set({ password: hashedPassword });
+    // console.log("verified");
+    await user.save();
+    res
+      .status(200)
+      .send({ status: "200", message: "Password Changed Successfully!" });
+  } catch (error) {
+    res.status(200).send({ status: "500", message: "Password Change failed" });
+  }
+});
+
+module.exports = router;

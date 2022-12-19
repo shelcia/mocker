@@ -116,7 +116,9 @@ const Dashboard = () => {
               >
                 <Box
                   sx={{ display: "flex", cursor: "pointer" }}
-                  onClick={() => navigate(`/${userId}/${project._id}`)}
+                  onClick={() =>
+                    navigate(`/dashboard/${userId}/${project._id}`)
+                  }
                 >
                   <ListItemAvatar>
                     <Avatar

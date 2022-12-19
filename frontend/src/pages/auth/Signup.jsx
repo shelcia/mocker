@@ -5,7 +5,7 @@ import { apiAuth } from "../../services/models/authModel";
 import { toast } from "react-hot-toast";
 import * as Yup from "yup";
 import { useFormik } from "formik";
-import { ColorRing } from "react-loader-spinner";
+import { CustomLoaderButton } from "../../components/CustomButtons";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -46,7 +46,9 @@ const Signup = () => {
     apiAuth.post(body, "register").then((res) => {
       if (res.status === "200") {
         navigate("/");
-        toast.success("Registration successful");
+        toast.success(
+          "We have sent you verification mail. Please verify and come back"
+        );
       } else if (res.status === "400") {
         toast.error(res.message);
       } else {
@@ -100,11 +102,7 @@ const Signup = () => {
           type="submit"
           disabled={loading}
         >
-          {loading ? (
-            <ColorRing visible={true} height="30" width="30" colors={[""]} />
-          ) : (
-            "Signup"
-          )}
+          {loading ? <CustomLoaderButton /> : "Signup"}
         </Button>
         <Typography variant="h6" component="p" sx={{ my: 2 }}>
           Have an account already ? Then{"  "}

@@ -5,6 +5,7 @@ import Loading from "./components/CustomLoading";
 // Layouts
 import AuthLayout from "./layout/AuthLayout";
 import DashboardLayout from "./layout/DashboardLayout";
+import AuthGuard from "./layout/AuthGuard";
 
 const Loadable = (Component) => (props) =>
   (
@@ -17,7 +18,9 @@ const LoginPage = Loadable(lazy(() => import("./pages/auth/Login")));
 const SignupPage = Loadable(lazy(() => import("./pages/auth/Signup")));
 const Custom404 = Loadable(lazy(() => import("./components/Custom404")));
 const EmailVerify = Loadable(lazy(() => import("./pages/auth/EmailVerify")));
-const ForgotPassword = Loadable(lazy(() => import("./pages/auth/ForgotPassword")));
+const ForgotPassword = Loadable(
+  lazy(() => import("./pages/auth/ForgotPassword"))
+);
 
 const ProjectsPage = Loadable(
   lazy(() => import("./pages/dashboard/Dashboard"))
@@ -44,41 +47,53 @@ const routes = [
         element: <SignupPage />,
       },
       {
-        path: "/404",
-        element: <Custom404 />,
-      },
-      {
-        path: "/emailverify",
+        path: "/verification/:id",
         element: <EmailVerify />,
       },
+      // {
+      //   path: "/email-verify",
+      //   element: <EmailVerify />,
+      // },
       {
-        path: "/resetpassword",
-        element: <ForgotPassword />
-      }
+        path: "/reset-password",
+        element: <ForgotPassword />,
+      },
+      {
+        path: "/reset-password/:id",
+        element: <ForgotPassword />,
+      },
     ],
   },
   {
-    path: "",
+    path: "dashboard/:userId",
     element: (
+      // <AuthGuard>
       <DashboardLayout>
         <Outlet />
       </DashboardLayout>
+      // </AuthGuard>
     ),
     children: [
       {
-        path: ":userId",
+        path: "",
         element: <ProjectsPage />,
       },
       {
-        path: ":userId/:projectId",
+        path: ":projectId",
         element: <CollectionPage />,
       },
     ],
   },
   {
     path: "*",
-    element: <Custom404 />
-  }
+    element: <Outlet />,
+    children: [
+      {
+        path: "*",
+        element: <Custom404 />,
+      },
+    ],
+  },
 ];
 
 export default routes;
