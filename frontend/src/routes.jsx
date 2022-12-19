@@ -5,7 +5,7 @@ import Loading from "./components/CustomLoading";
 // Layouts
 import AuthLayout from "./layout/AuthLayout";
 import DashboardLayout from "./layout/DashboardLayout";
-import AuthGuard from "./layout/AuthGuard";
+// import AuthGuard from "./layout/AuthGuard";
 
 const Loadable = (Component) => (props) =>
   (

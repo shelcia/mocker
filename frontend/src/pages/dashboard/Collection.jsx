@@ -193,8 +193,8 @@ const Resource = ({ resource, fetchResource, delResource }) => {
             </Button> */}
             <CustomTooltip title="Clone Resource" arrow>
               <Button
-                variant="outlined"
-                color="info"
+                variant="contained"
+                color="success"
                 onClick={() => setCloneModal(true)}
               >
                 <FaRegClone />

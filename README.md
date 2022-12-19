@@ -2,6 +2,8 @@
 
 ![Mocker Generator](https://socialify.git.ci/shelcia/mocker/image?description=1&font=KoHo&forks=1&issues=1&language=1&owner=1&pattern=Brick%20Wall&pulls=1&stargazers=1&theme=Dark)
 
+<!-- [![DeepScan grade](https://deepscan.io/api/teams/19881/projects/23324/branches/705580/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=19881&pid=23324&bid=705580) -->
+
 <p align="center">
 <img src="https://img.shields.io/badge/language-React-blue?style=for-the-badge">
 <img src="https://img.shields.io/badge/language-MongoDB-blue?style=for-the-badge">
@@ -89,12 +91,17 @@ password: password
 
 - Then run <code>npm run dev</code>
 
-Addtionally within BE folder you will have to include MongoDB URL and Token in <code>.env</code> for local work
+Addtionally within BE folder you will have to include MongoDB URL and Token in <code>.env </code> for local work
 
 ```
 DB_CONNECT = mongodb+srv://{username}:{password}@cluster0.hfdhy.mongodb.net/{collectio_name}?retryWrites=true&w=majority
 
 TOKEN_SECRET = {some gibberish}
+
+EMAIL_ID={email}
+
+EMAIL_PWD={password}
+
 ```
 
 ## 💼 Code of Conduct

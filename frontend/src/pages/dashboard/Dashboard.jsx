@@ -20,12 +20,17 @@ import CustomModal from "../../components/CustomModal";
 import { FiTrash } from "react-icons/fi";
 import * as Yup from "yup";
 import { useFormik } from "formik";
+import ConfirmDeleteModal from "./components/ConfirmDelProjectModal";
 
 const Dashboard = () => {
-  const [open, setOpen] = useState(false);
-  const [projects, setProjects] = useState([]);
   const { userId } = useParams();
   const navigate = useNavigate();
+
+  const [projects, setProjects] = useState([]);
+
+  const [open, setOpen] = useState(false);
+  const [confirmDeleteModal, setConfirmDeleteModal] = useState(false);
+  const [toBeDeleted, setToBeDeleted] = useState({});
 
   const initialValues = {
     name: "",
@@ -88,6 +93,7 @@ const Dashboard = () => {
         fetchProjects();
       }
     });
+    setConfirmDeleteModal(false);
   };
 
   return (
@@ -146,7 +152,11 @@ const Dashboard = () => {
                 <Button
                   color="error"
                   variant="contained"
-                  onClick={() => delProject(project._id)}
+                  // onClick={() => delProject(project._id)}
+                  onClick={() => {
+                    setToBeDeleted(project);
+                    setConfirmDeleteModal(true);
+                  }}
                 >
                   <FiTrash color="#fff" />
                 </Button>
@@ -197,6 +207,12 @@ const Dashboard = () => {
           </Box>
         </CustomModal>
       )}
+      <ConfirmDeleteModal
+        confirmDeleteModal={confirmDeleteModal}
+        setConfirmDeleteModal={setConfirmDeleteModal}
+        project={toBeDeleted}
+        deleteProject={delProject}
+      />
     </React.Fragment>
   );
 };

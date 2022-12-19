@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Container, Paper, Typography } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import { apiAuth } from "../../services/models/authModel";
+import { CustomTypoDisplay } from "../../components/CustomDisplay";
 
 const EmailVerify = () => {
   const { id } = useParams();
@@ -29,20 +30,9 @@ const EmailVerify = () => {
   return (
     <Container>
       <Paper elevation={4}>
-        <Typography
-          align="center"
-          bgcolor={status === "200" ? success.main : error.main}
-          color={"#FFFFFF"}
-          sx={{
-            mt: 1,
-            borderRadius: ".5em",
-            px: 1.5,
-            py: 1,
-            width: "100%",
-          }}
-        >
+        <CustomTypoDisplay status={status === "200"}>
           {message}
-        </Typography>
+        </CustomTypoDisplay>
       </Paper>
     </Container>
   );

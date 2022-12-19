@@ -130,7 +130,7 @@ const CommonResourceModal = ({
                       handleSchema(item.id, item.label, e.target.value);
                     }}
                   >
-                    {choices?.map((group) => [
+                    {choices.map((group) => [
                       <ListSubheader
                         sx={{
                           color: darkTheme ? "#fff" : "#1d2438",

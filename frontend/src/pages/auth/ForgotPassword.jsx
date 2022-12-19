@@ -7,15 +7,14 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { Link, useParams } from "react-router-dom";
-// import { apiAuth } from "../../services/models/authModel";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { apiService } from "../../services/models/serviceModel";
 import { toast } from "react-hot-toast";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
-import { success, error } from "../../themes/themeColors";
 import { CustomLoaderButton } from "../../components/CustomButtons";
+import { CustomTypoDisplay } from "../../components/CustomDisplay";
 
 const ForgotPassword = () => {
   const { id } = useParams();
@@ -160,21 +159,11 @@ const SetPasswordForm = ({ auth_token }) => {
           }}
         />
         {isResponse && (
-          <Typography
-            align="center"
-            bgcolor={status ? success.main : error.main}
-            color={"#FFFFFF"}
-            sx={{
-              mt: 1,
-              borderRadius: ".5em",
-              py: 1,
-              px: 1.5,
-            }}
-          >
+          <CustomTypoDisplay status={status}>
             {status
               ? "Password successfully changed"
               : "Failed to reset password"}
-          </Typography>
+          </CustomTypoDisplay>
         )}
         <Button
           variant="contained"
@@ -204,6 +193,8 @@ const SetPasswordForm = ({ auth_token }) => {
 };
 
 const VerifyForm = () => {
+  const navigate = useNavigate();
+
   const [loading, setLoading] = useState(false);
   const [isMailSent, setIsMailSent] = useState(false);
   const [status, setStatus] = useState(false);
@@ -280,21 +271,11 @@ const VerifyForm = () => {
           helperText={touched.email && errors.email}
         />
         {isMailSent && (
-          <Typography
-            align="center"
-            bgcolor={status ? success.main : error.main}
-            color={"#FFFFFF"}
-            sx={{
-              mt: 1,
-              borderRadius: ".5em",
-              px: 1.5,
-              py: 1,
-            }}
-          >
+          <CustomTypoDisplay status={status}>
             {status
               ? "Verification link sent"
               : "Failed to send verification link"}
-          </Typography>
+          </CustomTypoDisplay>
         )}
         <Button
           variant="contained"
@@ -303,6 +284,14 @@ const VerifyForm = () => {
           disabled={loading}
         >
           {loading ? <CustomLoaderButton /> : "Verify"}
+        </Button>
+
+        <Button
+          variant="outlined"
+          sx={{ display: "block", mt: 2, mx: "auto" }}
+          onClick={() => navigate("/")}
+        >
+          Go Back
         </Button>
       </Box>
     </>
