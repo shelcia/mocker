@@ -9,20 +9,23 @@ import routes from "./routes";
 import { customTheme } from "./themes";
 import { Toaster } from "react-hot-toast";
 import { ThemeContext } from "./context/ThemeContext";
+import { secondary }  from './themes/themeColors'
 import "./styles/style.css";
 
 const App = () => {
   const allPages = useRoutes(routes);
 
+  const [darkTheme] = useContext(ThemeContext);
+  
   const toasterOptions = {
     style: {
       fontWeight: 500,
       fontFamily: "'Poppins', sans-serif",
+      background: darkTheme ? secondary[900] : secondary[100],
+      color: darkTheme ? secondary[100] : secondary[900],
     },
   };
-
-  const [darkTheme] = useContext(ThemeContext);
-
+  
   const appTheme = customTheme({
     theme: darkTheme ? "dark" : "light",
     direction: "ltr",
