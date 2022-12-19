@@ -82,18 +82,21 @@ const Dashboard = () => {
   }, []);
 
   const delProject = (id) => {
-    toast("Deleting !");
-    apiProject.remove(id).then((res) => {
-      if (res.status === "200") {
-        fetchProjects();
-      }
-    });
+    let text = "Are you sure you want to Delete Your Project?";
+    if (confirm(text) == true) {
+      toast("Deleting !");
+      apiProject.remove(id).then((res) => {
+        if (res.status === "200") {
+          fetchProjects();
+        }
+      });
+    }
   };
 
   return (
     <React.Fragment>
       <CardContent>
-        <Stack direction="row" spacing={2}>
+        <Stack direction="row" spacing={ 2 }>
           <Typography variant="h5" component="h1" color="primary">
             Projects
           </Typography>
@@ -101,84 +104,88 @@ const Dashboard = () => {
             color="primary"
             variant="contained"
             size="small"
-            sx={{ borderRadius: "50ex", py: 0.2, px: 1.2, minWidth: 0 }}
-            onClick={() => setOpen(true)}
+            sx={ { borderRadius: "50ex", py: 0.2, px: 1.2, minWidth: 0 } }
+            onClick={ () => setOpen(true) }
           >
-            <FaPlus size={"0.8rem"} />
+            <FaPlus size={ "0.8rem" } />
           </Button>
         </Stack>
-        <List>
-          {projects &&
+        <List>{projects.length == 0 &&
+          <Box  sx={ { display: "flex", justifyContent: 'center' } }>
+            <p>No Project Found!</p>
+          </Box>
+        }
+          { projects &&
             projects.map((project) => (
               <ListItem
-                sx={{ justifyContent: "space-between" }}
-                key={project._id}
+                sx={ { justifyContent: "space-between" } }
+                key={ project._id }
               >
                 <Box
-                  sx={{ display: "flex", cursor: "pointer" }}
-                  onClick={() =>
+                  sx={ { display: "flex", cursor: "pointer" } }
+                  onClick={ () =>
                     navigate(`/dashboard/${userId}/${project._id}`)
                   }
                 >
                   <ListItemAvatar>
                     <Avatar
-                      sx={{
+                      sx={ {
                         bgcolor: blue[500],
                         ":hover": { bgcolor: blue[800] },
-                      }}
+                      } }
                     >
-                      {project?.name?.charAt(0)}
+                      { project?.name?.charAt(0) }
                     </Avatar>
                   </ListItemAvatar>
                   <Typography
-                    sx={{
+                    sx={ {
                       display: "inline",
                       mt: 1,
                       ":hover": { color: blue[800] },
-                    }}
+                    } }
                     component="h1"
                     variant="h6"
                     color="text.primary"
                   >
-                    {project.name}
+                    { project.name }
                   </Typography>
                 </Box>
                 <Button
                   color="error"
                   variant="contained"
-                  onClick={() => delProject(project._id)}
+                  onClick={ () => delProject(project._id) }
                 >
                   <FiTrash color="#fff" />
                 </Button>
               </ListItem>
-            ))}
+            )) }
         </List>
       </CardContent>
-      {open && (
-        <CustomModal open={open} setOpen={setOpen}>
+      { open && (
+        <CustomModal open={ open } setOpen={ setOpen }>
           <Typography
             variant="h4"
             component="h2"
             color="primary"
-            sx={{ mb: 3 }}
+            sx={ { mb: 3 } }
           >
             New Project
           </Typography>
-          <Box component="form" onSubmit={handleSubmit}>
+          <Box component="form" onSubmit={ handleSubmit }>
             <TextField
               label="Project name"
               type="text"
               name="name"
-              sx={{ mb: 3 }}
+              sx={ { mb: 3 } }
               size="small"
               fullWidth
-              onBlur={handleBlur}
-              onChange={handleChange}
-              value={values.name || ""}
-              error={Boolean(touched.name && errors.name)}
-              helperText={touched.name && errors.name}
+              onBlur={ handleBlur }
+              onChange={ handleChange }
+              value={ values.name || "" }
+              error={ Boolean(touched.name && errors.name) }
+              helperText={ touched.name && errors.name }
             />
-            <Stack direction="row" spacing={3}>
+            <Stack direction="row" spacing={ 3 }>
               <Button variant="contained" size="small" type="submit">
                 Create
               </Button>
@@ -186,17 +193,17 @@ const Dashboard = () => {
                 variant="contained"
                 color="secondary"
                 size="small"
-                onClick={() => {
+                onClick={ () => {
                   setOpen(false);
                   setName("");
-                }}
+                } }
               >
                 Cancel
               </Button>
             </Stack>
           </Box>
         </CustomModal>
-      )}
+      ) }
     </React.Fragment>
   );
 };
