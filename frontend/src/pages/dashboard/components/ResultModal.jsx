@@ -13,23 +13,8 @@ import json_beutify from "json-beautify";
 
 const ResultModal = ({ open, setOpen, result, loading }) => {
   const [darkTheme] = useContext(ThemeContext);
-  const [isCopied, setIsCopied] = useState(false);
+  // const [isCopied, setIsCopied] = useState(false);
   const [isBeautifyCopied, setIsBeautifyCopied] = useState(false);
-
-  const handleCopyClick = () => {
-    copyTextToClipboard(JSON.stringify(result))
-      .then(() => {
-        setIsCopied(true);
-        toast.success("Copied !");
-        setTimeout(() => {
-          setIsCopied(false);
-        }, 5000);
-      })
-      .catch((err) => {
-        console.log(err);
-        toast.error("Couldn't copy !");
-      });
-  };
 
   const copyJsonBeautify = () => {
     const jsonBeautify = json_beutify(result, null, 1, 1);
@@ -62,18 +47,11 @@ const ResultModal = ({ open, setOpen, result, loading }) => {
         }}
       >
         <CopyButton
-          onClick={handleCopyClick}
-          sx={{ marginLeft: "65%" }}
-          disabled={isCopied}
-        >
-          {isCopied ? "Done" : "Copy"}
-        </CopyButton>
-        <CopyButton
           onClick={copyJsonBeautify}
-          sx={{ marginLeft: ".25rem" }}
+          sx={{ marginLeft: "90%" }}
           disabled={isBeautifyCopied}
         >
-          {isBeautifyCopied ? "Done" : "Beautify-copy"}
+          {isBeautifyCopied ? "Done" : "Copy"}
         </CopyButton>
         {loading ? (
           <PartLoader />

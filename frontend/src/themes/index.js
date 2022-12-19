@@ -336,6 +336,13 @@ const themesOptions = {
           },
         },
       },
+      MuiInputLabel: {
+        styleOverrides: {
+          root: {
+            color: "#94A4C4",
+          },
+        },
+      },
     },
   },
   [THEMES.DARK]: {

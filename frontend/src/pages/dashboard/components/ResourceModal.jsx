@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   Box,
   Button,
@@ -17,12 +17,11 @@ import CustomModal from "../../../components/CustomModal";
 import { useParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { apiResource } from "../../../services/models/resourceModal";
-import { useContext } from "react";
 import { ThemeContext } from "../../../context/ThemeContext";
 import { blueGrey } from "@mui/material/colors";
 import { secondary } from "../../../themes/themeColors";
 import { BiSliderAlt } from "react-icons/bi";
-import SchemaOption, { OptionExistFor } from "./SchemaOption";
+import SchemaOptionModal, { OptionExistFor } from "./SchemaOptionModal";
 
 const ResourceModal = ({
   open,
@@ -112,10 +111,10 @@ const ResourceModal = ({
 
   return (
     <CustomModal open={open} setOpen={setOpen} width={600}>
-      <SchemaOption
+      <SchemaOptionModal
         optionOpen={optionOpen}
         setOptionOpen={setOptionOpen}
-        field_name={field_info.field}
+        fieldName={field_info.field}
         setOption={setOption}
       />
       <Typography variant="h5" component="h2" color="primary" sx={{ mb: 2 }}>

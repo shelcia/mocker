@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -17,29 +17,16 @@ import { apiResource } from "../../../services/models/resourceModal";
 import { choices } from "./ResourceModal";
 import { useParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { BiSliderAlt } from "react-icons/bi";
-import SchemaOption, { OptionExistFor } from "./SchemaOption";
+import SchemaOptionModal, { OptionExistFor } from "./SchemaOptionModal";
+import { blueGrey } from "@mui/material/colors";
+import { secondary } from "../../../themes/themeColors";
+import { ThemeContext } from "../../../context/ThemeContext";
 
 const CloneModal = ({ open, setOpen, result, fetchResources }) => {
   const { userId, projectId } = useParams();
 
-  const [darkTheme, setDarkTheme] = useState(false);
-
-  useEffect(() => {
-    const darkThemeLocal = localStorage.getItem("mockapi-theme");
-    if (darkThemeLocal === "true") {
-      setDarkTheme(true);
-    } else {
-      setDarkTheme(false);
-    }
-  }, [localStorage.getItem("mockapi-theme")]);
-
-  const theme = createTheme({
-    palette: {
-      mode: darkTheme === true ? "dark" : "light",
-    },
-  });
+  const [darkTheme] = useContext(ThemeContext);
 
   const [inputs, setInputs] = useState({
     name: "",
@@ -122,18 +109,18 @@ const CloneModal = ({ open, setOpen, result, fetchResources }) => {
 
   const [optionOpen, setOptionOpen] = useState(false);
   const [option, setOption] = useState({});
-  const [field_info, setField_info] = useState({});
+  const [fieldInfo, setFieldInfo] = useState({});
 
   useEffect(() => {
-    handleSchema(field_info.id, field_info.label, field_info.field, option);
+    handleSchema(fieldInfo.id, fieldInfo.label, fieldInfo.field, option);
   }, [option]);
 
   return (
     <CustomModal open={open} setOpen={setOpen} width={600}>
-      <SchemaOption
+      <SchemaOptionModal
         optionOpen={optionOpen}
         setOptionOpen={setOptionOpen}
-        field_name={field_info.field}
+        fieldName={fieldInfo.field}
         setOption={setOption}
       />
       <Typography variant="h5" component="h2" color="primary" sx={{ mb: 2 }}>
@@ -163,79 +150,87 @@ const CloneModal = ({ open, setOpen, result, fetchResources }) => {
         <TextField value="uuid" sx={{ mb: 2 }} size="small" disabled />
       </Stack>
 
-      <ThemeProvider theme={theme}>
-        {schema?.map((item, idx) => (
-          <Grid container spacing={2} key={item.id}>
-            <Grid item xs={3}>
-              <TextField
-                sx={{ mb: 2 }}
-                size="small"
-                value={item.label}
-                label="Label"
-                onChange={(e) =>
-                  handleSchema(item.id, e.target.value, item.field)
-                }
-              />
-            </Grid>
-            <Grid item xs={9}>
-              <Stack direction="row" spacing={1} key={item.id}>
-                <FormControl fullWidth>
-                  <InputLabel id="field-select">Field</InputLabel>
-                  <Select
-                    labelId="field-select"
-                    id="field-select"
-                    sx={{ mb: 2 }}
-                    size="small"
-                    label="Field"
-                    value={item.field}
-                    onChange={(e) =>
-                      handleSchema(item.id, item.label, e.target.value)
-                    }
-                  >
-                    {choices?.map((group) => [
-                      <ListSubheader>{group.category}</ListSubheader>,
-                      group.list?.map((choice) => (
-                        <MenuItem value={choice} key={choice}>
-                          {choice}
-                        </MenuItem>
-                      )),
-                    ])}
-                  </Select>
-                </FormControl>
-                {OptionExistFor.includes(item.field) && (
-                  <Box>
-                    <Button
-                      variant="outlined"
-                      color="info"
-                      onClick={() => {
-                        setField_info({
-                          id: item.id,
-                          label: item.label,
-                          field: item.field,
-                        });
-                        setOptionOpen(true);
+      {schema?.map((item, idx) => (
+        <Grid container spacing={2} key={item.id}>
+          <Grid item xs={3}>
+            <TextField
+              sx={{ mb: 2 }}
+              size="small"
+              value={item.label}
+              label="Label"
+              onChange={(e) =>
+                handleSchema(item.id, e.target.value, item.field)
+              }
+            />
+          </Grid>
+          <Grid item xs={9}>
+            <Stack direction="row" spacing={1} key={item.id}>
+              <FormControl fullWidth>
+                <InputLabel id="field-select">Field</InputLabel>
+                <Select
+                  labelId="field-select"
+                  id="field-select"
+                  sx={{ mb: 2 }}
+                  size="small"
+                  label="Field"
+                  value={item.field}
+                  onChange={(e) =>
+                    handleSchema(item.id, item.label, e.target.value)
+                  }
+                >
+                  {choices?.map((group) => [
+                    <ListSubheader
+                      sx={{
+                        color: darkTheme ? "#fff" : "#1d2438",
+                        fontWeight: 600,
+                        backgroundColor: darkTheme
+                          ? secondary[900]
+                          : blueGrey[50],
                       }}
                     >
-                      <Box>
-                        <BiSliderAlt />
-                      </Box>
-                    </Button>
-                  </Box>
-                )}
+                      {group.category}
+                    </ListSubheader>,
+                    group.list?.map((choice) => (
+                      <MenuItem value={choice} key={choice}>
+                        {choice}
+                      </MenuItem>
+                    )),
+                  ])}
+                </Select>
+              </FormControl>
+              {OptionExistFor.includes(item.field) && (
                 <Box>
                   <Button
-                    variant="contained"
-                    color="error"
-                    onClick={() => deleteSchema(item.id)}
+                    variant="outlined"
+                    color="info"
+                    onClick={() => {
+                      setFieldInfo({
+                        id: item.id,
+                        label: item.label,
+                        field: item.field,
+                      });
+                      setOptionOpen(true);
+                    }}
                   >
-                    Delete
+                    <Box>
+                      <BiSliderAlt />
+                    </Box>
                   </Button>
                 </Box>
-              </Stack>
-            </Grid>
+              )}
+              <Box>
+                <Button
+                  variant="contained"
+                  color="error"
+                  onClick={() => deleteSchema(item.id)}
+                >
+                  Delete
+                </Button>
+              </Box>
+            </Stack>
           </Grid>
-        ))}
-      </ThemeProvider>
+        </Grid>
+      ))}
 
       <Button onClick={addSchema} variant="contained" size="small">
         Add Resource

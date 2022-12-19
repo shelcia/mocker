@@ -14,14 +14,19 @@ import {
 import React, { useState } from "react";
 import CustomModal from "../../../components/CustomModal";
 
-const SchemaOption = ({ optionOpen, setOptionOpen, field_name, setOption }) => {
+const SchemaOptionModal = ({
+  optionOpen,
+  setOptionOpen,
+  fieldName,
+  setOption,
+}) => {
   const [myOption, setMyOption] = useState({});
 
   return (
     <CustomModal open={optionOpen} setOpen={setOptionOpen} width={500}>
       <Container>
         <Option
-          field_name={field_name}
+          fieldName={fieldName}
           myOption={myOption}
           setMyOption={setMyOption}
         />
@@ -34,7 +39,7 @@ const SchemaOption = ({ optionOpen, setOptionOpen, field_name, setOption }) => {
               setMyOption({});
             }}
           >
-            Ok
+            Done !
           </Button>
         </Box>
       </Container>
@@ -42,10 +47,10 @@ const SchemaOption = ({ optionOpen, setOptionOpen, field_name, setOption }) => {
   );
 };
 
-export const Option = ({ field_name, myOption, setMyOption }) => {
-  switch (field_name) {
+export const Option = ({ fieldName, myOption, setMyOption }) => {
+  switch (fieldName) {
     case "firstName": {
-      const [sex, setSex] = useState("");
+      const [sex, setSex] = useState(myOption.sex);
       return (
         <FormControl fullWidth>
           <InputLabel>sex</InputLabel>
@@ -58,8 +63,8 @@ export const Option = ({ field_name, myOption, setMyOption }) => {
             }}
           >
             <MenuItem value={0}>Random</MenuItem>
-            <MenuItem value={"male"}>MALE</MenuItem>
-            <MenuItem value={"female"}>FEMALE</MenuItem>
+            <MenuItem value={"male"}>Male</MenuItem>
+            <MenuItem value={"female"}>Female</MenuItem>
           </Select>
         </FormControl>
       );
@@ -265,4 +270,4 @@ export const OptionExistFor = [
   "default",
 ];
 
-export default SchemaOption;
+export default SchemaOptionModal;
