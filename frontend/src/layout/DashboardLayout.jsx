@@ -64,7 +64,7 @@ const DashboardLayout = ({ children }, props) => {
       <Button variant="contained" onClick={logout} sx={{ mt: 4 }}>
         Logout
       </Button>
-      <Divider />
+      {/* <Divider /> */}
       {/* {!emailVerified && (
         <Button onClick={verifyEmail} variant="contained" sx={{ mt: 1 }}>
           Verify email
