@@ -31,6 +31,7 @@ import ResultModal from "./components/ResultModal";
 import ViewAnalytics from "./components/ViewAnalytics";
 import CloneModal from "./components/CloneModal";
 import { CustomTooltip } from "../../components/CustomTooltip";
+import DeleteResourceModal from "./components/DeleteResourceModal";
 
 const Collection = () => {
   const [open, setOpen] = useState(false);
@@ -64,6 +65,9 @@ const Collection = () => {
   }, []);
 
   const delResource = (id) => {
+    if (!id) {
+      return;
+    }
     toast("Deleting ...");
     apiResource.remove(id).then((res) => {
       // console.log(res);
@@ -132,6 +136,7 @@ const Resource = ({ resource, fetchResource, delResource }) => {
   const [editModal, setEditModal] = useState(false);
   const [analyticsModal, setAnalyticsModal] = useState(false);
   const [cloneModal, setCloneModal] = useState(false);
+  const [delResourceModal, setDelResourceModal] = useState(false);
 
   const [result, setResult] = useState({});
 
@@ -204,7 +209,7 @@ const Resource = ({ resource, fetchResource, delResource }) => {
               <Button
                 variant="contained"
                 color="error"
-                onClick={() => delResource(resource._id)}
+                onClick={() => setDelResourceModal(true)}
               >
                 <FiTrash />
               </Button>
@@ -245,6 +250,12 @@ const Resource = ({ resource, fetchResource, delResource }) => {
         setOpen={setCloneModal}
         result={resource._id}
         fetchResources={fetchResource}
+      />
+      <DeleteResourceModal
+        open={delResourceModal}
+        setOpen={setDelResourceModal}
+        result={resource._id}
+        delResource={delResource}
       />
     </React.Fragment>
   );
