@@ -23,7 +23,6 @@ const DashboardLayout = ({ children }, props) => {
 
   const { window } = props;
   const [mobileOpen, setMobileOpen] = useState(false);
-  // const [emailVerified, setEmailVerified] = useState(true);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -35,18 +34,6 @@ const DashboardLayout = ({ children }, props) => {
     localStorage.clear();
     navigate("/");
   };
-
-  // const isEmailVerified = async () => {
-  //   serviceModel.post({}, "am-i-email-verified", true).then((result) => {
-  //     if (result.message === "false") {
-  //       setEmailVerified(false);
-  //     }
-  //   });
-  // };
-
-  // useEffect(() => {
-  //   isEmailVerified();
-  // }, []);
 
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
@@ -64,12 +51,6 @@ const DashboardLayout = ({ children }, props) => {
       <Button variant="contained" onClick={logout} sx={{ mt: 4 }}>
         Logout
       </Button>
-      {/* <Divider /> */}
-      {/* {!emailVerified && (
-        <Button onClick={verifyEmail} variant="contained" sx={{ mt: 1 }}>
-          Verify email
-        </Button>
-      )} */}
     </Box>
   );
 
@@ -86,17 +67,6 @@ const DashboardLayout = ({ children }, props) => {
           >
             Mocker
           </Typography>
-          {/* {!emailVerified && mobileMatches === false && ( */}
-          {/* {mobileMatches === false && (
-            <Button
-              onClick={verifyEmail}
-              variant="contained"
-              size="small"
-              sx={{ mr: 2 }}
-            >
-              Verify email
-            </Button>
-          )} */}
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -147,32 +117,3 @@ const DashboardLayout = ({ children }, props) => {
 };
 
 export default DashboardLayout;
-
-// const verifyEmail = () => {
-//   toast.promise(
-//     new Promise((res, rej) => {
-//       apiProvider
-//         .post(
-//           "service/verify_email",
-//           {
-//             fEndUrl: location.protocol + "//" + location.host,
-//             currentHref: location.href,
-//           },
-//           "",
-//           true
-//         )
-//         .then((result) => {
-//           console.log(result);
-//           if (result.status === "200") {
-//             res();
-//           }
-//           rej();
-//         });
-//     }),
-//     {
-//       loading: "Sending...",
-//       success: "Verification link sent",
-//       error: "Error",
-//     }
-//   );
-// };

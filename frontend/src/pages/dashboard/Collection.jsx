@@ -44,7 +44,7 @@ const Collection = () => {
 
   const { projectId } = useParams();
 
-  const fetchResource = (signal) => {
+  const fetchResource = () => {
     apiResource.getSingle(`project/${projectId}`).then((res) => {
       if (res.status === "200") {
         setResources(res.message);

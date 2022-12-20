@@ -24,10 +24,11 @@ const ConfirmDeleteModal = ({
   }, [formData]);
 
   return (
-    <CustomModal open={confirmDeleteModal} setOpen={setConfirmDeleteModal}>
-      <Typography variant="h4" component="h2" color="primary" sx={{ mb: 3 }}>
-        Delete Project
-      </Typography>
+    <CustomModal
+      open={confirmDeleteModal}
+      setOpen={setConfirmDeleteModal}
+      title="Delete Project"
+    >
       <Typography variant="p" component="p" color="text.primary" sx={{ mb: 3 }}>
         This action cannot be undone. This will permanently delete the{" "}
         <i>

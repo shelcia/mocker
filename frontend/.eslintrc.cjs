@@ -32,13 +32,16 @@ module.exports = {
     "no-console": 1,
     "no-undef": 0,
   },
-  parser: "babel-eslint",
   parserOptions: {
-    sourceType: "module",
-    allowImportExportEverywhere: true,
-    ecmaFeatures: {
-      jsx: true,
-      modules: true,
-    },
+    ecmaVersion: 2020,
   },
+  // parser: "babel-eslint",
+  // parserOptions: {
+  //   sourceType: "module",
+  //   allowImportExportEverywhere: true,
+  //   ecmaFeatures: {
+  //     jsx: true,
+  //     modules: true,
+  //   },
+  // },
 };

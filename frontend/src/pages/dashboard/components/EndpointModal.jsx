@@ -1,12 +1,5 @@
 import React, { useContext, useState } from "react";
-import {
-  Box,
-  Table,
-  TableBody,
-  TableCell,
-  TableRow,
-  Typography,
-} from "@mui/material";
+import { Box, Table, TableBody, TableCell, TableRow } from "@mui/material";
 import CustomModal from "../../../components/CustomModal";
 import { green, grey } from "@mui/material/colors";
 import { ThemeContext } from "../../../context/ThemeContext";
@@ -72,31 +65,30 @@ const EndpointModal = ({ open, setOpen, result }) => {
       >
         <Table>
           <TableBody>
-            {points &&
-              points.map((point, idx) => (
-                <TableRow key={idx}>
-                  <TableCell sx={{ color: green[500], fontWeight: 900 }}>
-                    {point.method}
-                  </TableCell>
-                  <TableCell sx={{ fontFamily: "monospace" }}>
-                    /{result}
-                    {point.endpoint}
-                  </TableCell>
-                  <TableCell>
-                    <CopyButton
-                      onClick={() =>
-                        handleCopyClick(
-                          `${BACKEND_URL}/user/${result}${point.endpoint}`,
-                          idx
-                        )
-                      }
-                      disabled={isCopied === idx ? true : false}
-                    >
-                      {isCopied === idx ? "Done" : "Copy"}
-                    </CopyButton>
-                  </TableCell>
-                </TableRow>
-              ))}
+            {points.map((point, idx) => (
+              <TableRow key={idx}>
+                <TableCell sx={{ color: green[500], fontWeight: 900 }}>
+                  {point.method}
+                </TableCell>
+                <TableCell sx={{ fontFamily: "monospace" }}>
+                  /{result}
+                  {point.endpoint}
+                </TableCell>
+                <TableCell>
+                  <CopyButton
+                    onClick={() =>
+                      handleCopyClick(
+                        `${BACKEND_URL}/user/${result}${point.endpoint}`,
+                        idx
+                      )
+                    }
+                    disabled={isCopied === idx ? true : false}
+                  >
+                    {isCopied === idx ? "Done" : "Copy"}
+                  </CopyButton>
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </Box>

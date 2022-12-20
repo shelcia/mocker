@@ -99,7 +99,7 @@ const CommonResourceModal = ({
           <TextField value="uuid" sx={{ mb: 2 }} size="small" disabled />
         </Stack>
 
-        {schema?.map((item, idx) => (
+        {schema?.map((item) => (
           <Grid container spacing={2} key={item.id}>
             <Grid item xs={3}>
               <TextField
@@ -129,6 +129,7 @@ const CommonResourceModal = ({
                   >
                     {choices.map((group) => [
                       <ListSubheader
+                        key={group.category}
                         sx={{
                           color: darkTheme ? "#fff" : "#1d2438",
                           fontWeight: 600,

@@ -50,7 +50,7 @@ const CloneModal = ({ open, setOpen, result, fetchResources }) => {
     apiResource
       .post(body)
       .then((res) => {
-        console.log(res);
+        // console.log(res);
         if (res.status === "200") {
           toast.success("Cloned Successfully");
           setOpen(false);
@@ -60,7 +60,10 @@ const CloneModal = ({ open, setOpen, result, fetchResources }) => {
           toast.error("Error");
         }
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        toast.error("Error");
+      });
   };
 
   return (
