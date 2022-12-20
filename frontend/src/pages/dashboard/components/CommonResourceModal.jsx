@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import React, { useContext, useEffect, useState } from "react";
 import CustomModal from "../../../components/CustomModal";
 import {
@@ -11,7 +12,7 @@ import {
   Select,
   Stack,
   TextField,
-  Typography
+  Typography,
 } from "@mui/material";
 import { ThemeContext } from "../../../context/ThemeContext";
 import SchemaOptionModal, { OptionExistFor } from "./SchemaOptionModal";
@@ -19,7 +20,7 @@ import { secondary, error } from "../../../themes/themeColors";
 import { blueGrey } from "@mui/material/colors";
 import { BiSliderAlt } from "react-icons/bi";
 import { CustomTooltip } from "../../../components/CustomTooltip";
-import * as Yup from"yup"
+import * as Yup from "yup";
 import { ValidationError } from "../enums/error";
 import { toast } from "react-hot-toast";
 
@@ -41,34 +42,32 @@ const CommonResourceModal = ({
   const [option, setOption] = useState({});
   const [fieldInfo, setFieldInfo] = useState({});
 
-  const [validationInfo, setValidationInfo] = useState(new Map())
-  const [validName, setValidName] = useState(true)
-  const [validNumber, setValidNumber] = useState(true)
-  const [isLabelSame, setIsLabelSame] = useState(true)
+  const [validationInfo, setValidationInfo] = useState(new Map());
+  const [validName, setValidName] = useState(true);
+  const [validNumber, setValidNumber] = useState(true);
+  const [isLabelSame, setIsLabelSame] = useState(true);
 
   const handleInputs = (e) => {
-    const value = e.target.value
-    const name = e.target.name
+    const value = e.target.value;
+    const name = e.target.name;
 
     setInputs({ ...inputs, [e.target.name]: e.target.value });
 
     switch (name) {
       case "name":
-        if(value.length===0){
-          setValidName(false)
-        }
-        else if(!validName){
-          setValidName(true)
+        if (value.length === 0) {
+          setValidName(false);
+        } else if (!validName) {
+          setValidName(true);
         }
         break;
       case "number":
-        if(value.length===0){
-          setValidNumber(false)
+        if (value.length === 0) {
+          setValidNumber(false);
+        } else if (!validNumber) {
+          setValidNumber(true);
         }
-        else if(!validNumber){
-          setValidNumber(true)
-        }
-        break
+        break;
     }
   };
 
@@ -98,81 +97,72 @@ const CommonResourceModal = ({
   };
 
   const ValidationSchema = Yup.object({
-    field: Yup
-      .string()
-      .required(ValidationError.FIELD_NAME),
-    label: Yup
-      .string()
-      .required(ValidationError.LABEL_NAME)
-    
-  })
+    field: Yup.string().required(ValidationError.FIELD_NAME),
+    label: Yup.string().required(ValidationError.LABEL_NAME),
+  });
 
-  const isLabelMatch = ()=>{
-    let _map = new Map()
+  const isLabelMatch = () => {
+    let _map = new Map();
     let _validationInfo = new Map();
 
-    schema.forEach((val,idx)=>{
-      if(_map.has(val.label)){
-        _validationInfo.set(
-          idx,{
+    schema.forEach((val, idx) => {
+      if (_map.has(val.label)) {
+        _validationInfo.set(idx, {
           errCode: ValidationError.LABEL_NAME,
-        })
+        });
         return;
       }
-      _map.set(val.label,idx)
-    })
-    
-    if(_validationInfo.size){
-      setValidationInfo(_validationInfo)
-      setIsLabelSame(true)
-      return false
+      _map.set(val.label, idx);
+    });
+
+    if (_validationInfo.size) {
+      setValidationInfo(_validationInfo);
+      setIsLabelSame(true);
+      return false;
     }
-    setValidationInfo(_validationInfo)
-    setIsLabelSame(false)
-    return true
+    setValidationInfo(_validationInfo);
+    setIsLabelSame(false);
+    return true;
+  };
 
-  }
+  const ValidateForm = () => {
+    setValidName(true);
+    setValidNumber(true);
+    setIsLabelSame(false);
 
-  const ValidateForm = ()=>{
-    setValidName(true)
-    setValidNumber(true)
-    setIsLabelSame(false)
-
-    if(schema.length===0){
-      toast.error("Atleast one resource is required")
-      return false
+    if (schema.length === 0) {
+      toast.error("Atleast one resource is required");
+      return false;
     }
 
-    if(inputs.name.length===0){
-      setValidName(false)
-      return false
+    if (inputs.name.length === 0) {
+      setValidName(false);
+      return false;
     }
-    if(inputs.number.length===0 
-      || isNaN(inputs.number)){
-      setValidNumber(false)
-      return false
+    if (inputs.number.length === 0 || isNaN(inputs.number)) {
+      setValidNumber(false);
+      return false;
     }
 
     let _validationInfo = new Map();
 
-    schema.forEach((val, idx)=>{
+    schema.forEach((val, idx) => {
       try {
-        ValidationSchema.validateSync(val)
+        ValidationSchema.validateSync(val);
       } catch (error) {
-        _validationInfo.set(
-          idx,{
+        _validationInfo.set(idx, {
           errCode: error.message,
-        })
+        });
       }
-      setValidationInfo(_validationInfo)
-    })
+      setValidationInfo(_validationInfo);
+    });
 
-    if(!_validationInfo.size){
-      setValidationInfo(_validationInfo)
-      return true
+    if (!_validationInfo.size) {
+      setValidationInfo(_validationInfo);
+      return true;
     }
-    return false
-  }
+    return false;
+  };
 
   return (
     <>
@@ -192,18 +182,18 @@ const CommonResourceModal = ({
             value={inputs.name}
             onChange={(e) => handleInputs(e)}
           />
-          {(!validName)&&
-          <Typography
-            sx={{
+          {!validName && (
+            <Typography
+              sx={{
                 pl: 1,
                 bgcolor: error.main,
-                borderRadius:".25rem",
-                color: "#FFFFFF"
-            }}
-          >
-            Resource name is required
-          </Typography>
-          }
+                borderRadius: ".25rem",
+                color: "#FFFFFF",
+              }}
+            >
+              Resource name is required
+            </Typography>
+          )}
         </Stack>
         <Stack sx={{ mb: 2 }}>
           <TextField
@@ -214,18 +204,18 @@ const CommonResourceModal = ({
             value={inputs.number}
             onChange={(e) => handleInputs(e)}
           />
-          {(!validNumber)&&
-          <Typography
-            sx={{
+          {!validNumber && (
+            <Typography
+              sx={{
                 pl: 1,
                 bgcolor: error.main,
-                borderRadius:".25rem",
-                color: "#FFFFFF"
-            }}
-          >
-            Number of object cannot be empty and must be a number
-          </Typography>
-          }
+                borderRadius: ".25rem",
+                color: "#FFFFFF",
+              }}
+            >
+              Number of object cannot be empty and must be a number
+            </Typography>
+          )}
         </Stack>
 
         <Stack direction="row" spacing={1}>
@@ -233,7 +223,7 @@ const CommonResourceModal = ({
           <TextField value="uuid" sx={{ mb: 2 }} size="small" disabled />
         </Stack>
 
-        {schema?.map((item) => (
+        {schema?.map((item, idx) => (
           <Grid container spacing={2} key={item.id}>
             <Grid item xs={3} sx={{ mb: 2 }}>
               <TextField
@@ -245,19 +235,19 @@ const CommonResourceModal = ({
                   handleSchema(item.id, e.target.value, item.field)
                 }
               />
-              {
-              (validationInfo.get(idx)?.errCode === ValidationError.LABEL_NAME)&&
-              <Typography
-                sx={{
-                   pl: 1,
-                   bgcolor: error.main,
-                   borderRadius:".25rem",
-                   color: "#FFFFFF"
-                }}
-              >
-                {isLabelSame ? "Same label": 'Required'}
-              </Typography>
-              }
+              {validationInfo.get(idx)?.errCode ===
+                ValidationError.LABEL_NAME && (
+                <Typography
+                  sx={{
+                    pl: 1,
+                    bgcolor: error.main,
+                    borderRadius: ".25rem",
+                    color: "#FFFFFF",
+                  }}
+                >
+                  {isLabelSame ? "Same label" : "Required"}
+                </Typography>
+              )}
             </Grid>
             <Grid item xs={9} sx={{ mb: 2 }}>
               <Stack direction="row" spacing={1} key={item.id}>
@@ -294,19 +284,19 @@ const CommonResourceModal = ({
                       )),
                     ])}
                   </Select>
-                  {
-                  (validationInfo.get(idx)?.errCode === ValidationError.FIELD_NAME)&&
-                  <Typography
-                    sx={{
-                      pl: 1,
-                      bgcolor: error.main,
-                      borderRadius:".25rem",
-                      color: "#FFFFFF"
-                    }}
-                  >
-                    Required
-                  </Typography>
-                  }
+                  {validationInfo.get(idx)?.errCode ===
+                    ValidationError.FIELD_NAME && (
+                    <Typography
+                      sx={{
+                        pl: 1,
+                        bgcolor: error.main,
+                        borderRadius: ".25rem",
+                        color: "#FFFFFF",
+                      }}
+                    >
+                      Required
+                    </Typography>
+                  )}
                 </FormControl>
                 {OptionExistFor.includes(item.field) && (
                   <CustomTooltip
@@ -352,11 +342,12 @@ const CommonResourceModal = ({
         </Button>
 
         <Stack direction="row" spacing={3} mt={2}>
-          <Button variant="contained"
+          <Button
+            variant="contained"
             size="small"
-            onClick={()=>{
-              if(ValidateForm() && isLabelMatch()){
-                func()
+            onClick={() => {
+              if (ValidateForm() && isLabelMatch()) {
+                func();
               }
             }}
           >

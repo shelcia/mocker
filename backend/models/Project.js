@@ -12,6 +12,9 @@ const projectSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  collaborators: {
+    type: Array,
+  },
   date: {
     type: Date,
     default: Date.now(),
