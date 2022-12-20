@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { Box, Stack, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import JSONPretty from "react-json-pretty";
 import CustomModal from "../../../components/CustomModal";
 import { grey } from "@mui/material/colors";
@@ -33,12 +33,7 @@ const ResultModal = ({ open, setOpen, result, loading }) => {
   };
 
   return (
-    <CustomModal open={open} setOpen={setOpen} width={600}>
-      <Stack>
-        <Typography variant="h5" component="h2" color="primary" sx={{ mb: 2 }}>
-          Result
-        </Typography>
-      </Stack>
+    <CustomModal open={open} setOpen={setOpen} width={600} title="Result">
       <Box
         sx={{
           bgcolor: darkTheme ? secondary[900] : grey[100],

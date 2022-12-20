@@ -2,9 +2,44 @@ const router = require("express").Router();
 // const Joi = require("joi");
 const Resource = require("../../models/Resource");
 const { v4: uuidv4 } = require("uuid");
+// const { trackAPIRequest } = require("../../utils/trackAPIRequests");
 
 router.get("/:id", async (req, res) => {
+  // const existingAnalytics = resource.analytics || [];
+
+  // const newAnalytics = {
+  //   method: "GET",
+  //   date: Date.now(),
+  // };
+
+  // await resource.set({
+  //   ...req.body,
+  //   analytics: [...existingAnalytics, newAnalytics],
+  // });
+  // console.log(existingAnalytics);
+  // const body = {
+  //   name: resource.name,
+  //   schema: resource.schema,
+  //   data: resource.data,
+  //   number: resource.number,
+  //   userId: resource.userId,
+  //   projectId: resource.projectId,
+  //   analytics: [
+  //     ...existingAnalytics,
+  //     {
+  //       method: "GET",
+  //       date: Date.now(),
+  //     },
+  //   ],
+  // };
+  // resource.set(body);
+  // await resource.save();
+
   try {
+    // await trackAPIRequest(req.params.id, {
+    //   method: "GET",
+    //   date: Date.now(),
+    // });
     const resource = await Resource.findById(req.params.id);
     res.status(200).send({ status: "200", message: resource.data });
   } catch (err) {
@@ -30,17 +65,6 @@ router.get("/:id/:objectId", async (req, res) => {
     res.status(200).send({ status: "500", message: err });
   }
 });
-
-// const resourceDataSchema = Joi.array().items(Joi.object({
-//   label: Joi.string(),
-//   field:Joi.string(),
-// }));
-
-// const resourceDataSchema = Joi.object();
-// const { error } = await resourceDataSchema.validateAsync(req.body);
-// if (error) {
-//   res.status(200).send({ status: "400", message: error });
-// }
 
 router.post("/:id", async (req, res) => {
   try {
@@ -143,8 +167,6 @@ router.put("/:id/:objectId", async (req, res) => {
       });
       return;
     }
-
-    // const newData = { ...req.body };
 
     const body = {
       name: resource.name,

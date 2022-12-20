@@ -11,13 +11,13 @@ import {
   Select,
   Stack,
   TextField,
-  Typography,
 } from "@mui/material";
 import { ThemeContext } from "../../../context/ThemeContext";
 import SchemaOptionModal, { OptionExistFor } from "./SchemaOptionModal";
 import { secondary } from "../../../themes/themeColors";
 import { blueGrey } from "@mui/material/colors";
 import { BiSliderAlt } from "react-icons/bi";
+import { CustomTooltip } from "../../../components/CustomTooltip";
 
 const CommonResourceModal = ({
   open = false,
@@ -68,16 +68,13 @@ const CommonResourceModal = ({
 
   return (
     <>
-      <CustomModal open={open} setOpen={setOpen} width={600}>
+      <CustomModal open={open} setOpen={setOpen} width={600} title={title}>
         <SchemaOptionModal
           optionOpen={optionOpen}
           setOptionOpen={setOptionOpen}
           fieldName={fieldInfo.field}
           setOption={setOption}
         />
-        <Typography variant="h5" component="h2" color="primary" sx={{ mb: 2 }}>
-          {title}
-        </Typography>
         <TextField
           label="Resource name"
           sx={{ mb: 2 }}
@@ -151,24 +148,29 @@ const CommonResourceModal = ({
                   </Select>
                 </FormControl>
                 {OptionExistFor.includes(item.field) && (
-                  <Box>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={() => {
-                        setFieldInfo({
-                          id: item.id,
-                          label: item.label,
-                          field: item.field,
-                        });
-                        setOptionOpen(true);
-                      }}
-                    >
-                      <Box>
-                        <BiSliderAlt />
-                      </Box>
-                    </Button>
-                  </Box>
+                  <CustomTooltip
+                    title={`More options for ${item?.field}`}
+                    arrow
+                  >
+                    <Box>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => {
+                          setFieldInfo({
+                            id: item.id,
+                            label: item.label,
+                            field: item.field,
+                          });
+                          setOptionOpen(true);
+                        }}
+                      >
+                        <Box>
+                          <BiSliderAlt />
+                        </Box>
+                      </Button>
+                    </Box>
+                  </CustomTooltip>
                 )}
                 <Box>
                   <Button

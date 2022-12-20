@@ -62,10 +62,7 @@ const EndpointModal = ({ open, setOpen, result }) => {
   };
 
   return (
-    <CustomModal open={open} setOpen={setOpen} width={600}>
-      <Typography variant="h5" component="h2" color="primary" sx={{ mb: 2 }}>
-        Endpoints
-      </Typography>
+    <CustomModal open={open} setOpen={setOpen} width={600} title="Endpoints">
       <Box
         sx={{
           bgcolor: darkTheme ? secondary[900] : grey[100],

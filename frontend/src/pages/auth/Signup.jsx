@@ -1,15 +1,27 @@
 import React, { useState } from "react";
-import { Box, Button, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  IconButton,
+  InputAdornment,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { apiAuth } from "../../services/models/authModel";
 import { toast } from "react-hot-toast";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { CustomLoaderButton } from "../../components/CustomButtons";
+import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 
 const Signup = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+
+  const [showPassword, setShowPassword] = useState(false);
+  const handleClickShowPassword = () => setShowPassword(!showPassword);
+  const handleMouseDownPassword = () => setShowPassword(!showPassword);
 
   const initialValues = {
     email: "",
@@ -87,7 +99,7 @@ const Signup = () => {
         <TextField
           label="password"
           size="small"
-          type="password"
+          type={showPassword ? "text" : "password"}
           fullWidth
           name="password"
           onBlur={handleBlur}
@@ -95,6 +107,19 @@ const Signup = () => {
           value={values.password || ""}
           error={Boolean(touched.password && errors.password)}
           helperText={touched.password && errors.password}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={handleClickShowPassword}
+                  onMouseDown={handleMouseDownPassword}
+                >
+                  {showPassword ? <MdVisibility /> : <MdVisibilityOff />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
         />
         <Button
           variant="contained"

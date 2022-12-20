@@ -1,16 +1,17 @@
 import React from "react";
-import { Box, Tab, Tabs, Typography } from "@mui/material";
+import { Box, Tab, Tabs } from "@mui/material";
 import CustomModal from "../../../components/CustomModal";
 import {
-  LineChart,
-  Line,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
   Legend,
   ResponsiveContainer,
+  BarChart,
+  Bar,
 } from "recharts";
+import { CustomTooltip } from "../../../components/CustomChartComponents";
 
 function a11yProps(index) {
   return {
@@ -46,70 +47,96 @@ const ViewAnalytics = ({ open, setOpen }) => {
 
   const data = [
     {
-      name: "22/10",
-      uv: 1,
+      date: "22/10",
+      requests: 1,
     },
     {
-      name: "Page B",
-      uv: 2,
+      date: "23/10",
+      requests: 2,
     },
     {
-      name: "Page C",
-      uv: 4,
+      date: "24/10",
+      requests: 4,
     },
     {
-      name: "Page D",
-      uv: 1,
+      date: "25/10",
+      requests: 1,
     },
     {
-      name: "Page E",
-      uv: 3,
+      date: "26/10",
+      requests: 3,
     },
     {
-      name: "Page F",
-      uv: 4,
+      date: "27/10",
+      requests: 4,
     },
     {
-      name: "Page G",
-      uv: 5,
+      date: "28/10",
+      requests: 5,
+    },
+  ];
+
+  const tabData = [
+    {
+      method: "GET",
+      data: data,
+      color: "#82ca9d",
+    },
+    {
+      method: "GET Single",
+      data: data,
+      color: "#A798FF",
+    },
+    {
+      method: "POST",
+      data: data,
+      color: "#FF9777",
+    },
+    {
+      method: "PUT",
+      data: data,
+      color: "#2499EF",
+    },
+    {
+      method: "DELETE",
+      data: data,
+      color: "#3f51b5",
     },
   ];
 
   return (
-    <CustomModal open={open} setOpen={setOpen} width={600}>
-      <Typography variant="h5" component="h2" color="primary" sx={{ mb: 2 }}>
-        Analytics
-      </Typography>
+    <CustomModal open={open} setOpen={setOpen} width={600} title="Analytics">
       <Box sx={{ width: "100%" }}>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           <Tabs
             value={value}
             onChange={handleChange}
-            aria-label="basic tabs example"
+            aria-label="method analytics"
           >
-            <Tab label="GET" {...a11yProps(0)} />
-            <Tab label="GET Single" {...a11yProps(1)} />
-            <Tab label="PUT" {...a11yProps(2)} />
+            {tabData.map((tab, idx) => (
+              <Tab label={tab.method} {...a11yProps(idx)} key={idx} />
+            ))}
           </Tabs>
         </Box>
-        <TabPanel value={value} index={0}>
-          <ResponsiveContainer>
-            <LineChart data={data}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
-            </LineChart>
-          </ResponsiveContainer>
-        </TabPanel>
-        <TabPanel value={value} index={1}>
-          <p>rrkjrk</p>
-        </TabPanel>
-        <TabPanel value={value} index={2}>
-          <p>jrkjrk</p>
-        </TabPanel>
+        {tabData.map((tab, idx) => (
+          <TabPanel
+            value={value}
+            index={idx}
+            key={idx}
+            style={{ marginTop: "10px" }}
+          >
+            <ResponsiveContainer>
+              <BarChart data={tab.data}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" />
+                <YAxis />
+                <Tooltip content={<CustomTooltip />} />
+                <Legend />
+                <Bar type="monotone" dataKey="requests" fill={tab.color} />
+              </BarChart>
+            </ResponsiveContainer>
+          </TabPanel>
+        ))}
       </Box>
     </CustomModal>
   );

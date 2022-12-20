@@ -21,6 +21,7 @@ import { FiTrash } from "react-icons/fi";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import ConfirmDeleteModal from "./components/ConfirmDelProjectModal";
+import { PartLoader } from "../../components/CustomLoading";
 
 const Dashboard = () => {
   const { userId } = useParams();
@@ -29,6 +30,9 @@ const Dashboard = () => {
   const [projects, setProjects] = useState([]);
 
   const [open, setOpen] = useState(false);
+
+  const [loading, setLoading] = useState(true);
+
   const [confirmDeleteModal, setConfirmDeleteModal] = useState(false);
   const [toBeDeleted, setToBeDeleted] = useState({});
 
@@ -76,7 +80,12 @@ const Dashboard = () => {
     const signal = ac.signal;
     apiProject.getSingle(userId, signal).then((res) => {
       if (res.status === "200") {
+        // console.log(res);
+        setLoading(false);
         setProjects(res.message);
+      } else {
+        toast.error("Error !");
+        setLoading(false);
       }
     });
     return () => ac.abort();
@@ -113,67 +122,62 @@ const Dashboard = () => {
             <FaPlus size={"0.8rem"} />
           </Button>
         </Stack>
-        <List>
-          {projects &&
-            projects.map((project) => (
-              <ListItem
-                sx={{ justifyContent: "space-between" }}
-                key={project._id}
-              >
-                <Box
-                  sx={{ display: "flex", cursor: "pointer" }}
-                  onClick={() =>
-                    navigate(`/dashboard/${userId}/${project._id}`)
-                  }
+        {loading ? (
+          <PartLoader />
+        ) : (
+          <List>
+            {Array.isArray(projects) &&
+              projects.map((project) => (
+                <ListItem
+                  sx={{ justifyContent: "space-between" }}
+                  key={project._id}
                 >
-                  <ListItemAvatar>
-                    <Avatar
-                      sx={{
-                        bgcolor: blue[500],
-                        ":hover": { bgcolor: blue[800] },
-                      }}
-                    >
-                      {project?.name?.charAt(0)}
-                    </Avatar>
-                  </ListItemAvatar>
-                  <Typography
-                    sx={{
-                      display: "inline",
-                      mt: 1,
-                      ":hover": { color: blue[800] },
-                    }}
-                    component="h1"
-                    variant="h6"
-                    color="text.primary"
+                  <Box
+                    sx={{ display: "flex", cursor: "pointer" }}
+                    onClick={() =>
+                      navigate(`/dashboard/${userId}/${project._id}`)
+                    }
                   >
-                    {project.name}
-                  </Typography>
-                </Box>
-                <Button
-                  color="error"
-                  variant="contained"
-                  // onClick={() => delProject(project._id)}
-                  onClick={() => {
-                    setToBeDeleted(project);
-                    setConfirmDeleteModal(true);
-                  }}
-                >
-                  <FiTrash color="#fff" />
-                </Button>
-              </ListItem>
-            ))}
-        </List>
+                    <ListItemAvatar>
+                      <Avatar
+                        sx={{
+                          bgcolor: blue[500],
+                          ":hover": { bgcolor: blue[800] },
+                        }}
+                      >
+                        {project?.name?.charAt(0)}
+                      </Avatar>
+                    </ListItemAvatar>
+                    <Typography
+                      sx={{
+                        display: "inline",
+                        mt: 1,
+                        ":hover": { color: blue[800] },
+                      }}
+                      component="h1"
+                      variant="h6"
+                      color="text.primary"
+                    >
+                      {project.name}
+                    </Typography>
+                  </Box>
+                  <Button
+                    color="error"
+                    variant="contained"
+                    onClick={() => {
+                      setToBeDeleted(project);
+                      setConfirmDeleteModal(true);
+                    }}
+                  >
+                    <FiTrash color="#fff" />
+                  </Button>
+                </ListItem>
+              ))}
+          </List>
+        )}
       </CardContent>
       {open && (
-        <CustomModal open={open} setOpen={setOpen}>
-          <Typography
-            variant="h4"
-            component="h2"
-            color="primary"
-            sx={{ mb: 3 }}
-          >
-            New Project
-          </Typography>
+        <CustomModal open={open} setOpen={setOpen} title="New Project">
           <Box component="form" onSubmit={handleSubmit}>
             <TextField
               label="Project name"

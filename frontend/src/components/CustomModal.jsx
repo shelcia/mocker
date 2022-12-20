@@ -1,7 +1,15 @@
 import React from "react";
-import { Box, Modal, useMediaQuery } from "@mui/material";
+import {
+  Box,
+  Button,
+  Modal,
+  Stack,
+  Typography,
+  useMediaQuery,
+} from "@mui/material";
+import { MdClose } from "react-icons/md";
 
-const CustomModal = ({ open, setOpen, width = 400, children }) => {
+const CustomModal = ({ open, setOpen, title = "", width = 400, children }) => {
   const mobileMatches = useMediaQuery("(max-width:425px)");
 
   const style = {
@@ -19,7 +27,37 @@ const CustomModal = ({ open, setOpen, width = 400, children }) => {
 
   return (
     <Modal open={open} onClose={() => setOpen(false)}>
-      <Box sx={style}>{children}</Box>
+      <Box sx={style}>
+        <Stack
+          direction="row"
+          sx={{ justifyContent: "space-between", alignItems: "center", mb: 3 }}
+        >
+          <Typography
+            variant="h5"
+            component="h2"
+            color="primary"
+            sx={{ display: "inline" }}
+          >
+            {title}
+          </Typography>
+          <Box sx={{ display: "inline" }}>
+            <Button
+              color="error"
+              variant="contained"
+              onClick={() => setOpen(false)}
+              sx={{
+                p: 0.5,
+                minWidth: 0,
+                borderRadius: "50ex",
+                fontSize: "1rem",
+              }}
+            >
+              <MdClose />
+            </Button>
+          </Box>
+        </Stack>
+        {children}
+      </Box>
     </Modal>
   );
 };

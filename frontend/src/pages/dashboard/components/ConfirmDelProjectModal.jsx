@@ -33,6 +33,7 @@ const ConfirmDeleteModal = ({
         <i>
           <b>{project.name}</b>
         </i>{" "}
+        {/* eslint-disable-next-line react/no-unescaped-entities */}
         project and it's associated resources.
       </Typography>
       <Typography variant="p" component="p" color="text.primary" sx={{ mb: 3 }}>

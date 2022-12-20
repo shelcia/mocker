@@ -20,6 +20,9 @@ const resourceSchema = new mongoose.Schema({
   projectId: {
     type: String,
   },
+  // analytics: {
+  //   type: Array,
+  // },
   date: {
     type: Date,
     default: Date.now(),

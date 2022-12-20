@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Container, Paper, Typography } from "@mui/material";
+import { Container, Paper } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import { apiAuth } from "../../services/models/authModel";
 import { CustomTypoDisplay } from "../../components/CustomDisplay";
