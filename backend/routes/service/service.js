@@ -13,6 +13,8 @@ const cryptr = new Cryptr("myTotallySecretKey");
 
 const Joi = require("joi");
 
+const jwt = require("jsonwebtoken");
+
 //GENERATE PASSWORD RESET LINK AND SEND THROUGH EMAIL
 router.post("/reset-password", async (req, res) => {
   try {
@@ -111,6 +113,37 @@ router.post("/change-password/:token", async (req, res) => {
   } catch (error) {
     res.status(200).send({ status: "500", message: "Password Change failed" });
   }
+});
+
+router.get("/auth-token/:token", async (req, res) => {
+  //   console.log(req.params.token);
+  var payload = await new Promise(async (resolve, reject) => {
+    try {
+      let _payload = jwt.verify(req.params.token, process.env.TOKEN_SECRET);
+      resolve(_payload);
+    } catch (error) {
+      console.log(error);
+      res.send({
+        status: "400",
+        message: "Something wrong here",
+      });
+      return;
+    }
+  });
+
+  const user = await User.findById(payload._id);
+
+  if (!user) {
+    res.status(200).send({
+      status: "400",
+      message: 'Email doesn"t exist',
+    });
+    return;
+  }
+  res.send({
+    status: "200",
+    message: "Verified",
+  });
 });
 
 module.exports = router;

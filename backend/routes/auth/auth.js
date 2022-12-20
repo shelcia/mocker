@@ -141,36 +141,6 @@ router.post("/signin", async (req, res) => {
   }
 });
 
-router.get("/auth_token/:token/", async (req, res) => {
-  var payload = await new Promise(async (resolve, reject) => {
-    try {
-      let _payload = jwt.verify(req.params.token, process.env.TOKEN_SECRET);
-      resolve(_payload);
-    } catch (error) {
-      console.log(error);
-      return res.send({
-        status: "400",
-        message: "Something wrong",
-      });
-    }
-  });
-
-  const user = await User.findById(payload._id);
-
-  if (!user) {
-    return res.status(200).send({
-      status: "400",
-      message: 'Email doesn"t exist',
-    });
-  }
-  user.emailVerified = true;
-  user.save();
-  return res.send({
-    status: "200",
-    message: "Verified",
-  });
-});
-
 router.put("/verification/:id", async (req, res) => {
   // console.log(req.params.id);
   const decryptedString = cryptr.decrypt(req.params.id);

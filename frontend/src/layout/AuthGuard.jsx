@@ -1,34 +1,36 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom"; // component props interface
+import { apiService } from "../services/models/serviceModel";
 import Login from "../pages/auth/Login";
+import AuthLayout from "./AuthLayout";
 
 const AuthGuard = ({ children }) => {
   const [isExpired, setIsExpired] = useState(false);
 
   useEffect(() => {
+    const ac = new AbortController();
     const token = localStorage.getItem("MockAPI-Token");
     if (token) {
-      //   axios
-      //     .get(`https://www.hira.one/auth/tokenCheck?token=${token}`)
-      //     .then((res) => {
-      //       // console.log(res);
-      //       if (res.data) {
-      //         // console.log(res);
-      //         setIsExpired(false);
-      //       } else {
-      //         setIsExpired(true);
-      //       }
-      //     })
-      //     .catch(() => setIsExpired(true));
+      apiService
+        .getSingle(`auth-token/${token}`)
+        .then((res) => {
+          //   console.log(res);
+          if (res.status === "200") {
+            setIsExpired(false);
+          } else {
+            setIsExpired(true);
+          }
+        })
+        .catch(() => setIsExpired(true));
     }
+    return () => ac.abort();
   }, []);
 
   function isAuthenticate() {
-    return localStorage.getItem("HRT-Token") ? true : false;
+    return localStorage.getItem("MockAPI-Token") ? true : false;
   }
 
   function useAuth() {
-    // console.log(isAuthenticate(), isExpired);
     if (!isAuthenticate()) {
       return false;
     } else if (isExpired) {
@@ -36,7 +38,6 @@ const AuthGuard = ({ children }) => {
     } else {
       return true;
     }
-    // return isAuthenticate() && !isExpired;
   }
 
   const navigate = useNavigate();
@@ -45,17 +46,28 @@ const AuthGuard = ({ children }) => {
   const { pathname } = useLocation();
   const [requestedLocation, setRequestedLocation] = useState(null);
 
-  // console.log({ isAuthenticated, requestedLocation, pathname });
+  useEffect(() => {
+    const ac = new AbortController();
+    if (!isAuthenticated) {
+      if (pathname !== requestedLocation) {
+        setRequestedLocation(pathname);
+      }
+      navigate("/");
+    }
+    return () => {
+      ac.abort();
+    };
+  }, []);
 
   if (!isAuthenticated) {
     if (pathname !== requestedLocation) {
       setRequestedLocation(pathname);
     }
-
-    navigate("/login");
-    return <Login />;
-
-    // return <Login />;
+    return (
+      <AuthLayout>
+        <Login />
+      </AuthLayout>
+    );
   }
 
   if (requestedLocation && pathname !== requestedLocation) {
