@@ -12,21 +12,28 @@ import {
   TextField,
 } from "@mui/material";
 import React, { useState } from "react";
+import { useEffect } from "react";
 import CustomModal from "../../../components/CustomModal";
 
 const SchemaOptionModal = ({
   optionOpen,
   setOptionOpen,
-  fieldName,
+  fieldInfo,
   setOption,
 }) => {
   const [myOption, setMyOption] = useState({});
+
+  useEffect(()=>{
+    setMyOption(
+      (fieldInfo.option?fieldInfo.option:{})
+    )
+  },[fieldInfo])
 
   return (
     <CustomModal open={optionOpen} setOpen={setOptionOpen} width={500}>
       <Container>
         <Option
-          fieldName={fieldName}
+          fieldInfo={fieldInfo}
           myOption={myOption}
           setMyOption={setMyOption}
         />
@@ -47,15 +54,19 @@ const SchemaOptionModal = ({
   );
 };
 
-export const Option = ({ fieldName, myOption, setMyOption }) => {
-  switch (fieldName) {
+export const Option = ({ fieldInfo, myOption, setMyOption }) => {
+  switch (fieldInfo.field) {
     case "firstName": {
-      const [sex, setSex] = useState(myOption.sex);
+      const [sex, setSex] = useState(
+        (myOption.sex? myOption.sex:0)
+      );
       return (
         <FormControl fullWidth>
           <InputLabel>sex</InputLabel>
           <Select
-            value={sex}
+            value={
+              (myOption.sex? myOption.sex: sex)
+            }
             label="sex"
             onChange={(e) => {
               setSex(e.target.value);
@@ -70,12 +81,16 @@ export const Option = ({ fieldName, myOption, setMyOption }) => {
       );
     }
     case "lastName": {
-      const [sex, setSex] = useState("");
+      const [sex, setSex] = useState(
+        (myOption.sex? myOption.sex:0)
+      );
       return (
         <FormControl fullWidth>
           <InputLabel>sex</InputLabel>
           <Select
-            value={sex}
+            value={
+              (myOption.sex? myOption.sex:sex)
+            }
             label="sex"
             onChange={(e) => {
               setSex(e.target.value);
@@ -108,6 +123,9 @@ export const Option = ({ fieldName, myOption, setMyOption }) => {
               }
             }}
             label="min"
+            value={
+              (myOption.min? myOption.min: '')
+            }
             placeholder="Example: 0"
           ></TextField>
           <Divider sx={{ mt: 2 }} />
@@ -125,6 +143,9 @@ export const Option = ({ fieldName, myOption, setMyOption }) => {
               }
             }}
             label="max"
+            value={
+              (myOption.max? myOption.max: '')
+            }
             placeholder="Example: 1000"
           ></TextField>
           <Divider sx={{ mt: 2 }} />
@@ -143,6 +164,9 @@ export const Option = ({ fieldName, myOption, setMyOption }) => {
           }}
           label="past years"
           placeholder="Example: 10"
+          value={
+            (myOption.years? myOption.years: '')
+          }
         ></TextField>
       );
     }
@@ -155,6 +179,9 @@ export const Option = ({ fieldName, myOption, setMyOption }) => {
           }}
           label="Line no"
           placeholder="Example: 5"
+          value={
+            (myOption.count? myOption.count: '')
+          }
         ></TextField>
       );
     }
@@ -168,6 +195,9 @@ export const Option = ({ fieldName, myOption, setMyOption }) => {
             }}
             label="width"
             placeholder="Example: 480"
+            value={
+              (myOption.width? myOption.width: '')
+            }
           ></TextField>
           <Divider sx={{ mt: 2 }} />
           <TextField
@@ -177,6 +207,9 @@ export const Option = ({ fieldName, myOption, setMyOption }) => {
             }}
             label="height"
             placeholder="Example: 720"
+            value={
+              (myOption.height? myOption.height: '')
+            }
           ></TextField>
           <Divider sx={{ mt: 2 }} />
           <TextField
@@ -186,6 +219,9 @@ export const Option = ({ fieldName, myOption, setMyOption }) => {
             }}
             label="category"
             placeholder="Example: Cat"
+            value={
+              (myOption.category? myOption.category: '')
+            }
           ></TextField>
         </React.Fragment>
       );
@@ -199,6 +235,10 @@ export const Option = ({ fieldName, myOption, setMyOption }) => {
           }}
           label="Sentence Count"
           placeholder="Example: 5"
+          value={
+            (myOption.sentenceCount? myOption.sentenceCount: '')
+          }
+          
         ></TextField>
       );
     }
@@ -211,6 +251,9 @@ export const Option = ({ fieldName, myOption, setMyOption }) => {
           }}
           label="Number of character"
           placeholder="Example: 5"
+          value={
+            (myOption.count? myOption.count: '')
+          }
         ></TextField>
       );
     }
@@ -223,6 +266,9 @@ export const Option = ({ fieldName, myOption, setMyOption }) => {
           }}
           label="Number of alphaNumeric character"
           placeholder="Example: 5"
+          value={
+            (myOption.count? myOption.count: '')
+          }
         ></TextField>
       );
     }
@@ -235,6 +281,9 @@ export const Option = ({ fieldName, myOption, setMyOption }) => {
           }}
           label="Number of digit"
           placeholder="Example: 5"
+          value={
+           (myOption.count? myOption.count: '')
+          }
         ></TextField>
       );
     }
@@ -247,6 +296,9 @@ export const Option = ({ fieldName, myOption, setMyOption }) => {
           }}
           label="Number of word"
           placeholder="Example: 5"
+          value={
+            (myOption.count? myOption.count: '')
+          }
         ></TextField>
       );
     }
