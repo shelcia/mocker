@@ -143,6 +143,10 @@ const CommonResourceModal = ({
       setValidNumber(false);
       return false;
     }
+    if(parseInt(inputs.number)<1){
+      setValidNumber(false)
+      return false;
+    }
 
     let _validationInfo = new Map();
 
