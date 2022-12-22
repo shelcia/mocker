@@ -181,19 +181,9 @@ const CommonResourceModal = ({
             name="name"
             value={inputs.name}
             onChange={(e) => handleInputs(e)}
+            error={!validName}
+            helperText={!validName ? "Resource name is required" : ""}
           />
-          {!validName && (
-            <Typography
-              sx={{
-                pl: 1,
-                bgcolor: error.main,
-                borderRadius: ".25rem",
-                color: "#FFFFFF",
-              }}
-            >
-              Resource name is required
-            </Typography>
-          )}
         </Stack>
         <Stack sx={{ mb: 2 }}>
           <TextField
@@ -203,19 +193,13 @@ const CommonResourceModal = ({
             name="number"
             value={inputs.number}
             onChange={(e) => handleInputs(e)}
+            error={!validNumber}
+            helperText={
+              !validNumber
+                ? "Number of object cannot be empty and must be a number"
+                : ""
+            }
           />
-          {!validNumber && (
-            <Typography
-              sx={{
-                pl: 1,
-                bgcolor: error.main,
-                borderRadius: ".25rem",
-                color: "#FFFFFF",
-              }}
-            >
-              Number of object cannot be empty and must be a number
-            </Typography>
-          )}
         </Stack>
 
         <Stack direction="row" spacing={1}>
