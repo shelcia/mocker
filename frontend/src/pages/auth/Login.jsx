@@ -1,28 +1,17 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Button,
-  InputAdornment,
-  IconButton,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Button, TextField, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { apiAuth } from "../../services/models/authModel";
 import { toast } from "react-hot-toast";
 import * as Yup from "yup";
 import { useFormik } from "formik";
-import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { apiProvider } from "../../services/utilities/provider";
 import { CustomLoaderButton } from "../../components/CustomButtons";
+import { CustomPwdField } from "../../components/CustomInputFields";
 
 const Login = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-
-  const [showPassword, setShowPassword] = useState(false);
-  const handleClickShowPassword = () => setShowPassword(!showPassword);
-  const handleMouseDownPassword = () => setShowPassword(!showPassword);
 
   const initialValues = {
     email: "",
@@ -104,30 +93,12 @@ const Login = () => {
           error={Boolean(touched.email && errors.email)}
           helperText={touched.email && errors.email}
         />
-        <TextField
-          label="password"
-          size="small"
-          type={showPassword ? "text" : "password"}
-          fullWidth
-          name="password"
-          onBlur={handleBlur}
-          onChange={handleChange}
-          value={values.password || ""}
-          error={Boolean(touched.password && errors.password)}
-          helperText={touched.password && errors.password}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={handleClickShowPassword}
-                  onMouseDown={handleMouseDownPassword}
-                >
-                  {showPassword ? <MdVisibility /> : <MdVisibilityOff />}
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
+        <CustomPwdField
+          handleBlur={handleBlur}
+          handleChange={handleChange}
+          values={values}
+          touched={touched}
+          errors={errors}
         />
         <Button
           variant="contained"
