@@ -170,7 +170,7 @@ const CommonResourceModal = ({
         <SchemaOptionModal
           optionOpen={optionOpen}
           setOptionOpen={setOptionOpen}
-          fieldName={fieldInfo.field}
+          fieldInfo={fieldInfo}
           setOption={setOption}
         />
         <Stack sx={{ mb: 2 }}>
@@ -296,6 +296,7 @@ const CommonResourceModal = ({
                             id: item.id,
                             label: item.label,
                             field: item.field,
+                            option: item.option,
                           });
                           setOptionOpen(true);
                         }}
