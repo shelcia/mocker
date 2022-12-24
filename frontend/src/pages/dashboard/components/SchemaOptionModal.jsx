@@ -11,7 +11,7 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CustomModal from "../../../components/CustomModal";
 
 const SchemaOptionModal = ({
@@ -268,6 +268,304 @@ export const Option = ({ fieldInfo, myOption, setMyOption }) => {
         ></TextField>
       );
     }
+    case "array": {
+      return (
+        <React.Fragment>
+          <TextField
+            fullWidth
+            onChange={(e) => {
+              setMyOption({ ...myOption, length: e.target.value });
+            }}
+            label="Size of the array"
+            placeholder="Example: 5"
+            value={myOption.length ? myOption.length : ""}
+          />
+        </React.Fragment>
+      )
+    }
+
+    case "bigInt": {
+      const [balance, setBalance] = useState(true);
+      const [message, setMessage] = useState("");
+
+      return (
+        <React.Fragment>
+          <TextField
+            fullWidth
+            onChange={(e) => {
+              let min = parseInt(e.target.value);
+              let max = parseInt(myOption.max);
+              setMyOption({ ...myOption, min: e.target.value });
+              if (myOption.max && max < min) {
+                setBalance(false);
+                setMessage("min must be smaller than max");
+              } else {
+                setBalance(true);
+              }
+            }}
+            label="min"
+            placeholder="Example: 0"
+            value={myOption.min ? myOption.min : ""}
+          />
+          <Divider sx={{ mt: 2 }} />
+          <TextField
+            fullWidth
+            onChange={(e) => {
+              let min = parseInt(myOption.min);
+              let max = parseInt(e.target.value);
+              setMyOption({ ...myOption, max: e.target.value });
+              if (myOption.min && max < min) {
+                setMessage("max must be greater than min");
+                setBalance(false);
+              } else {
+                setBalance(true);
+              }
+            }}
+            label="max"
+            placeholder="Example: 1000000"
+            value={myOption.max ? myOption.max : ""}
+          />
+          <Divider sx={{ mt: 2 }} />
+          {!balance && (
+            <Chip sx={{ width: "100%" }} color={"error"} label={message} />
+          )}
+        </React.Fragment>
+      )
+    }
+
+    case "datetime": {
+      const [balance, setBalance] = useState(true);
+      const [message, setMessage] = useState("");
+
+      return (
+        <React.Fragment>
+          <TextField
+            fullWidth
+            onChange={(e) => {
+              let min = parseInt(e.target.value);
+              let max = parseInt(myOption.max);
+              setMyOption({ ...myOption, min: e.target.value });
+              if (myOption.max && max < min) {
+                setBalance(false);
+                setMessage("min must be smaller than max");
+              } else {
+                setBalance(true);
+              }
+            }}
+            label="min"
+            placeholder="Example: 631152000000"
+            value={myOption.min ? myOption.min : ""}
+          />
+          <Divider sx={{ mt: 2 }} />
+          <TextField
+            fullWidth
+            onChange={(e) => {
+              let min = parseInt(myOption.min);
+              let max = parseInt(e.target.value);
+              setMyOption({ ...myOption, max: e.target.value });
+              if (myOption.min && max < min) {
+                setMessage("max must be greater than min");
+                setBalance(false);
+              } else {
+                setBalance(true);
+              }
+            }}
+            label="max"
+            placeholder="Example: 4102444800000"
+            value={myOption.max ? myOption.max : ""}
+          />
+          <Divider sx={{ mt: 2 }} />
+          {!balance && (
+            <Chip sx={{ width: "100%" }} color={"error"} label={message} />
+          )}
+        </React.Fragment>
+      )
+    }
+
+    case "float": {
+      const [balance, setBalance] = useState(true);
+      const [message, setMessage] = useState("");
+
+      return (
+        <React.Fragment>
+          <TextField
+            fullWidth
+            onChange={(e) => {
+              let min = parseInt(e.target.value);
+              let max = parseInt(myOption.max);
+              setMyOption({ ...myOption, min: e.target.value });
+              if (myOption.max && max < min) {
+                setBalance(false);
+                setMessage("min must be smaller than max");
+              } else {
+                setBalance(true);
+              }
+            }}
+            label="min"
+            placeholder="Example: 10"
+            value={myOption.min ? myOption.min : ""}
+          />
+          <Divider sx={{ mt: 2 }} />
+          <TextField
+            fullWidth
+            onChange={(e) => {
+              let min = parseInt(myOption.min);
+              let max = parseInt(e.target.value);
+              setMyOption({ ...myOption, max: e.target.value });
+              if (myOption.min && max < min) {
+                setMessage("max must be greater than min");
+                setBalance(false);
+              } else {
+                setBalance(true);
+              }
+            }}
+            label="max"
+            placeholder="Example: 20"
+            value={myOption.max ? myOption.max : ""}
+          />
+          <Divider sx={{ mt: 2}} />
+          {!balance && (
+            <Chip sx={{ width: "100%" }} color={"error"} label={message} />
+          )}
+
+          <TextField
+            fullWidth
+            sx={{ mt:2 }}
+            onChange={(e) => {
+              setMyOption({ ...myOption, precision: e.target.value });
+            }}
+            label="precision"
+            placeholder="Example: 0.01"
+            value={myOption.precision ? myOption.precision : ""}
+          />
+        </React.Fragment>
+      )
+    }
+
+    case "hexadecimal": {
+      const [_case, setCase] = useState(myOption.case ? myOption.case : 0);
+
+      return (
+        <React.Fragment>
+          <TextField
+            fullWidth
+            sx={{ mt:2 }}
+            onChange={(e) => {
+              setMyOption({ ...myOption, length: e.target.value });
+            }}
+            label="length"
+            placeholder="Example: 10"
+            value={myOption.length ? myOption.length : ""}
+          />
+
+          <FormControl fullWidth sx={{mt:2}}>
+          <InputLabel>case</InputLabel>
+          <Select
+            value={myOption.case ? myOption.case : _case}
+            label="case"
+            onChange={(e) => {
+              setCase(e.target.value);
+              setMyOption({ ...myOption, case: e.target.value });
+            }}
+          >
+            <MenuItem value={"lower"}>lower case</MenuItem>
+            <MenuItem value={"upper"}>upper case</MenuItem>
+            <MenuItem value={"mixed"}>mixed case</MenuItem>
+          </Select>
+        </FormControl>
+
+        <TextField
+            fullWidth
+            sx={{ mt:2 }}
+            onChange={(e) => {
+              setMyOption({ ...myOption, prefix: e.target.value });
+            }}
+            label="prefix"
+            placeholder="Example: 0X"
+            value={myOption.prefix ? myOption.prefix : ""}
+          />
+        </React.Fragment>
+      )
+    }
+
+    case "number": {
+      const [balance, setBalance] = useState(true);
+      const [message, setMessage] = useState("");
+
+      return (
+        <React.Fragment>
+          <TextField
+            fullWidth
+            onChange={(e) => {
+              let min = parseInt(e.target.value);
+              let max = parseInt(myOption.max);
+              setMyOption({ ...myOption, min: e.target.value });
+              if (myOption.max && max < min) {
+                setBalance(false);
+                setMessage("min must be smaller than max");
+              } else {
+                setBalance(true);
+              }
+            }}
+            label="min"
+            placeholder="Example: 10"
+            value={myOption.min ? myOption.min : ""}
+          />
+          <Divider sx={{ mt: 2 }} />
+          <TextField
+            fullWidth
+            onChange={(e) => {
+              let min = parseInt(myOption.min);
+              let max = parseInt(e.target.value);
+              setMyOption({ ...myOption, max: e.target.value });
+              if (myOption.min && max < min) {
+                setMessage("max must be greater than min");
+                setBalance(false);
+              } else {
+                setBalance(true);
+              }
+            }}
+            label="max"
+            placeholder="Example: 20"
+            value={myOption.max ? myOption.max : ""}
+          />
+          <Divider sx={{ mt: 2}} />
+          {!balance && (
+            <Chip sx={{ width: "100%" }} color={"error"} label={message} />
+          )}
+
+          <TextField
+            fullWidth
+            sx={{ mt:2 }}
+            onChange={(e) => {
+              setMyOption({ ...myOption, precision: e.target.value });
+            }}
+            label="precision"
+            placeholder="Example: 0.01"
+            value={myOption.precision ? myOption.precision : ""}
+          />
+        </React.Fragment>
+      )
+    }
+
+    case "string": {
+      return (
+        <React.Fragment>
+          <TextField
+            fullWidth
+            sx={{ mt:2 }}
+            onChange={(e) => {
+              setMyOption({ ...myOption, length: e.target.value });
+            }}
+            label="length"
+            placeholder="Example: 10"
+            value={myOption.length ? myOption.length : ""}
+          />
+        </React.Fragment>
+      )
+    }
+
+
     case "default":
       return () => {};
   }
@@ -286,6 +584,13 @@ export const OptionExistFor = [
   "numeric",
   "words",
   "default",
+  "array",
+  "bigInt",
+  "datetime",
+  "float",
+  "hexadecimal",
+  "number",
+  "string",
 ];
 
 export default SchemaOptionModal;
