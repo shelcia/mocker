@@ -64,9 +64,12 @@ const CommonResourceModal = ({
       case "number":
         if (value.length === 0) {
           setValidNumber(false);
+        } else if (Number.isInteger(value)) {
+          setValidNumber(false);
         } else if (!validNumber) {
           setValidNumber(true);
         }
+
         break;
     }
   };

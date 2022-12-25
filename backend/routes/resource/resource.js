@@ -32,8 +32,8 @@ const fakerFuncs = (item, option) => {
       return faker.commerce.productDescription();
     case "price":
       return faker.commerce.price(
-        parseInt(option?option.min:1), // number
-        parseInt(option?option.max:1000) // number
+        parseInt(option ? option.min : 1), // number
+        parseInt(option ? option.max : 1000) // number
       );
     case "productAdjective":
       return faker.commerce.productAdjective();
@@ -41,45 +41,47 @@ const fakerFuncs = (item, option) => {
     case "boolean":
       return faker.datatype.boolean();
     case "array":
-      return faker.datatype.array(
-        parseInt(option?.length)
-      )
-    case "bigInt"://@throws — When options define max < min
-      return faker.datatype.bigInt({
-          min: option?parseInt(option.min):undefined,
-          max: option?parseInt(option.max):undefined,
-      }).toString()
+      return faker.datatype.array(parseInt(option?.length));
+    case "bigInt": //@throws — When options define max < min
+      return faker.datatype
+        .bigInt({
+          min: option ? parseInt(option.min) : undefined,
+          max: option ? parseInt(option.max) : undefined,
+        })
+        .toString();
     case "datetime":
       return faker.datatype.datetime({
-        min: option?parseInt(option.min):undefined,
-        max: option?parseInt(option.max):undefined,
-      })
+        min: option ? parseInt(option.min) : undefined,
+        max: option ? parseInt(option.max) : undefined,
+      });
     case "float":
       return faker.datatype.float({
-        min: option?parseInt(option.min):undefined,
-        max: option?parseInt(option.max):undefined,
-        precision: option?parseFloat(option.precision):undefined,
-      })
+        min: option ? parseInt(option.min) : undefined,
+        max: option ? parseInt(option.max) : undefined,
+        precision: option ? parseFloat(option.precision) : undefined,
+      });
     case "hexadecimal":
-      return faker.datatype.hexadecimal({//case?: "lower" | "upper" | "mixed" | undefined;
-        length: option?parseInt(option.length):undefined,
+      return faker.datatype.hexadecimal({
+        //case?: "lower" | "upper" | "mixed" | undefined;
+        length: option ? parseInt(option.length) : undefined,
         case: option?.case,
         prefix: option?.prefix,
-      })
+      });
     case "json":
-      return faker.datatype.json()
+      return faker.datatype.json();
     case "number":
-      return faker.datatype.number({//@throws — When options define max < min
-        min: option?parseInt(option.min):undefined,
-        max: option?parseInt(option.max):undefined,
-        precision: option?parseFloat(option.precision):undefined,
-      })
+      return faker.datatype.number({
+        //@throws — When options define max < min
+        min: option ? parseInt(option.min) : undefined,
+        max: option ? parseInt(option.max) : undefined,
+        precision: option ? parseFloat(option.precision) : undefined,
+      });
     case "string":
       return faker.datatype.string(
-        option?parseInt(option?.length):undefined
-      )
+        option ? parseInt(option.length) : undefined
+      );
     case "uuid":
-      return faker.datatype.uuid()
+      return faker.datatype.uuid();
 
     case "past":
       return faker.date.past(
@@ -98,9 +100,7 @@ const fakerFuncs = (item, option) => {
         option?.category //string
       );
     case "sentences":
-      return faker.lorem.sentences(
-        option?.sentenceCount
-      );
+      return faker.lorem.sentences(option?.sentenceCount);
 
     case "chemicalElement":
       return faker.science.chemicalElement();
@@ -141,25 +141,17 @@ const fakerFuncs = (item, option) => {
       return faker.finance.transactionType();
 
     case "alpha":
-      return faker.random.alpha(
-        parseInt(option? option.count: 5)
-      );
+      return faker.random.alpha(parseInt(option ? option.count : 5));
     case "alphaNumeric":
-      return faker.random.alphaNumeric(
-        option?.count
-      )
+      return faker.random.alphaNumeric(option?.count);
     case "locale":
-      return faker.random.locale()
+      return faker.random.locale();
     case "numeric":
-      return faker.random.numeric(
-        option?.count
-      )
+      return faker.random.numeric(option?.count);
     case "word":
-      return faker.random.word()
+      return faker.random.word();
     case "words":
-      return faker.random.words(
-        option?.count
-      )
+      return faker.random.words(option?.count);
 
     case "default":
       return () => {};
@@ -175,13 +167,12 @@ router.post("/", async (req, res) => {
     let schema = { id: uuidv4() };
     req.body.schema.forEach((item) => {
       try {
-        schema = { ...schema,
-          [item.label]: fakerFuncs(item.field, item.option)
+        schema = {
+          ...schema,
+          [item.label]: fakerFuncs(item.field, item.option),
         };
       } catch (error) {
-        schema = { ...schema,
-          [item.label]: fakerFuncs(item.field)
-        };
+        schema = { ...schema, [item.label]: fakerFuncs(item.field) };
       }
     });
     resource = [...resource, schema];
@@ -237,13 +228,12 @@ router.put("/:id", async (req, res) => {
       let schema = { id: uuidv4() };
       req.body.schema.forEach((item) => {
         try {
-          schema = { ...schema,
-            [item.label]: fakerFuncs(item.field, item.option)
+          schema = {
+            ...schema,
+            [item.label]: fakerFuncs(item.field, item.option),
           };
         } catch (error) {
-          schema = { ...schema,
-            [item.label]: fakerFuncs(item.field)
-          };
+          schema = { ...schema, [item.label]: fakerFuncs(item.field) };
         }
       });
       data = [...data, schema];
