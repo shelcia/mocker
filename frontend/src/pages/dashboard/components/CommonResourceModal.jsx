@@ -366,7 +366,18 @@ export const choices = [
   },
   {
     category: "Datatype",
-    list: ["boolean"],
+    list: [
+      "array",
+      "bigInt",
+      "boolean",
+      "datetime",
+      "float",
+      "hexadecimal",
+      "json",
+      "number",
+      "string",
+      "uuid",
+    ],
   },
   {
     category: "Commerce",

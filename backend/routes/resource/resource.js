@@ -40,6 +40,47 @@ const fakerFuncs = (item, option) => {
 
     case "boolean":
       return faker.datatype.boolean();
+    case "array":
+      return faker.datatype.array(
+        parseInt(option?.length)
+      )
+    case "bigInt"://@throws — When options define max < min
+      return faker.datatype.bigInt({
+          min: option?parseInt(option.min):undefined,
+          max: option?parseInt(option.max):undefined,
+      }).toString()
+    case "datetime":
+      return faker.datatype.datetime({
+        min: option?parseInt(option.min):undefined,
+        max: option?parseInt(option.max):undefined,
+      })
+    case "float":
+      return faker.datatype.float({
+        min: option?parseInt(option.min):undefined,
+        max: option?parseInt(option.max):undefined,
+        precision: option?parseFloat(option.precision):undefined,
+      })
+    case "hexadecimal":
+      return faker.datatype.hexadecimal({//case?: "lower" | "upper" | "mixed" | undefined;
+        length: option?parseInt(option.length):undefined,
+        case: option?.case,
+        prefix: option?.prefix,
+      })
+    case "json":
+      return faker.datatype.json()
+    case "number":
+      return faker.datatype.number({//@throws — When options define max < min
+        min: option?parseInt(option.min):undefined,
+        max: option?parseInt(option.max):undefined,
+        precision: option?parseFloat(option.precision):undefined,
+      })
+    case "string":
+      return faker.datatype.string(
+        option?parseInt(option?.length):undefined
+      )
+    case "uuid":
+      return faker.datatype.uuid()
+
     case "past":
       return faker.date.past(
         option?.years //number
