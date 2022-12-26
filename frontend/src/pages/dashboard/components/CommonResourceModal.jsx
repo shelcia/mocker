@@ -388,7 +388,17 @@ export const choices = [
   },
   {
     category: "Date",
-    list: ["past"],
+    list: [
+      "between",
+      "betweens",
+      "birthdate",
+      "future",
+      "month",
+      "past",
+      "recent",
+      "soon",
+      "weekday"
+    ],
   },
   {
     category: "Lorem",

@@ -83,10 +83,46 @@ const fakerFuncs = (item, option) => {
     case "uuid":
       return faker.datatype.uuid();
 
+    case "between":
+      return faker.date.between(
+        option?.from, option?.to
+      )
+    case "betweens":
+      return faker.date.betweens(
+        option?.from, option?.to, option?parseInt(option.num):undefined
+      )
+    case "birthdate":
+      return faker.date.birthdate({
+        min: option?parseInt(option?.min):undefined,
+        max: option?parseInt(option?.max):undefined,
+        mode: option?.mode,//mode?: "age" | "year" | undefined
+      })
+    case "future":
+      return faker.date.future(
+        option?.years
+      )
+    case "month":
+      return faker.date.month({
+        abbr: option?(option.abbr==='true'?true:false):undefined,
+      })
     case "past":
       return faker.date.past(
         option?.years //number
       );
+    case "recent":
+      return faker.date.recent(
+        option?parseInt(option.days):undefined,
+        option?.refDate
+      )
+    case "soon":
+      return faker.date.soon(
+        option?parseInt(option.days):undefined,
+        option?.refDate
+      )
+    case "weekday":
+      return faker.date.weekday({
+        abbr: option?(option.abbr==='true'?true:false):undefined,
+      })
     case "lines":
       return faker.lorem.lines(
         option?.count //number
