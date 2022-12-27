@@ -193,6 +193,14 @@ router.delete("/:id/:objectId", async (req, res) => {
       (item) => item.id !== req.params.objectId
     );
 
+    if(required.length === resource.data.length){
+      res.status(200).send({
+        status: "400",
+        message: 'Seems like objectId doesn"t exist !',
+      });
+      return;
+    }
+
     const body = {
       name: resource.name,
       schema: resource.schema,
