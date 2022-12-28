@@ -3,6 +3,7 @@ const app = express();
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const rateLimit = require('express-rate-limit')
 const PORT = process.env.PORT || 4050;
 
 //IMPORT ROUTES
@@ -27,7 +28,12 @@ mongoose.connect(
 );
 //MIDDLEWARE
 
-app.use(express.json(), cors());
+app.use(cors())
+app.use(rateLimit({
+  windowMs: 1*60*1000, // 120 request per 1 minute
+  max: 120,
+}))
+app.use(express.json());
 
 //ROUTE MIDDLEWARE
 
