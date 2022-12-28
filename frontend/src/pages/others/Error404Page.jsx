@@ -1,8 +1,9 @@
 import React from "react";
 import { Box, Button, Typography, CardContent } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import Img from "../../assets/404.png";
 
-const Custom404 = () => {
+const Error404Page = () => {
   const navigate = useNavigate();
   return (
     <React.Fragment>
@@ -16,7 +17,10 @@ const Custom404 = () => {
             p: 5,
           }}
         >
-          <Typography variant="h1">404</Typography>
+          <img src={Img} alt="404 error information" height={300} />
+          <Typography variant="h1" sx={{ mt: 2 }}>
+            404
+          </Typography>
           <Typography variant="h6" sx={{ mt: 1 }}>
             The page you’re looking for doesn’t exist.
           </Typography>
@@ -33,4 +37,4 @@ const Custom404 = () => {
   );
 };
 
-export default Custom404;
+export default Error404Page;

@@ -17,7 +17,6 @@ const Loadable = (Component) => (props) =>
 
 const LoginPage = Loadable(lazy(() => import("./pages/auth/Login")));
 const SignupPage = Loadable(lazy(() => import("./pages/auth/Signup")));
-const Custom404 = Loadable(lazy(() => import("./components/Custom404")));
 const EmailVerify = Loadable(lazy(() => import("./pages/auth/EmailVerify")));
 const ForgotPassword = Loadable(
   lazy(() => import("./pages/auth/ForgotPassword"))
@@ -28,6 +27,10 @@ const ProjectsPage = Loadable(
 );
 const CollectionPage = Loadable(
   lazy(() => import("./pages/dashboard/Collection"))
+);
+
+const Error404Page = Loadable(
+  lazy(() => import("./pages/others/Error404Page"))
 );
 
 const routes = [
@@ -91,7 +94,7 @@ const routes = [
     children: [
       {
         path: "*",
-        element: <Custom404 />,
+        element: <Error404Page />,
       },
     ],
   },
