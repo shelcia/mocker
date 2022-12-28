@@ -41,6 +41,13 @@ router.get("/:id", async (req, res) => {
     //   date: Date.now(),
     // });
     const resource = await Resource.findById(req.params.id);
+    if(resource === null){
+      res.status(200).send({
+        status: "400",
+        message: 'Seems like resourceId doesn"t exist !',
+      });
+      return;
+    }
     res.status(200).send({ status: "200", message: resource.data });
   } catch (err) {
     res.status(200).send({ status: "500", message: err });
