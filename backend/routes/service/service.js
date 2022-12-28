@@ -20,7 +20,7 @@ router.post("/reset-password", async (req, res) => {
   try {
     const { email } = req.body;
     //CHECK IF EMAIL EXIST
-    const user = await User.findOne({ email: req.body.email });
+    const user = await User.findOne({ email: {$eq: req.body.email} });
     if (!user) {
       res.status(200).send({
         status: "400",
