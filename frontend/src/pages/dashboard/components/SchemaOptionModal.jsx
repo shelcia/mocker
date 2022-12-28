@@ -13,11 +13,17 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import CustomModal from "../../../components/CustomModal";
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DateTimePicker } from '@mui/x-date-pickers';
+import utc from 'dayjs/plugin/utc'
+import dayjs from "dayjs";
+
+dayjs.extend(utc)
 
 const SchemaOptionModal = ({
   optionOpen,
   setOptionOpen,
-  // fieldName,
   fieldInfo,
   setOption,
 }) => {
@@ -565,6 +571,283 @@ export const Option = ({ fieldInfo, myOption, setMyOption }) => {
       )
     }
 
+    case "between": {
+      return (
+        <React.Fragment>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <Box>
+              <DateTimePicker
+                label="From"
+                value={myOption.from ? dayjs(myOption.from).utc(false) : Date.now()}
+                
+                onChange={(value) => {
+                  if(!dayjs(value).isValid())return;
+                  const date_time = dayjs(value).local().toISOString()
+                  setMyOption({ ...myOption, from: date_time });
+                }}
+                views={["day", "hours","minutes","seconds"]}
+                inputFormat={"YYYY-MM-DD HH:mm:ss A"}
+                renderInput={(params) => <TextField {...params} />}
+              />
+            </Box>
+            <Box sx={{ mt:2 }}>
+              <DateTimePicker
+                label="To"
+                value={myOption.to ? dayjs(myOption.to).utc(false) : Date.now()}
+
+                onChange={(value) => {
+                  if(!dayjs(value).isValid())return;
+                  const date_time = dayjs(value).local().toISOString()
+                  setMyOption({ ...myOption, to: date_time });
+                }}
+                views={["day", "hours","minutes","seconds"]}
+                inputFormat={"YYYY-MM-DD HH:mm:ss A"}
+                renderInput={(params) => <TextField disabled {...params} />}
+              />
+            </Box>
+          </LocalizationProvider>
+        </React.Fragment>
+      )
+    }
+    case "betweens": {
+      return (
+        <React.Fragment>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <Box>
+              <DateTimePicker
+                label="From"
+                value={myOption.from ? dayjs(myOption.from).utc(false) : Date.now()}
+                
+                onChange={(value) => {
+                  if(!dayjs(value).isValid())return;
+                  const date_time = dayjs(value).local().toISOString()
+                  setMyOption({ ...myOption, from: date_time });
+                }}
+                views={["day", "hours","minutes","seconds"]}
+                inputFormat={"YYYY-MM-DD HH:mm:ss A"}
+                renderInput={(params) => <TextField {...params} />}
+              />
+            </Box>
+            <Box sx={{ mt:2 }}>
+              <DateTimePicker
+                label="To"
+                value={myOption.to ? dayjs(myOption.to).utc(false) : Date.now()}
+
+                onChange={(value) => {
+                  if(!dayjs(value).isValid())return;
+                  const date_time = dayjs(value).local().toISOString()
+                  setMyOption({ ...myOption, to: date_time });
+                }}
+                views={["day", "hours","minutes","seconds"]}
+                inputFormat={"YYYY-MM-DD HH:mm:ss A"}
+                renderInput={(params) => <TextField disabled {...params} />}
+              />
+            </Box>
+          </LocalizationProvider>
+          <TextField
+            fullWidth
+            sx={{ mt:2 }}
+            onChange={(e) => {
+              setMyOption({ ...myOption, num: e.target.value });
+            }}
+            label="Number of dates"
+            placeholder="Example: 10"
+            value={myOption.num ? myOption.num : ""}
+          />
+        </React.Fragment>
+      )
+    }
+    case "birthdate": {
+      const [balance, setBalance] = useState(true);
+      const [message, setMessage] = useState("");
+      const [mode, setMode] = useState(myOption.mode ? myOption.mode : "age");
+
+      return (
+        <React.Fragment>
+          <TextField
+            fullWidth
+            onChange={(e) => {
+              let min = parseInt(e.target.value);
+              let max = parseInt(myOption.max);
+              setMyOption({ ...myOption, min: e.target.value });
+              if (myOption.max && max < min) {
+                setBalance(false);
+                setMessage(`minimum ${mode} must be smaller than max`);
+              } else {
+                setBalance(true);
+              }
+            }}
+            label={`minimum ${mode}`}
+            placeholder="Example: 18"
+            value={myOption.min ? myOption.min : ""}
+          />
+          <Divider sx={{ mt: 2 }} />
+          <TextField
+            fullWidth
+            onChange={(e) => {
+              let min = parseInt(myOption.min);
+              let max = parseInt(e.target.value);
+              setMyOption({ ...myOption, max: e.target.value });
+              if (myOption.min && max < min) {
+                setMessage(`maximum ${mode} must be greater than min`);
+                setBalance(false);
+              } else {
+                setBalance(true);
+              }
+            }}
+            label={`maximum ${mode}`}
+            placeholder="Example: 60"
+            value={myOption.max ? myOption.max : ""}
+          />
+          <Divider sx={{ mt: 2 }} />
+          {!balance && (
+            <Chip sx={{ width: "100%" }} color={"error"} label={message} />
+          )}
+
+          <FormControl fullWidth sx={{mt:2}}>
+          <InputLabel>mode</InputLabel>
+          <Select
+            value={myOption.mode ? myOption.mode : mode}
+            label="mode"
+            onChange={(e) => {
+              setMode(e.target.value);
+              setMyOption({ ...myOption, mode: e.target.value });
+            }}
+          >
+            <MenuItem value={"age"}>age</MenuItem>
+            <MenuItem value={"year"}>year</MenuItem>
+          </Select>
+        </FormControl>
+
+        </React.Fragment>
+      )
+    }
+    case "future": {
+      return (
+        <React.Fragment>
+          <TextField
+            fullWidth
+            sx={{ mt:2 }}
+            onChange={(e) => {
+              setMyOption({ ...myOption, years: e.target.value });
+            }}
+            label="years"
+            placeholder="Example: 10"
+            value={myOption.years ? myOption.years : ""}
+          />
+        </React.Fragment>
+      )
+    }
+    case "month": {
+      const [abbr, setAbbr] = useState(myOption.abbr ? myOption.abbr : "false");
+
+      return (
+        <React.Fragment>
+          <FormControl fullWidth sx={{ mt: 2 }}>
+            <InputLabel>abbr</InputLabel>
+            <Select
+              value={myOption.abbr ? myOption.abbr : abbr}
+              label="abbr"
+              onChange={(e) => {
+                setAbbr(e.target.value);
+                setMyOption({ ...myOption, abbr: e.target.value });
+              }}
+            >
+              <MenuItem value={"false"}>long form</MenuItem>
+              <MenuItem value={"true"}>abbreviation</MenuItem>
+            </Select>
+          </FormControl>
+        </React.Fragment>
+      )
+    }
+    case "recent": {
+      return (
+        <React.Fragment>
+          <TextField
+            fullWidth
+            sx={{ mt:2 }}
+            onChange={(e) => {
+              setMyOption({ ...myOption, days: e.target.value });
+            }}
+            label="days"
+            placeholder="Example: 10"
+            value={myOption.days ? myOption.days : ""}
+          />
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <Box sx={{ mt: 2 }}>
+              <DateTimePicker
+                label="Reference point"
+                value={myOption.refDate ? dayjs(myOption.refDate).utc(false) : Date.now()}
+                
+                onChange={(value) => {
+                  if(!dayjs(value).isValid())return;
+                  const date_time = dayjs(value).local().toISOString()
+                  setMyOption({ ...myOption, refDate: date_time });
+                }}
+                views={["day", "hours","minutes","seconds"]}
+                inputFormat={"YYYY-MM-DD HH:mm:ss A"}
+                renderInput={(params) => <TextField {...params} />}
+              />
+            </Box>
+          </LocalizationProvider>
+        </React.Fragment>
+      )
+    }
+    case "soon": {
+      return (
+        <React.Fragment>
+          <TextField
+            fullWidth
+            sx={{ mt:2 }}
+            onChange={(e) => {
+              setMyOption({ ...myOption, days: e.target.value });
+            }}
+            label="days"
+            placeholder="Example: 10"
+            value={myOption.days ? myOption.days : ""}
+          />
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <Box sx={{ mt: 2 }}>
+              <DateTimePicker
+                label="Reference point"
+                value={myOption.refDate ? dayjs(myOption.refDate).utc(false) : Date.now()}
+                
+                onChange={(value) => {
+                  if(!dayjs(value).isValid())return;
+                  const date_time = dayjs(value).local().toISOString()
+                  setMyOption({ ...myOption, refDate: date_time });
+                }}
+                views={["day", "hours","minutes","seconds"]}
+                inputFormat={"YYYY-MM-DD HH:mm:ss A"}
+                renderInput={(params) => <TextField {...params} />}
+              />
+            </Box>
+          </LocalizationProvider>
+        </React.Fragment>
+      )
+    }
+    case "weekday": {
+      const [abbr, setAbbr] = useState(myOption.abbr ? myOption.abbr : "false");
+
+      return (
+        <React.Fragment>
+          <FormControl fullWidth sx={{ mt: 2 }}>
+            <InputLabel>abbr</InputLabel>
+            <Select
+              value={myOption.abbr ? myOption.abbr : abbr}
+              label="abbr"
+              onChange={(e) => {
+                setAbbr(e.target.value);
+                setMyOption({ ...myOption, abbr: e.target.value });
+              }}
+            >
+              <MenuItem value={"false"}>long form</MenuItem>
+              <MenuItem value={"true"}>abbreviation</MenuItem>
+            </Select>
+          </FormControl>
+        </React.Fragment>
+      )
+    }
 
     case "default":
       return () => {};
@@ -591,6 +874,14 @@ export const OptionExistFor = [
   "hexadecimal",
   "number",
   "string",
+  "between",
+  "betweens",
+  "birthdate",
+  "future",
+  "month",
+  "recent",
+  "soon",
+  "weekday",
 ];
 
 export default SchemaOptionModal;
