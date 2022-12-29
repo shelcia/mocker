@@ -41,6 +41,13 @@ router.get("/:id", async (req, res) => {
     //   date: Date.now(),
     // });
     const resource = await Resource.findById(req.params.id);
+    if(resource === null){
+      res.status(200).send({
+        status: "400",
+        message: 'Seems like resourceId doesn"t exist !',
+      });
+      return;
+    }
     res.status(200).send({ status: "200", message: resource.data });
   } catch (err) {
     res.status(200).send({ status: "500", message: err });
@@ -50,6 +57,13 @@ router.get("/:id", async (req, res) => {
 router.get("/:id/:objectId", async (req, res) => {
   try {
     const resource = await Resource.findById(req.params.id);
+    if(resource === null){
+      res.status(200).send({
+        status: "400",
+        message: 'Seems like resourceId doesn"t exist !',
+      });
+      return;
+    }
     const response = resource.data.filter(
       (item) => item.id === req.params.objectId
     );
@@ -77,6 +91,13 @@ router.post("/:id", async (req, res) => {
     }
 
     const resource = await Resource.findById(req.params.id);
+    if(resource === null){
+      res.status(200).send({
+        status: "400",
+        message: 'Seems like resourceId doesn"t exist !',
+      });
+      return;
+    }
     const requiredLabel = resource.schema.map((item) => item.label);
 
     const reqLabel = Object.keys(req.body);
@@ -130,6 +151,13 @@ router.put("/:id/:objectId", async (req, res) => {
     }
 
     const resource = await Resource.findById(req.params.id);
+    if(resource === null){
+      res.status(200).send({
+        status: "400",
+        message: 'Seems like resourceId doesn"t exist !',
+      });
+      return;
+    }
     const requiredLabel = resource.schema.map((item) => item.label);
 
     const reqLabel = Object.keys(req.body);
@@ -189,6 +217,13 @@ router.put("/:id/:objectId", async (req, res) => {
 router.delete("/:id/:objectId", async (req, res) => {
   try {
     const resource = await Resource.findById(req.params.id);
+    if(resource === null){
+      res.status(200).send({
+        status: "400",
+        message: 'Seems like resourceId doesn"t exist !',
+      });
+      return;
+    }
     const required = resource.data.filter(
       (item) => item.id !== req.params.objectId
     );
