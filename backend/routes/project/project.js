@@ -40,4 +40,15 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
+router.put("/single/:id", async (req ,res)=>{
+  try {
+    await Project.findByIdAndUpdate(req.params.id, {
+      $set: { name: req.body.name }
+    })
+    return res.status(200).send({ status: "200", message: "Successfully renamed!" })
+  } catch (error) {
+    return res.status(200).send({ status: "500",message: error })
+  }
+})
+
 module.exports = router;

@@ -18,10 +18,12 @@ import { blue } from "@mui/material/colors";
 import { apiProject } from "../../services/models/projectModel";
 import CustomModal from "../../components/CustomModal";
 import { FiTrash } from "react-icons/fi";
+import { MdDriveFileRenameOutline } from "react-icons/md";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import ConfirmDeleteModal from "./components/ConfirmDelProjectModal";
 import { PartLoader } from "../../components/CustomLoading";
+import { apiProvider } from "../../services/utilities/provider";
 
 const Dashboard = () => {
   const { userId } = useParams();
@@ -35,6 +37,9 @@ const Dashboard = () => {
 
   const [confirmDeleteModal, setConfirmDeleteModal] = useState(false);
   const [toBeDeleted, setToBeDeleted] = useState({});
+
+  const [renameModalOpen, setRenameModalOpen] = useState(false)
+  const [projectToBeRename, setProjectToBeRename] = useState({});
 
   const initialValues = {
     name: "",
@@ -161,16 +166,28 @@ const Dashboard = () => {
                       {project.name}
                     </Typography>
                   </Box>
-                  <Button
-                    color="error"
-                    variant="contained"
-                    onClick={() => {
-                      setToBeDeleted(project);
-                      setConfirmDeleteModal(true);
-                    }}
-                  >
-                    <FiTrash color="#fff" />
-                  </Button>
+                  <Stack direction={"row"} spacing={2}>
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      onClick={() => {
+                        setProjectToBeRename(project)
+                        setRenameModalOpen(true)
+                      }}
+                    >
+                      <MdDriveFileRenameOutline color="#fff" />
+                    </Button>
+                    <Button
+                      color="error"
+                      variant="contained"
+                      onClick={() => {
+                        setToBeDeleted(project);
+                        setConfirmDeleteModal(true);
+                      }}
+                    >
+                      <FiTrash color="#fff" />
+                    </Button>
+                  </Stack>
                 </ListItem>
               ))}
           </List>
@@ -217,8 +234,109 @@ const Dashboard = () => {
         project={toBeDeleted}
         deleteProject={delProject}
       />
+      <RenameModal
+        fetchProjects={fetchProjects}
+        setRenameModalOpen={setRenameModalOpen}
+        projectToBeRename={projectToBeRename}
+        renameModalOpen={renameModalOpen}
+      />
     </React.Fragment>
   );
 };
 
 export default Dashboard;
+
+
+export const RenameModal = ({
+  fetchProjects,
+  projectToBeRename,
+  renameModalOpen,
+  setRenameModalOpen
+}) => {
+
+  const renameProject = (values, id) => {
+    setRenameModalOpen(false)
+    toast.promise(new Promise((resolve, reject) => {
+      apiProvider.putById("project/single", id, {
+        name: values.name,
+      })
+      .then((res) => {
+        if (res.status === "200") {
+          fetchProjects()
+          resolve(res)
+        }
+        reject()
+      })
+    }),
+      {
+        loading: "Renaming...",
+        success: res => res.message,
+        error: "Rename failed",
+      })
+  }
+
+  const initialValues = {
+    name: "",
+    submit: null,
+  };
+
+  const validationSchema = Yup.object().shape({
+    name: Yup.string()
+      .min(3, "Project should be of minimum 3 characters length")
+      .max(25)
+      .required("Project Name is required"),
+  });
+
+  const formik = useFormik({
+    initialValues,
+    validationSchema,
+    onSubmit: (values) => {
+      renameProject(values, projectToBeRename._id)
+    },
+  });
+
+  useEffect(()=>{
+    formik.setValues({
+      name: projectToBeRename.name,
+    })
+  },[projectToBeRename])
+
+  return (
+    <React.Fragment>
+      {renameModalOpen && (
+        <CustomModal open={renameModalOpen} setOpen={setRenameModalOpen} title="Rename project">
+          <Box component="form" onSubmit={formik.handleSubmit}>
+            <TextField
+              label="Project rename"
+              type="text"
+              name="name"
+              sx={{ mb: 3 }}
+              size="small"
+              fullWidth
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+              value={formik.values.name || ""}
+              error={Boolean(formik.touched.name && formik.errors.name)}
+              helperText={formik.touched.name && formik.errors.name}
+            />
+            <Stack direction="row" spacing={3}>
+              <Button variant="contained" size="small" type="submit">
+                Rename
+              </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                size="small"
+                onClick={() => {
+                  setRenameModalOpen(false)
+                }}
+              >
+                Cancel
+              </Button>
+            </Stack>
+          </Box>
+        </CustomModal>
+      )}
+    </React.Fragment>
+  )
+}
