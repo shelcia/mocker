@@ -304,7 +304,7 @@ router.delete("/:id", async (req, res) => {
 router.delete("/", async (req, res)=>{
   for (const id of req.body.resources) {
     try {
-      await Resource.findByIdAndDelete(id)
+      await Resource.findOneAndDelete({_id: { $eq: id }})
     } catch (error) {
       res.status(200).send({ status: "500", message: "Failed to delete" });
       return;
