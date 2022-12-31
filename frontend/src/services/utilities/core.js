@@ -129,5 +129,16 @@ export class ApiCore {
         );
       };
     }
+
+    if (options.removeAll) {
+      this.removeAll = (model, additionalParams, isAuthorized) => {
+        return apiProvider.removeAll(
+          options.url,
+          model,
+          additionalParams,
+          isAuthorized
+        );
+      };
+    }
   }
 }
