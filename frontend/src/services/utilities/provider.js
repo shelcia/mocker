@@ -318,6 +318,38 @@ const remove = async (
   }
 };
 
+/** @param {string} resource */
+/** @param {object} model */
+const removeAll = async (
+  resource,
+  model,
+  additionalParams = "",
+  isAuthorized = false
+) => {
+  const headers = isAuthorized ? { "auth-token": token } : {};
+
+  try {
+    let response;
+    if (additionalParams === "") {
+      response = await axios.delete(`${BASE_URL}/${resource}`, {
+        headers: headers,
+        data: model,
+      });
+    } else {
+      response = await axios.delete(
+        `${BASE_URL}/${resource}/${additionalParams}`,
+        {
+          headers: headers,
+          data: model,
+        }
+      );
+    }
+    return handleResponse(response);
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
 /**
  * @description Since token is initialised on login
  * API call or before if any. But token value get updated
@@ -343,5 +375,6 @@ export const apiProvider = {
   patch,
   patchByParams,
   remove,
+  removeAll,
   updateToken,
 };
