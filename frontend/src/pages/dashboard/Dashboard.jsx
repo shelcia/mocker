@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   Button,
   CardContent,
@@ -10,6 +10,7 @@ import {
   Avatar,
   List,
   Box,
+  Checkbox,
 } from "@mui/material";
 import { FaPlus } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
@@ -24,10 +25,13 @@ import { useFormik } from "formik";
 import ConfirmDeleteModal from "./components/ConfirmDelProjectModal";
 import { PartLoader } from "../../components/CustomLoading";
 import { apiProvider } from "../../services/utilities/provider";
+import { ThemeContext } from "../../context/ThemeContext";
 
 const Dashboard = () => {
   const { userId } = useParams();
   const navigate = useNavigate();
+
+  const [darkTheme] = useContext(ThemeContext);
 
   const [projects, setProjects] = useState([]);
 
@@ -40,6 +44,8 @@ const Dashboard = () => {
 
   const [renameModalOpen, setRenameModalOpen] = useState(false)
   const [projectToBeRename, setProjectToBeRename] = useState({});
+  const [checkedList, setCheckedList] = useState([])
+  const [isMultipleDelete, setIsMultipleDelete] = useState(false)
 
   const initialValues = {
     name: "",
@@ -110,6 +116,36 @@ const Dashboard = () => {
     setConfirmDeleteModal(false);
   };
 
+  const handleChecked = (e, id)=>{
+    let newCheckList = e.target.checked?
+    [...checkedList, id] : checkedList.filter((_id)=>_id!=id)
+
+    setCheckedList(newCheckList)
+  }
+
+  const delSelected = ()=>{
+    const body = {
+      projects: checkedList,
+    }
+    toast.promise(new Promise((resolve, reject)=>{
+      apiProject.removeAll(body)
+      .then((res)=>{
+        if(res.status==="200"){
+          fetchProjects()
+          setCheckedList([])
+          resolve(res.message)
+        }
+        reject(res.message)
+      })
+      setConfirmDeleteModal(false);
+    }),
+    {
+      loading: "Deleting",
+      success: message => message,
+      error: err => err,
+    })
+  }
+
   return (
     <React.Fragment>
       <CardContent>
@@ -137,35 +173,42 @@ const Dashboard = () => {
                   sx={{ justifyContent: "space-between" }}
                   key={project._id}
                 >
-                  <Box
-                    sx={{ display: "flex", cursor: "pointer" }}
-                    onClick={() =>
-                      navigate(`/dashboard/${userId}/${project._id}`)
-                    }
-                  >
-                    <ListItemAvatar>
-                      <Avatar
-                        sx={{
-                          bgcolor: blue[500],
-                          ":hover": { bgcolor: blue[800] },
-                        }}
-                      >
-                        {project?.name?.charAt(0)}
-                      </Avatar>
-                    </ListItemAvatar>
-                    <Typography
-                      sx={{
-                        display: "inline",
-                        mt: 1,
-                        ":hover": { color: blue[800] },
-                      }}
-                      component="h1"
-                      variant="h6"
-                      color="text.primary"
+                  <Stack direction={"row"}>
+                    <Checkbox
+                      sx={{color:darkTheme?"#1c1c1c":"#dbdbdb",
+                        ":hover": {color:darkTheme?"#e8e8e8":"#1c1c1c"}}}
+                      onChange={(e)=>{handleChecked(e, project._id)}}
+                    />
+                    <Box
+                      sx={{ display: "flex", cursor: "pointer" }}
+                      onClick={() =>
+                        navigate(`/dashboard/${userId}/${project._id}`)
+                      }
                     >
-                      {project.name}
-                    </Typography>
-                  </Box>
+                      <ListItemAvatar>
+                        <Avatar
+                          sx={{
+                            bgcolor: blue[500],
+                            ":hover": { bgcolor: blue[800] },
+                          }}
+                        >
+                          {project?.name?.charAt(0)}
+                        </Avatar>
+                      </ListItemAvatar>
+                      <Typography
+                        sx={{
+                          display: "inline",
+                          mt: 1,
+                          ":hover": { color: blue[800] },
+                        }}
+                        component="h1"
+                        variant="h6"
+                        color="text.primary"
+                      >
+                        {project.name}
+                      </Typography>
+                    </Box>
+                  </Stack>
                   <Stack direction={"row"} spacing={2}>
                     <Button
                       color="primary"
@@ -190,6 +233,18 @@ const Dashboard = () => {
                   </Stack>
                 </ListItem>
               ))}
+              {checkedList.length!==0 &&
+              <Button
+                sx={{ mt: 2 }}
+                onClick={()=>{
+                  setConfirmDeleteModal(true);
+                  setIsMultipleDelete(true)
+                }}
+                variant="contained"
+                color="error">
+                  Delete selected
+              </Button>
+        }
           </List>
         )}
       </CardContent>
@@ -233,6 +288,9 @@ const Dashboard = () => {
         setConfirmDeleteModal={setConfirmDeleteModal}
         project={toBeDeleted}
         deleteProject={delProject}
+        isMultipleDelete = {isMultipleDelete}
+        setIsMultipleDelete = {setIsMultipleDelete}
+        delSelected = {delSelected}
       />
       <RenameModal
         fetchProjects={fetchProjects}

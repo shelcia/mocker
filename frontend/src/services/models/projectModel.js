@@ -11,6 +11,7 @@ export const apiProject = new ApiCore({
   putById: true,
   patch: true,
   remove: true,
+  removeAll: true,
   url: url,
   //   plural: plural,
   //   single: single,
