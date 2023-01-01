@@ -40,6 +40,18 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
+router.delete("/", async (req, res)=>{
+  for (const id of req.body.projects) {
+    try {
+      await Project.findOneAndDelete({_id: { $eq: id }})
+    } catch (error) {
+      res.status(200).send({ status: "500", message: "Failed to delete" });
+      return;
+    }
+  }
+  res.status(200).send({ status: "200", message: "Deleted" });
+})
+
 router.put("/single/:id", async (req ,res)=>{
   try {
     await Project.findByIdAndUpdate(req.params.id, {
