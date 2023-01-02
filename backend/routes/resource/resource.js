@@ -4,6 +4,8 @@ const { v4: uuidv4 } = require("uuid");
 
 const Resource = require("../../models/Resource");
 
+const {specialCharacter} = require("../../utils/customFaker")
+
 // more can be added
 const fakerFuncs = (item, option) => {
   switch (item) {
@@ -188,6 +190,11 @@ const fakerFuncs = (item, option) => {
       return faker.random.word();
     case "words":
       return faker.random.words(option?.count);
+    case "specialCharacter":
+      return specialCharacter({
+        length: option?.count,
+        whitelist: option?.whitelist,
+      })
 
     case "default":
       return () => {};

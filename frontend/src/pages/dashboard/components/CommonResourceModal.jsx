@@ -437,6 +437,6 @@ export const choices = [
   },
   {
     category: "Random",
-    list: ["alpha", "alphaNumeric", "locale", "numeric", "word", "words"],
+    list: ["alpha", "alphaNumeric", "locale", "numeric", "word", "words", "specialCharacter"],
   },
 ];

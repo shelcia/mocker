@@ -1,6 +1,5 @@
 import React, {  useEffect, useState } from "react";
 import {
-  Box,
   Button,
   CardContent,
   Typography,
@@ -12,6 +11,7 @@ import {
   ListItemAvatar,
   Avatar,
   Link,
+  Grid,
 } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import { MdArrowBackIosNew } from "react-icons/md";
@@ -207,67 +207,68 @@ const Resource = ({ resource, fetchResource, delResource }) => {
 
   return (
     <React.Fragment>
-      <ListItem sx={{ justifyContent: "space-between" }}>
-        <Box sx={{ display: "flex" }}>
-          <ListItemAvatar>
-            <Avatar sx={{ bgcolor: blue[500] }}>
-              {resource?.name?.charAt(0)}
-            </Avatar>
-          </ListItemAvatar>
-          <Typography
-            sx={{ display: "inline", mt: 1 }}
-            component="h1"
-            variant="h6"
-            color="text.primary"
-          >
-            {resource?.name}
-          </Typography>
-        </Box>
-
-        <Box>
-          <Stack spacing={2} direction="row" sx={{ mt: 1.8, ml: 6 }}>
-            <CustomTooltip title="View generated JSON data" arrow>
-              <Button variant="contained" onClick={() => setOpenModal(true)}>
-                <FiEye />
-              </Button>
-            </CustomTooltip>
-            <CustomTooltip title="Edit Resource" arrow>
-              <Button variant="outlined" onClick={() => setEditModal(true)}>
-                <FiEdit2 />
-              </Button>
-            </CustomTooltip>
-            {/* <Button
-              variant="outlined"
-              color="success"
-              onClick={() => setAnalyticsModal(true)}
+      <ListItem>
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={4} sx={{ display: "flex"}} alignItems="center">
+            <ListItemAvatar>
+              <Avatar sx={{ bgcolor: blue[500] }}>
+                {resource?.name?.charAt(0)}
+              </Avatar>
+            </ListItemAvatar>
+            <Typography
+              sx={{ display: "inline", mt: 1 }}
+              component="h1"
+              variant="h6"
+              color="text.primary"
             >
-              <VscGraph />
-            </Button> */}
-            <CustomTooltip title="Clone Resource" arrow>
-              <Button
-                variant="contained"
+              {resource?.name}
+            </Typography>
+          </Grid>
+          <Grid item xs={12} md={8}>
+            <Stack spacing={2} direction="row" sx={{justifyContent:{sm:"left",md:"right"}}}>
+              <CustomTooltip title="View generated JSON data" arrow>
+                <Button variant="contained" onClick={() => setOpenModal(true)}>
+                  <FiEye />
+                </Button>
+              </CustomTooltip>
+              <CustomTooltip title="Edit Resource" arrow>
+                <Button variant="outlined" onClick={() => setEditModal(true)}>
+                  <FiEdit2 />
+                </Button>
+              </CustomTooltip>
+              {/* <Button
+                variant="outlined"
                 color="success"
-                onClick={() => setCloneModal(true)}
+                onClick={() => setAnalyticsModal(true)}
               >
-                <FaRegClone />
-              </Button>
-            </CustomTooltip>
-            <CustomTooltip title="Delete Resource" arrow>
-              <Button
-                variant="contained"
-                color="error"
-                onClick={() => setDelResourceModal(true)}
-              >
-                <FiTrash />
-              </Button>
-            </CustomTooltip>
-            <CustomTooltip title="View generated API endpoints" arrow>
-              <Button variant="contained" onClick={() => setEndModal(true)}>
-                View Endpoints
-              </Button>
-            </CustomTooltip>
-          </Stack>
-        </Box>
+                <VscGraph />
+              </Button> */}
+              <CustomTooltip title="Clone Resource" arrow>
+                <Button
+                  variant="contained"
+                  color="success"
+                  onClick={() => setCloneModal(true)}
+                >
+                  <FaRegClone />
+                </Button>
+              </CustomTooltip>
+              <CustomTooltip title="Delete Resource" arrow>
+                <Button
+                  variant="contained"
+                  color="error"
+                  onClick={() => setDelResourceModal(true)}
+                >
+                  <FiTrash />
+                </Button>
+              </CustomTooltip>
+              <CustomTooltip title="View generated API endpoints" arrow>
+                <Button variant="contained" onClick={() => setEndModal(true)}>
+                  View Endpoints
+                </Button>
+              </CustomTooltip>
+            </Stack>
+          </Grid>
+        </Grid>
       </ListItem>
       <ResultModal
         open={openModal}
