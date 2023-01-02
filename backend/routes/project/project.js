@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const Project = require("../../models/Project");
+const Resource = require("../../models/Resource");
 
 router.post("/", async (req, res) => {
   try {
@@ -34,6 +35,7 @@ router.get("/single/:id", async (req, res) => {
 router.delete("/:id", async (req, res) => {
   try {
     await Project.findByIdAndDelete(req.params.id);
+    await Resource.deleteMany({ projectId: req.params.id })
     res.status(200).send({ status: "200", message: "Successful" });
   } catch (err) {
     res.status(200).send({ status: "500", message: err });
@@ -44,6 +46,7 @@ router.delete("/", async (req, res)=>{
   for (const id of req.body.projects) {
     try {
       await Project.findOneAndDelete({_id: { $eq: id }})
+      await Resource.deleteMany({ projectId: { $eq: id } })
     } catch (error) {
       res.status(200).send({ status: "500", message: "Failed to delete" });
       return;
