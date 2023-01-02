@@ -6,6 +6,7 @@ import {
   CardContent,
   Container,
   Grid,
+  Link,
   List,
   ListItem,
   ListItemIcon,
@@ -27,7 +28,14 @@ const AuthLayout = ({ children }) => {
           >
             Mocker
           </Typography>
-          <Box>
+          <Box sx={{ display: "flex" }}>
+            <Link
+              href="https://mocker-docs.vercel.app/docs/intro"
+              target="_blank"
+              sx={{ mr: 2 }}
+            >
+              Docs
+            </Link>
             <CustomToggle />
           </Box>
         </Toolbar>

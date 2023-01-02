@@ -3,15 +3,11 @@ import { apiResource } from "../../../services/models/resourceModal";
 import CommonResourceModal from "./CommonResourceModal";
 import { useParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
-import {
-  Stack,
-  LinearProgress,
-  Typography
-} from '@mui/material'
+import { Stack, LinearProgress, Typography } from "@mui/material";
 
 const CloneModal = ({ open, setOpen, result, fetchResources }) => {
   const { userId, projectId } = useParams();
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   const [inputs, setInputs] = useState({
     name: "",
@@ -71,7 +67,7 @@ const CloneModal = ({ open, setOpen, result, fetchResources }) => {
         console.log(err);
         toast.error("Error");
       })
-      .finally(()=>{
+      .finally(() => {
         setLoading(false);
       });
   };
@@ -88,14 +84,14 @@ const CloneModal = ({ open, setOpen, result, fetchResources }) => {
       buttonTxt="Clone"
       func={cloneResource}
     >
-    {loading && (
-      <Stack direction="column" spacing={3} mt={4}>
-        <LinearProgress sx={{ mb: -2 }} />
-        <Typography variant="p" component="p" color="primary" align="center">
-          Cloning Data...
-        </Typography>
-      </Stack>
-    )}
+      {loading && (
+        <Stack direction="column" spacing={3} mt={4}>
+          <LinearProgress sx={{ mb: -2 }} />
+          <Typography variant="p" component="p" color="primary" align="center">
+            Cloning Data...
+          </Typography>
+        </Stack>
+      )}
     </CommonResourceModal>
   );
 };

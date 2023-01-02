@@ -397,7 +397,7 @@ export const choices = [
       "past",
       "recent",
       "soon",
-      "weekday"
+      "weekday",
     ],
   },
   {

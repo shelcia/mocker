@@ -13,13 +13,13 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import CustomModal from "../../../components/CustomModal";
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DateTimePicker } from '@mui/x-date-pickers';
-import utc from 'dayjs/plugin/utc'
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DateTimePicker } from "@mui/x-date-pickers";
+import utc from "dayjs/plugin/utc";
 import dayjs from "dayjs";
 
-dayjs.extend(utc)
+dayjs.extend(utc);
 
 const SchemaOptionModal = ({
   optionOpen,
@@ -287,7 +287,7 @@ export const Option = ({ fieldInfo, myOption, setMyOption }) => {
             value={myOption.length ? myOption.length : ""}
           />
         </React.Fragment>
-      )
+      );
     }
 
     case "bigInt": {
@@ -336,7 +336,7 @@ export const Option = ({ fieldInfo, myOption, setMyOption }) => {
             <Chip sx={{ width: "100%" }} color={"error"} label={message} />
           )}
         </React.Fragment>
-      )
+      );
     }
 
     case "datetime": {
@@ -385,7 +385,7 @@ export const Option = ({ fieldInfo, myOption, setMyOption }) => {
             <Chip sx={{ width: "100%" }} color={"error"} label={message} />
           )}
         </React.Fragment>
-      )
+      );
     }
 
     case "float": {
@@ -429,14 +429,14 @@ export const Option = ({ fieldInfo, myOption, setMyOption }) => {
             placeholder="Example: 20"
             value={myOption.max ? myOption.max : ""}
           />
-          <Divider sx={{ mt: 2}} />
+          <Divider sx={{ mt: 2 }} />
           {!balance && (
             <Chip sx={{ width: "100%" }} color={"error"} label={message} />
           )}
 
           <TextField
             fullWidth
-            sx={{ mt:2 }}
+            sx={{ mt: 2 }}
             onChange={(e) => {
               setMyOption({ ...myOption, precision: e.target.value });
             }}
@@ -445,7 +445,7 @@ export const Option = ({ fieldInfo, myOption, setMyOption }) => {
             value={myOption.precision ? myOption.precision : ""}
           />
         </React.Fragment>
-      )
+      );
     }
 
     case "hexadecimal": {
@@ -455,7 +455,7 @@ export const Option = ({ fieldInfo, myOption, setMyOption }) => {
         <React.Fragment>
           <TextField
             fullWidth
-            sx={{ mt:2 }}
+            sx={{ mt: 2 }}
             onChange={(e) => {
               setMyOption({ ...myOption, length: e.target.value });
             }}
@@ -464,25 +464,25 @@ export const Option = ({ fieldInfo, myOption, setMyOption }) => {
             value={myOption.length ? myOption.length : ""}
           />
 
-          <FormControl fullWidth sx={{mt:2}}>
-          <InputLabel>case</InputLabel>
-          <Select
-            value={myOption.case ? myOption.case : _case}
-            label="case"
-            onChange={(e) => {
-              setCase(e.target.value);
-              setMyOption({ ...myOption, case: e.target.value });
-            }}
-          >
-            <MenuItem value={"lower"}>lower case</MenuItem>
-            <MenuItem value={"upper"}>upper case</MenuItem>
-            <MenuItem value={"mixed"}>mixed case</MenuItem>
-          </Select>
-        </FormControl>
+          <FormControl fullWidth sx={{ mt: 2 }}>
+            <InputLabel>case</InputLabel>
+            <Select
+              value={myOption.case ? myOption.case : _case}
+              label="case"
+              onChange={(e) => {
+                setCase(e.target.value);
+                setMyOption({ ...myOption, case: e.target.value });
+              }}
+            >
+              <MenuItem value={"lower"}>lower case</MenuItem>
+              <MenuItem value={"upper"}>upper case</MenuItem>
+              <MenuItem value={"mixed"}>mixed case</MenuItem>
+            </Select>
+          </FormControl>
 
-        <TextField
+          <TextField
             fullWidth
-            sx={{ mt:2 }}
+            sx={{ mt: 2 }}
             onChange={(e) => {
               setMyOption({ ...myOption, prefix: e.target.value });
             }}
@@ -491,7 +491,7 @@ export const Option = ({ fieldInfo, myOption, setMyOption }) => {
             value={myOption.prefix ? myOption.prefix : ""}
           />
         </React.Fragment>
-      )
+      );
     }
 
     case "number": {
@@ -535,14 +535,14 @@ export const Option = ({ fieldInfo, myOption, setMyOption }) => {
             placeholder="Example: 20"
             value={myOption.max ? myOption.max : ""}
           />
-          <Divider sx={{ mt: 2}} />
+          <Divider sx={{ mt: 2 }} />
           {!balance && (
             <Chip sx={{ width: "100%" }} color={"error"} label={message} />
           )}
 
           <TextField
             fullWidth
-            sx={{ mt:2 }}
+            sx={{ mt: 2 }}
             onChange={(e) => {
               setMyOption({ ...myOption, precision: e.target.value });
             }}
@@ -551,7 +551,7 @@ export const Option = ({ fieldInfo, myOption, setMyOption }) => {
             value={myOption.precision ? myOption.precision : ""}
           />
         </React.Fragment>
-      )
+      );
     }
 
     case "string": {
@@ -559,7 +559,7 @@ export const Option = ({ fieldInfo, myOption, setMyOption }) => {
         <React.Fragment>
           <TextField
             fullWidth
-            sx={{ mt:2 }}
+            sx={{ mt: 2 }}
             onChange={(e) => {
               setMyOption({ ...myOption, length: e.target.value });
             }}
@@ -568,7 +568,7 @@ export const Option = ({ fieldInfo, myOption, setMyOption }) => {
             value={myOption.length ? myOption.length : ""}
           />
         </React.Fragment>
-      )
+      );
     }
 
     case "between": {
@@ -578,36 +578,36 @@ export const Option = ({ fieldInfo, myOption, setMyOption }) => {
             <Box>
               <DateTimePicker
                 label="From"
-                value={myOption.from ? dayjs(myOption.from).utc(false) : Date.now()}
-                
+                value={
+                  myOption.from ? dayjs(myOption.from).utc(false) : Date.now()
+                }
                 onChange={(value) => {
-                  if(!dayjs(value).isValid())return;
-                  const date_time = dayjs(value).local().toISOString()
+                  if (!dayjs(value).isValid()) return;
+                  const date_time = dayjs(value).local().toISOString();
                   setMyOption({ ...myOption, from: date_time });
                 }}
-                views={["day", "hours","minutes","seconds"]}
+                views={["day", "hours", "minutes", "seconds"]}
                 inputFormat={"YYYY-MM-DD HH:mm:ss A"}
                 renderInput={(params) => <TextField {...params} />}
               />
             </Box>
-            <Box sx={{ mt:2 }}>
+            <Box sx={{ mt: 2 }}>
               <DateTimePicker
                 label="To"
                 value={myOption.to ? dayjs(myOption.to).utc(false) : Date.now()}
-
                 onChange={(value) => {
-                  if(!dayjs(value).isValid())return;
-                  const date_time = dayjs(value).local().toISOString()
+                  if (!dayjs(value).isValid()) return;
+                  const date_time = dayjs(value).local().toISOString();
                   setMyOption({ ...myOption, to: date_time });
                 }}
-                views={["day", "hours","minutes","seconds"]}
+                views={["day", "hours", "minutes", "seconds"]}
                 inputFormat={"YYYY-MM-DD HH:mm:ss A"}
                 renderInput={(params) => <TextField disabled {...params} />}
               />
             </Box>
           </LocalizationProvider>
         </React.Fragment>
-      )
+      );
     }
     case "betweens": {
       return (
@@ -616,29 +616,29 @@ export const Option = ({ fieldInfo, myOption, setMyOption }) => {
             <Box>
               <DateTimePicker
                 label="From"
-                value={myOption.from ? dayjs(myOption.from).utc(false) : Date.now()}
-                
+                value={
+                  myOption.from ? dayjs(myOption.from).utc(false) : Date.now()
+                }
                 onChange={(value) => {
-                  if(!dayjs(value).isValid())return;
-                  const date_time = dayjs(value).local().toISOString()
+                  if (!dayjs(value).isValid()) return;
+                  const date_time = dayjs(value).local().toISOString();
                   setMyOption({ ...myOption, from: date_time });
                 }}
-                views={["day", "hours","minutes","seconds"]}
+                views={["day", "hours", "minutes", "seconds"]}
                 inputFormat={"YYYY-MM-DD HH:mm:ss A"}
                 renderInput={(params) => <TextField {...params} />}
               />
             </Box>
-            <Box sx={{ mt:2 }}>
+            <Box sx={{ mt: 2 }}>
               <DateTimePicker
                 label="To"
                 value={myOption.to ? dayjs(myOption.to).utc(false) : Date.now()}
-
                 onChange={(value) => {
-                  if(!dayjs(value).isValid())return;
-                  const date_time = dayjs(value).local().toISOString()
+                  if (!dayjs(value).isValid()) return;
+                  const date_time = dayjs(value).local().toISOString();
                   setMyOption({ ...myOption, to: date_time });
                 }}
-                views={["day", "hours","minutes","seconds"]}
+                views={["day", "hours", "minutes", "seconds"]}
                 inputFormat={"YYYY-MM-DD HH:mm:ss A"}
                 renderInput={(params) => <TextField disabled {...params} />}
               />
@@ -646,7 +646,7 @@ export const Option = ({ fieldInfo, myOption, setMyOption }) => {
           </LocalizationProvider>
           <TextField
             fullWidth
-            sx={{ mt:2 }}
+            sx={{ mt: 2 }}
             onChange={(e) => {
               setMyOption({ ...myOption, num: e.target.value });
             }}
@@ -655,7 +655,7 @@ export const Option = ({ fieldInfo, myOption, setMyOption }) => {
             value={myOption.num ? myOption.num : ""}
           />
         </React.Fragment>
-      )
+      );
     }
     case "birthdate": {
       const [balance, setBalance] = useState(true);
@@ -704,30 +704,29 @@ export const Option = ({ fieldInfo, myOption, setMyOption }) => {
             <Chip sx={{ width: "100%" }} color={"error"} label={message} />
           )}
 
-          <FormControl fullWidth sx={{mt:2}}>
-          <InputLabel>mode</InputLabel>
-          <Select
-            value={myOption.mode ? myOption.mode : mode}
-            label="mode"
-            onChange={(e) => {
-              setMode(e.target.value);
-              setMyOption({ ...myOption, mode: e.target.value });
-            }}
-          >
-            <MenuItem value={"age"}>age</MenuItem>
-            <MenuItem value={"year"}>year</MenuItem>
-          </Select>
-        </FormControl>
-
+          <FormControl fullWidth sx={{ mt: 2 }}>
+            <InputLabel>mode</InputLabel>
+            <Select
+              value={myOption.mode ? myOption.mode : mode}
+              label="mode"
+              onChange={(e) => {
+                setMode(e.target.value);
+                setMyOption({ ...myOption, mode: e.target.value });
+              }}
+            >
+              <MenuItem value={"age"}>age</MenuItem>
+              <MenuItem value={"year"}>year</MenuItem>
+            </Select>
+          </FormControl>
         </React.Fragment>
-      )
+      );
     }
     case "future": {
       return (
         <React.Fragment>
           <TextField
             fullWidth
-            sx={{ mt:2 }}
+            sx={{ mt: 2 }}
             onChange={(e) => {
               setMyOption({ ...myOption, years: e.target.value });
             }}
@@ -736,7 +735,7 @@ export const Option = ({ fieldInfo, myOption, setMyOption }) => {
             value={myOption.years ? myOption.years : ""}
           />
         </React.Fragment>
-      )
+      );
     }
     case "month": {
       const [abbr, setAbbr] = useState(myOption.abbr ? myOption.abbr : "false");
@@ -758,14 +757,14 @@ export const Option = ({ fieldInfo, myOption, setMyOption }) => {
             </Select>
           </FormControl>
         </React.Fragment>
-      )
+      );
     }
     case "recent": {
       return (
         <React.Fragment>
           <TextField
             fullWidth
-            sx={{ mt:2 }}
+            sx={{ mt: 2 }}
             onChange={(e) => {
               setMyOption({ ...myOption, days: e.target.value });
             }}
@@ -777,28 +776,31 @@ export const Option = ({ fieldInfo, myOption, setMyOption }) => {
             <Box sx={{ mt: 2 }}>
               <DateTimePicker
                 label="Reference point"
-                value={myOption.refDate ? dayjs(myOption.refDate).utc(false) : Date.now()}
-                
+                value={
+                  myOption.refDate
+                    ? dayjs(myOption.refDate).utc(false)
+                    : Date.now()
+                }
                 onChange={(value) => {
-                  if(!dayjs(value).isValid())return;
-                  const date_time = dayjs(value).local().toISOString()
+                  if (!dayjs(value).isValid()) return;
+                  const date_time = dayjs(value).local().toISOString();
                   setMyOption({ ...myOption, refDate: date_time });
                 }}
-                views={["day", "hours","minutes","seconds"]}
+                views={["day", "hours", "minutes", "seconds"]}
                 inputFormat={"YYYY-MM-DD HH:mm:ss A"}
                 renderInput={(params) => <TextField {...params} />}
               />
             </Box>
           </LocalizationProvider>
         </React.Fragment>
-      )
+      );
     }
     case "soon": {
       return (
         <React.Fragment>
           <TextField
             fullWidth
-            sx={{ mt:2 }}
+            sx={{ mt: 2 }}
             onChange={(e) => {
               setMyOption({ ...myOption, days: e.target.value });
             }}
@@ -810,21 +812,24 @@ export const Option = ({ fieldInfo, myOption, setMyOption }) => {
             <Box sx={{ mt: 2 }}>
               <DateTimePicker
                 label="Reference point"
-                value={myOption.refDate ? dayjs(myOption.refDate).utc(false) : Date.now()}
-                
+                value={
+                  myOption.refDate
+                    ? dayjs(myOption.refDate).utc(false)
+                    : Date.now()
+                }
                 onChange={(value) => {
-                  if(!dayjs(value).isValid())return;
-                  const date_time = dayjs(value).local().toISOString()
+                  if (!dayjs(value).isValid()) return;
+                  const date_time = dayjs(value).local().toISOString();
                   setMyOption({ ...myOption, refDate: date_time });
                 }}
-                views={["day", "hours","minutes","seconds"]}
+                views={["day", "hours", "minutes", "seconds"]}
                 inputFormat={"YYYY-MM-DD HH:mm:ss A"}
                 renderInput={(params) => <TextField {...params} />}
               />
             </Box>
           </LocalizationProvider>
         </React.Fragment>
-      )
+      );
     }
     case "weekday": {
       const [abbr, setAbbr] = useState(myOption.abbr ? myOption.abbr : "false");
@@ -846,7 +851,7 @@ export const Option = ({ fieldInfo, myOption, setMyOption }) => {
             </Select>
           </FormControl>
         </React.Fragment>
-      )
+      );
     }
 
     case "default":

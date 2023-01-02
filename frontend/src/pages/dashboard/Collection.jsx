@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, {  useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -12,7 +12,6 @@ import {
   ListItemAvatar,
   Avatar,
   Link,
-  Checkbox
 } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import { MdArrowBackIosNew } from "react-icons/md";
@@ -33,7 +32,7 @@ import ViewAnalytics from "./components/ViewAnalytics";
 import CloneModal from "./components/CloneModal";
 import { CustomTooltip } from "../../components/CustomTooltip";
 import DeleteResourceModal from "./components/DeleteResourceModal";
-import { ThemeContext } from "../../context/ThemeContext";
+import CustomCheckbox from "../../components/CustomCheckbox";
 
 const Collection = () => {
   const [open, setOpen] = useState(false);
@@ -42,11 +41,9 @@ const Collection = () => {
   const [projectName, setProjectName] = useState("");
   const [resources, setResources] = useState([]);
 
-  const [checkedList, setCheckedList] = useState([])
+  const [checkedList, setCheckedList] = useState([]);
 
   const navigate = useNavigate();
-
-  const [darkTheme] = useContext(ThemeContext);
 
   const { projectId } = useParams();
 
@@ -85,34 +82,36 @@ const Collection = () => {
     });
   };
 
-  const handleChecked = (e, id)=>{
-    let newCheckList = e.target.checked?
-    [...checkedList, id] : checkedList.filter((_id)=>_id!=id)
+  const handleChecked = (e, id) => {
+    let newCheckList = e.target.checked
+      ? [...checkedList, id]
+      : checkedList.filter((_id) => _id != id);
 
-    setCheckedList(newCheckList)
-  }
+    setCheckedList(newCheckList);
+  };
 
-  const delSelected = ()=>{
+  const delSelected = () => {
     const body = {
       resources: checkedList,
-    }
-    toast.promise(new Promise((resolve, reject)=>{
-      apiResource.removeAll(body)
-      .then((res)=>{
-        if(res.status==="200"){
-          fetchResource()
-          setCheckedList([])
-          resolve(res.message)
-        }
-        reject(res.message)
-      })
-    }),
-    {
-      loading: "Deleting",
-      success: message => message,
-      error: err => err,
-    })
-  }
+    };
+    toast.promise(
+      new Promise((resolve, reject) => {
+        apiResource.removeAll(body).then((res) => {
+          if (res.status === "200") {
+            fetchResource();
+            setCheckedList([]);
+            resolve(res.message);
+          }
+          reject(res.message);
+        });
+      }),
+      {
+        loading: "Deleting",
+        success: (message) => message,
+        error: (err) => err,
+      }
+    );
+  };
 
   return (
     <React.Fragment>
@@ -142,11 +141,7 @@ const Collection = () => {
         <List sx={{ overflowX: "auto" }}>
           {resources?.map((resource) => (
             <Stack direction={"row"} key={resource._id}>
-              <Checkbox
-                sx={{color:darkTheme?"#1c1c1c":"#dbdbdb",
-                  ":hover": {color:darkTheme?"#e8e8e8":"#1c1c1c"}}}
-                onChange={(e)=>{handleChecked(e,resource._id)}}
-              />
+              <CustomCheckbox handleChecked={handleChecked} id={resource._id} />
               <Resource
                 resource={resource}
                 fetchResource={fetchResource}
@@ -155,14 +150,17 @@ const Collection = () => {
             </Stack>
           ))}
         </List>
-        {checkedList.length!==0 &&
+        {checkedList.length !== 0 && (
           <Button
-              onClick={()=>{delSelected()}}
-              variant="contained"
-              color="error">
+            onClick={() => {
+              delSelected();
+            }}
+            variant="contained"
+            color="error"
+          >
             Delete selected
           </Button>
-        }
+        )}
       </CardContent>
       <ResourceModal
         open={open}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   CardContent,
@@ -10,7 +10,6 @@ import {
   Avatar,
   List,
   Box,
-  Checkbox,
 } from "@mui/material";
 import { FaPlus } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
@@ -25,13 +24,11 @@ import { useFormik } from "formik";
 import ConfirmDeleteModal from "./components/ConfirmDelProjectModal";
 import { PartLoader } from "../../components/CustomLoading";
 import { apiProvider } from "../../services/utilities/provider";
-import { ThemeContext } from "../../context/ThemeContext";
+import CustomCheckbox from "../../components/CustomCheckbox";
 
 const Dashboard = () => {
   const { userId } = useParams();
   const navigate = useNavigate();
-
-  const [darkTheme] = useContext(ThemeContext);
 
   const [projects, setProjects] = useState([]);
 
@@ -42,10 +39,10 @@ const Dashboard = () => {
   const [confirmDeleteModal, setConfirmDeleteModal] = useState(false);
   const [toBeDeleted, setToBeDeleted] = useState({});
 
-  const [renameModalOpen, setRenameModalOpen] = useState(false)
+  const [renameModalOpen, setRenameModalOpen] = useState(false);
   const [projectToBeRename, setProjectToBeRename] = useState({});
-  const [checkedList, setCheckedList] = useState([])
-  const [isMultipleDelete, setIsMultipleDelete] = useState(false)
+  const [checkedList, setCheckedList] = useState([]);
+  const [isMultipleDelete, setIsMultipleDelete] = useState(false);
 
   const initialValues = {
     name: "",
@@ -116,35 +113,37 @@ const Dashboard = () => {
     setConfirmDeleteModal(false);
   };
 
-  const handleChecked = (e, id)=>{
-    let newCheckList = e.target.checked?
-    [...checkedList, id] : checkedList.filter((_id)=>_id!=id)
+  const handleChecked = (e, id) => {
+    let newCheckList = e.target.checked
+      ? [...checkedList, id]
+      : checkedList.filter((_id) => _id != id);
 
-    setCheckedList(newCheckList)
-  }
+    setCheckedList(newCheckList);
+  };
 
-  const delSelected = ()=>{
+  const delSelected = () => {
     const body = {
       projects: checkedList,
-    }
-    toast.promise(new Promise((resolve, reject)=>{
-      apiProject.removeAll(body)
-      .then((res)=>{
-        if(res.status==="200"){
-          fetchProjects()
-          setCheckedList([])
-          resolve(res.message)
-        }
-        reject(res.message)
-      })
-      setConfirmDeleteModal(false);
-    }),
-    {
-      loading: "Deleting",
-      success: message => message,
-      error: err => err,
-    })
-  }
+    };
+    toast.promise(
+      new Promise((resolve, reject) => {
+        apiProject.removeAll(body).then((res) => {
+          if (res.status === "200") {
+            fetchProjects();
+            setCheckedList([]);
+            resolve(res.message);
+          }
+          reject(res.message);
+        });
+        setConfirmDeleteModal(false);
+      }),
+      {
+        loading: "Deleting",
+        success: (message) => message,
+        error: (err) => err,
+      }
+    );
+  };
 
   return (
     <React.Fragment>
@@ -174,10 +173,9 @@ const Dashboard = () => {
                   key={project._id}
                 >
                   <Stack direction={"row"}>
-                    <Checkbox
-                      sx={{color:darkTheme?"#1c1c1c":"#dbdbdb",
-                        ":hover": {color:darkTheme?"#e8e8e8":"#1c1c1c"}}}
-                      onChange={(e)=>{handleChecked(e, project._id)}}
+                    <CustomCheckbox
+                      handleChecked={handleChecked}
+                      id={project._id}
                     />
                     <Box
                       sx={{ display: "flex", cursor: "pointer" }}
@@ -214,8 +212,8 @@ const Dashboard = () => {
                       color="primary"
                       variant="contained"
                       onClick={() => {
-                        setProjectToBeRename(project)
-                        setRenameModalOpen(true)
+                        setProjectToBeRename(project);
+                        setRenameModalOpen(true);
                       }}
                     >
                       <MdDriveFileRenameOutline color="#fff" />
@@ -233,18 +231,19 @@ const Dashboard = () => {
                   </Stack>
                 </ListItem>
               ))}
-              {checkedList.length!==0 &&
+            {checkedList.length !== 0 && (
               <Button
                 sx={{ mt: 2 }}
-                onClick={()=>{
+                onClick={() => {
                   setConfirmDeleteModal(true);
-                  setIsMultipleDelete(true)
+                  setIsMultipleDelete(true);
                 }}
                 variant="contained"
-                color="error">
-                  Delete selected
+                color="error"
+              >
+                Delete selected
               </Button>
-        }
+            )}
           </List>
         )}
       </CardContent>
@@ -288,9 +287,9 @@ const Dashboard = () => {
         setConfirmDeleteModal={setConfirmDeleteModal}
         project={toBeDeleted}
         deleteProject={delProject}
-        isMultipleDelete = {isMultipleDelete}
-        setIsMultipleDelete = {setIsMultipleDelete}
-        delSelected = {delSelected}
+        isMultipleDelete={isMultipleDelete}
+        setIsMultipleDelete={setIsMultipleDelete}
+        delSelected={delSelected}
       />
       <RenameModal
         fetchProjects={fetchProjects}
@@ -304,34 +303,35 @@ const Dashboard = () => {
 
 export default Dashboard;
 
-
 export const RenameModal = ({
   fetchProjects,
   projectToBeRename,
   renameModalOpen,
-  setRenameModalOpen
+  setRenameModalOpen,
 }) => {
-
   const renameProject = (values, id) => {
-    setRenameModalOpen(false)
-    toast.promise(new Promise((resolve, reject) => {
-      apiProvider.putById("project/single", id, {
-        name: values.name,
-      })
-      .then((res) => {
-        if (res.status === "200") {
-          fetchProjects()
-          resolve(res)
-        }
-        reject()
-      })
-    }),
+    setRenameModalOpen(false);
+    toast.promise(
+      new Promise((resolve, reject) => {
+        apiProvider
+          .putById("project/single", id, {
+            name: values.name,
+          })
+          .then((res) => {
+            if (res.status === "200") {
+              fetchProjects();
+              resolve(res);
+            }
+            reject();
+          });
+      }),
       {
         loading: "Renaming...",
-        success: res => res.message,
+        success: (res) => res.message,
         error: "Rename failed",
-      })
-  }
+      }
+    );
+  };
 
   const initialValues = {
     name: "",
@@ -349,20 +349,24 @@ export const RenameModal = ({
     initialValues,
     validationSchema,
     onSubmit: (values) => {
-      renameProject(values, projectToBeRename._id)
+      renameProject(values, projectToBeRename._id);
     },
   });
 
-  useEffect(()=>{
+  useEffect(() => {
     formik.setValues({
       name: projectToBeRename.name,
-    })
-  },[projectToBeRename])
+    });
+  }, [projectToBeRename]);
 
   return (
     <React.Fragment>
       {renameModalOpen && (
-        <CustomModal open={renameModalOpen} setOpen={setRenameModalOpen} title="Rename project">
+        <CustomModal
+          open={renameModalOpen}
+          setOpen={setRenameModalOpen}
+          title="Rename project"
+        >
           <Box component="form" onSubmit={formik.handleSubmit}>
             <TextField
               label="Project rename"
@@ -386,7 +390,7 @@ export const RenameModal = ({
                 color="secondary"
                 size="small"
                 onClick={() => {
-                  setRenameModalOpen(false)
+                  setRenameModalOpen(false);
                 }}
               >
                 Cancel
@@ -396,5 +400,5 @@ export const RenameModal = ({
         </CustomModal>
       )}
     </React.Fragment>
-  )
-}
+  );
+};

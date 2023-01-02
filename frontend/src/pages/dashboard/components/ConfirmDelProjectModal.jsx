@@ -9,13 +9,13 @@ const ConfirmDeleteModal = ({
   deleteProject,
   isMultipleDelete = false,
   setIsMultipleDelete,
-  delSelected = ()=>{ },
+  delSelected = () => {},
 }) => {
   const [formData, setFormData] = useState("");
   const [disabled, setDisabled] = useState(true);
 
   const checkProjectName = () => {
-    if(isMultipleDelete){
+    if (isMultipleDelete) {
       if ("DELETE" === formData) {
         setDisabled(false);
       } else {
@@ -34,11 +34,10 @@ const ConfirmDeleteModal = ({
     checkProjectName();
   }, [formData]);
 
-  useEffect(()=>{
+  useEffect(() => {
     //Set multiple delete to false on closing
-    confirmDeleteModal || setIsMultipleDelete(false)
-
-  },[confirmDeleteModal])
+    confirmDeleteModal || setIsMultipleDelete(false);
+  }, [confirmDeleteModal]);
 
   return (
     <CustomModal
@@ -48,16 +47,14 @@ const ConfirmDeleteModal = ({
     >
       <Typography variant="p" component="p" color="text.primary" sx={{ mb: 3 }}>
         This action cannot be undone. This will permanently delete the{" "}
-        <i>
-          {isMultipleDelete? 'selected' : <b>{project.name}</b>}
-        </i>{" "}
+        <i>{isMultipleDelete ? "selected" : <b>{project.name}</b>}</i>{" "}
         {/* eslint-disable-next-line react/no-unescaped-entities */}
         project and it's associated resources.
       </Typography>
       <Typography variant="p" component="p" color="text.primary" sx={{ mb: 3 }}>
         Please type{" "}
         <i>
-          <b>{isMultipleDelete? 'DELETE' : project.name}</b>
+          <b>{isMultipleDelete ? "DELETE" : project.name}</b>
         </i>{" "}
         to confirm.
       </Typography>
@@ -81,7 +78,7 @@ const ConfirmDeleteModal = ({
           color="error"
           size="wide"
           onClick={() => {
-            isMultipleDelete? delSelected():deleteProject(project._id);
+            isMultipleDelete ? delSelected() : deleteProject(project._id);
             setFormData("");
             setDisabled(true);
           }}
