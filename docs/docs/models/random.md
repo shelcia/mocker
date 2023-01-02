@@ -106,3 +106,28 @@ Returns string with set of random words
 ```json
 copy Handcrafted bus client-server Point
 ```
+
+### Special character
+Generates a given length string of special character.
+
+
+| Option         | Default                           | Description                                                          |
+| :------------: | :-------------------------------: | -------------------------------------------------------------------- |
+| Number of word | 5                                 | The number of character to generate.                                 |
+| Whitelist      | !"#$%&'()*+,-./:;<=>?@[]^_`{\|}~\ | Set of characters that are allowed to include in the generated data. |
+
+#### Input:
+| Number of word | Whitelist |
+| :------------: | :-------: |
+| 20             |   %^&*    |
+
+#### Output:
+```json
+%&%^^%^&*&^****%%^%%
+```
+
+Special character schema can also be used to generate any character and numeric data as shown:
+
+| Number of word | Whitelist  | Output               |
+| :------------: | :--------: | :------------------: |
+|  20            | qwerty1234 | 1eyw4tww3trew11eyqt1 |
