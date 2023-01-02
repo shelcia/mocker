@@ -274,6 +274,31 @@ export const Option = ({ fieldInfo, myOption, setMyOption }) => {
         ></TextField>
       );
     }
+    case "specialCharacter": {
+      return (
+        <React.Fragment>
+          <TextField
+            fullWidth
+            onChange={(e) => {
+              setMyOption({ ...myOption, count: e.target.value });
+            }}
+            label="Number of word"
+            placeholder="Example: 5"
+            value={myOption.count ? myOption.count : ""}
+          />
+          <TextField
+          sx={{ mt: 2 }}
+            fullWidth
+            onChange={(e) => {
+              setMyOption({ ...myOption, whitelist: e.target.value });
+            }}
+            label="Whitelist"
+            placeholder="Example: ^&*#"
+            value={myOption.whitelist ? myOption.whitelist : ""}
+          />
+        </React.Fragment>
+      );
+    }
     case "array": {
       return (
         <React.Fragment>
@@ -871,6 +896,7 @@ export const OptionExistFor = [
   "alphaNumeric",
   "numeric",
   "words",
+  "specialCharacter",
   "default",
   "array",
   "bigInt",
