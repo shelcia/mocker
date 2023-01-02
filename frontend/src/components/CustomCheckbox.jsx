@@ -9,8 +9,8 @@ const CustomCheckbox = ({ handleChecked, id }) => {
     <>
       <Checkbox
         sx={{
-          color: darkTheme ? "#1c1c1c" : "#dbdbdb",
-          ":hover": { color: darkTheme ? "#e8e8e8" : "#1c1c1c" },
+          color: darkTheme ? "#59BCF5" : "#dbdbdb",
+          ":hover": { color: darkTheme ? "#e8e8e8" : "#59BCF5" },
         }}
         onChange={(e) => {
           handleChecked(e, id);
