@@ -23,6 +23,8 @@ import { CustomTooltip } from "../../../components/CustomTooltip";
 import * as Yup from "yup";
 import { ValidationError } from "../enums/error";
 import { toast } from "react-hot-toast";
+import { FaPlus } from "react-icons/fa";
+import IconButton from '@mui/material/IconButton';
 
 const CommonResourceModal = ({
   open = false,
@@ -98,6 +100,12 @@ const CommonResourceModal = ({
   const deleteSchema = (id) => {
     setSchema(schema.filter((item) => item.id !== id));
   };
+
+  const handleAdd = (idx) => {
+    let newSchema =[ ...schema ];
+    newSchema.splice(idx+1, 0, { id: Date.now(), label: "", field: "" })
+    setSchema(newSchema)
+  }
 
   const ValidationSchema = Yup.object({
     field: Yup.string().required(ValidationError.FIELD_NAME),
@@ -320,6 +328,14 @@ const CommonResourceModal = ({
                     Delete
                   </Button>
                 </Box>
+                <IconButton
+                  color="primary"
+                  size="small"
+                  sx={{ mt:10 }}
+                  onClick={()=>{handleAdd(idx)}}
+                >
+                  <FaPlus size={"0.8rem"} />
+                </IconButton>
               </Stack>
             </Grid>
           </Grid>
