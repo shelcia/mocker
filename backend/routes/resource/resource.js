@@ -196,6 +196,26 @@ const fakerFuncs = (item, option) => {
         whitelist: option?.whitelist,
       })
 
+    case "bicycle":
+      return faker.vehicle.bicycle()
+    case "color":
+      return faker.vehicle.color()
+    case "fuel":
+      return faker.vehicle.fuel()
+    case "manufacturer":
+      return faker.vehicle.manufacturer()
+    case "model":
+      return faker.vehicle.model()
+    case "type":
+      return faker.vehicle.type()
+    case "vehicle":
+      return faker.vehicle.vehicle()
+    case "vin":
+      return faker.vehicle.vin()
+    case "vrm":
+      return faker.vehicle.vrm()
+      
+
     case "default":
       return () => {};
   }

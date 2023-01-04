@@ -439,4 +439,18 @@ export const choices = [
     category: "Random",
     list: ["alpha", "alphaNumeric", "locale", "numeric", "word", "words", "specialCharacter"],
   },
+  {
+    category: "vehicle",
+    list: [
+      "bicycle",
+      "color",
+      "fuel",
+      "manufacturer",
+      "model",
+      "type",
+      "vehicle",
+      "vin",
+      "vrm",
+    ]
+  },
 ];
