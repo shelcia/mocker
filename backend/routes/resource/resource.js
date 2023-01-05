@@ -215,6 +215,127 @@ const fakerFuncs = (item, option) => {
     case "vrm":
       return faker.vehicle.vrm()
       
+    case "buildingNumber":
+      return faker.address.buildingNumber()
+    case "cardinalDirection":
+      return faker.address.cardinalDirection(
+        option?(option.useAbbr==='true'?true:false):undefined,
+      )
+    case "city":
+      return faker.address.city()
+    case "cityName":
+      return faker.address.cityName()
+    case "cityPrefix":
+      return faker.address.cityPrefix()
+    case "citySuffix":
+      return faker.address.citySuffix()
+    case "country":
+      return faker.address.country()
+    case "countryCode":
+      return faker.address.countryCode(
+        option?.alphaCode
+      )
+    case "county":
+      return faker.address.county()
+    case "direction":
+      return faker.address.direction(
+        option?(option.useAbbr==='true'?true:false):undefined,
+      )
+    case "latitude":
+      return faker.address.latitude(
+        option ? parseInt(option.max) : undefined,
+        option ? parseInt(option.min) : undefined,
+        option ? parseInt(option.precision) : undefined,
+      )
+    case "longitude":
+      return faker.address.longitude(
+        option ? parseInt(option.max) : undefined,
+        option ? parseInt(option.min) : undefined,
+        option ? parseInt(option.precision) : undefined,
+      )
+    case "nearbyGPSCoordinate":
+      return faker.address.nearbyGPSCoordinate(
+        option&&option.latitude&&option.longitude?[parseInt(option.latitude), parseInt(option.longitude)]:undefined,
+        option?.radius,
+        option?(option.metric==='KM'?true:false):undefined
+      )
+    case "ordinalDirection":
+      return faker.address.ordinalDirection(
+        option?(option.useAbbr==='true'?true:false):undefined,
+      )
+    case "secondaryAddress":
+      return faker.address.secondaryAddress()
+    case "state":
+      return faker.address.state()
+    case "stateAbbr":
+      return faker.address.stateAbbr()
+    case "street":
+      return faker.address.street()
+    case "streetAddress":
+      return faker.address.streetAddress(
+        option?(option.useFullAddress==='true'?true:false):undefined,
+      )
+    case "streetName":
+      return faker.address.streetName()
+    case "streetPrefix":
+      return faker.address.streetPrefix()
+    case "streetSuffix":
+      return faker.address.streetSuffix()
+    case "timeZone":
+      return faker.address.timeZone()
+    case "zipCode":
+      return faker.address.zipCode(
+        option?.format
+      )
+    case "zipCodeByState":
+      return faker.address.zipCodeByState(
+        option?.state
+      )
+    
+    case "abbreviation":
+      return faker.hacker.abbreviation()
+    case "adjective":
+      return faker.hacker.adjective()
+    case "ingverb":
+      return faker.hacker.ingverb()
+    case "noun":
+      return faker.hacker.noun()
+    case "phrase":
+      return faker.hacker.phrase()
+    case "verb":
+      return faker.hacker.verb()
+
+    case "commonFileExt":
+      return faker.system.commonFileExt()
+    case "commonFileName":
+      return faker.system.commonFileName(
+        option?.ext
+      )
+    case "commonFileType":
+      return faker.system.commonFileType()
+    case "cron":
+      return faker.system.cron()
+    case "directoryPath":
+      return faker.system.directoryPath()
+    case "fileExt":
+      return faker.system.fileExt()
+    case "fileName":
+      return faker.system.fileName({
+        extensionCount: option?parseInt(option.extensionCount):undefined
+      })
+    case "filePath":
+      return faker.system.filePath()
+    case "fileType":
+      return faker.system.fileType()
+    case "mimeType":
+      return faker.system.mimeType()
+    case "networkInterface":
+      return faker.system.networkInterface({
+        interfaceSchema: option?.interfaceSchema,
+        interfaceType: option?.interfaceType,
+      })
+    case "semver":
+      return faker.system.semver()
 
     case "default":
       return () => {};

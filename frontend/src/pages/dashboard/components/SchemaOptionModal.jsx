@@ -878,6 +878,376 @@ export const Option = ({ fieldInfo, myOption, setMyOption }) => {
         </React.Fragment>
       );
     }
+    case "cardinalDirection": {
+      const [useAbbr, setUseAbbr] = useState(myOption.useAbbr ? myOption.useAbbr : "false");
+      return (
+        <React.Fragment>
+          <FormControl fullWidth sx={{ mt: 2 }}>
+            <InputLabel>useAbbr</InputLabel>
+            <Select
+              value={myOption.useAbbr ? myOption.useAbbr : useAbbr}
+              label="useAbbr"
+              onChange={(e) => {
+                setUseAbbr(e.target.value);
+                setMyOption({ ...myOption, useAbbr: e.target.value });
+              }}
+            >
+              <MenuItem value={"false"}>false</MenuItem>
+              <MenuItem value={"true"}>true</MenuItem>
+            </Select>
+          </FormControl>
+        </React.Fragment>
+      )
+    }
+    case "countryCode": {
+      const [alphaCode, setAlphaCode] = useState(myOption.alphaCode ? myOption.alphaCode : "alpha-2");
+      return (
+        <React.Fragment>
+          <FormControl fullWidth sx={{ mt: 2 }}>
+            <InputLabel>alphaCode</InputLabel>
+            <Select
+              value={myOption.alphaCode ? myOption.alphaCode : alphaCode}
+              label="alphaCode"
+              onChange={(e) => {
+                setAlphaCode(e.target.value);
+                setMyOption({ ...myOption, alphaCode: e.target.value });
+              }}
+            >
+              <MenuItem value={"alpha-2"}>alpha-2</MenuItem>
+              <MenuItem value={"alpha-3"}>alpha-3</MenuItem>
+            </Select>
+          </FormControl>
+        </React.Fragment>
+      )
+    }
+    case "direction": {
+      const [useAbbr, setUseAbbr] = useState(myOption.useAbbr ? myOption.useAbbr : "false");
+      return (
+        <React.Fragment>
+          <FormControl fullWidth sx={{ mt: 2 }}>
+            <InputLabel>useAbbr</InputLabel>
+            <Select
+              value={myOption.useAbbr ? myOption.useAbbr : useAbbr}
+              label="useAbbr"
+              onChange={(e) => {
+                setUseAbbr(e.target.value);
+                setMyOption({ ...myOption, useAbbr: e.target.value });
+              }}
+            >
+              <MenuItem value={"false"}>false</MenuItem>
+              <MenuItem value={"true"}>true</MenuItem>
+            </Select>
+          </FormControl>
+        </React.Fragment>
+      )
+    }
+    case "latitude": {
+      const [balance, setBalance] = useState(true);
+      const [message, setMessage] = useState("");
+      return (
+        <React.Fragment>
+          <TextField
+            fullWidth
+            onChange={(e) => {
+              let min = parseInt(e.target.value);
+              let max = parseInt(myOption.max);
+              setMyOption({ ...myOption, min: e.target.value });
+              if (myOption.max && max < min) {
+                setBalance(false);
+                setMessage("min must be smaller than max");
+              } else {
+                setBalance(true);
+              }
+            }}
+            label="min"
+            placeholder="Example: 10"
+            value={myOption.min ? myOption.min : ""}
+          />
+          <Divider sx={{ mt: 2 }} />
+          <TextField
+            fullWidth
+            onChange={(e) => {
+              let min = parseInt(myOption.min);
+              let max = parseInt(e.target.value);
+              setMyOption({ ...myOption, max: e.target.value });
+              if (myOption.min && max < min) {
+                setMessage("max must be greater than min");
+                setBalance(false);
+              } else {
+                setBalance(true);
+              }
+            }}
+            label="max"
+            placeholder="Example: 20"
+            value={myOption.max ? myOption.max : ""}
+          />
+          <Divider sx={{ mt: 2 }} />
+          {!balance && (
+            <Chip sx={{ width: "100%" }} color={"error"} label={message} />
+          )}
+
+          <TextField
+            fullWidth
+            sx={{ mt: 2 }}
+            onChange={(e) => {
+              setMyOption({ ...myOption, precision: e.target.value });
+            }}
+            label="precision"
+            placeholder="5"
+            value={myOption.precision ? myOption.precision : ""}
+          />
+        </React.Fragment>
+      )
+    }
+    case "longitude": {
+      const [balance, setBalance] = useState(true);
+      const [message, setMessage] = useState("");
+      return (
+        <React.Fragment>
+          <TextField
+            fullWidth
+            onChange={(e) => {
+              let min = parseInt(e.target.value);
+              let max = parseInt(myOption.max);
+              setMyOption({ ...myOption, min: e.target.value });
+              if (myOption.max && max < min) {
+                setBalance(false);
+                setMessage("min must be smaller than max");
+              } else {
+                setBalance(true);
+              }
+            }}
+            label="min"
+            placeholder="Example: 10"
+            value={myOption.min ? myOption.min : ""}
+          />
+          <Divider sx={{ mt: 2 }} />
+          <TextField
+            fullWidth
+            onChange={(e) => {
+              let min = parseInt(myOption.min);
+              let max = parseInt(e.target.value);
+              setMyOption({ ...myOption, max: e.target.value });
+              if (myOption.min && max < min) {
+                setMessage("max must be greater than min");
+                setBalance(false);
+              } else {
+                setBalance(true);
+              }
+            }}
+            label="max"
+            placeholder="Example: 20"
+            value={myOption.max ? myOption.max : ""}
+          />
+          <Divider sx={{ mt: 2 }} />
+          {!balance && (
+            <Chip sx={{ width: "100%" }} color={"error"} label={message} />
+          )}
+
+          <TextField
+            fullWidth
+            sx={{ mt: 2 }}
+            onChange={(e) => {
+              setMyOption({ ...myOption, precision: e.target.value });
+            }}
+            label="precision"
+            placeholder="Example: 5"
+            value={myOption.precision ? myOption.precision : ""}
+          />
+        </React.Fragment>
+      )
+    }
+    case "nearbyGPSCoordinate": {
+      const [metric, setMetric] = useState(myOption.metric ? myOption.metric : "KM");
+      return (
+        <React.Fragment>
+          <TextField
+            fullWidth
+            onChange={(e) => {
+              setMyOption({ ...myOption, latitude: e.target.value });
+            }}
+            label="latitude"
+            placeholder="Example: 33"
+            value={myOption.latitude ? myOption.latitude : ""}
+          />
+          <TextField
+            fullWidth
+            sx={{ mt: 2 }}
+            onChange={(e) => {
+              setMyOption({ ...myOption, longitude: e.target.value });
+            }}
+            label="longitude"
+            placeholder="Example: 137"
+            value={myOption.longitude ? myOption.longitude : ""}
+          />
+          <TextField
+            fullWidth
+            sx={{ mt: 2 }}
+            onChange={(e) => {
+              setMyOption({ ...myOption, radius: e.target.value });
+            }}
+            label="radius"
+            placeholder="Example: 1000"
+            value={myOption.radius ? myOption.radius : ""}
+          />
+          <FormControl fullWidth sx={{ mt: 2 }}>
+            <InputLabel>metric</InputLabel>
+            <Select
+              value={myOption.metric ? myOption.metric : metric}
+              label="metric"
+              onChange={(e) => {
+                setMetric(e.target.value);
+                setMyOption({ ...myOption, metric: e.target.value });
+              }}
+            >
+              <MenuItem value={"KM"}>KM</MenuItem>
+              <MenuItem value={"MILE"}>MILE</MenuItem>
+            </Select>
+          </FormControl>
+        </React.Fragment>
+      )
+    }
+    case "ordinalDirection": {
+      const [useAbbr, setUseAbbr] = useState(myOption.useAbbr ? myOption.useAbbr : "false");
+      return (
+        <React.Fragment>
+          <FormControl fullWidth sx={{ mt: 2 }}>
+            <InputLabel>useAbbr</InputLabel>
+            <Select
+              value={myOption.useAbbr ? myOption.useAbbr : useAbbr}
+              label="useAbbr"
+              onChange={(e) => {
+                setUseAbbr(e.target.value);
+                setMyOption({ ...myOption, useAbbr: e.target.value });
+              }}
+            >
+              <MenuItem value={"false"}>false</MenuItem>
+              <MenuItem value={"true"}>true</MenuItem>
+            </Select>
+          </FormControl>
+        </React.Fragment>
+      )
+    }
+    case "streetAddress": {
+      const [useFullAddress, setUseFullAddress] = useState(myOption.useFullAddress ? myOption.useFullAddress : "false");
+      return (
+        <React.Fragment>
+          <FormControl fullWidth sx={{ mt: 2 }}>
+            <InputLabel>useFullAddress</InputLabel>
+            <Select
+              value={myOption.useFullAddress ? myOption.useFullAddress : useFullAddress}
+              label="useFullAddress"
+              onChange={(e) => {
+                setUseFullAddress(e.target.value);
+                setMyOption({ ...myOption, useFullAddress: e.target.value });
+              }}
+            >
+              <MenuItem value={"false"}>false</MenuItem>
+              <MenuItem value={"true"}>true</MenuItem>
+            </Select>
+          </FormControl>
+        </React.Fragment>
+      )
+    }
+    case "zipCode": {
+      return (
+        <React.Fragment>
+          <TextField
+            fullWidth
+            onChange={(e) => {
+              setMyOption({ ...myOption, format: e.target.value });
+            }}
+            label="format"
+            placeholder="Example: #####"
+            value={myOption.format ? myOption.format : ""}
+          />
+        </React.Fragment>
+      )
+    }
+    case "zipCodeByState": {
+      return (
+        <React.Fragment>
+          <TextField
+            fullWidth
+            onChange={(e) => {
+              setMyOption({ ...myOption, state: e.target.value });
+            }}
+            label="state"
+            placeholder="Example: AK"
+            value={myOption.state ? myOption.state : ""}
+          />
+        </React.Fragment>
+      )
+    }
+    case "commonFileName": {
+      return (
+        <React.Fragment>
+          <TextField
+            fullWidth
+            onChange={(e) => {
+              setMyOption({ ...myOption, ext: e.target.value });
+            }}
+            label="ext"
+            placeholder="Example: txt"
+            value={myOption.ext ? myOption.ext : ""}
+          />
+        </React.Fragment>
+      )
+    }
+    case "fileName": {
+      return (
+        <React.Fragment>
+          <TextField
+            fullWidth
+            onChange={(e) => {
+              setMyOption({ ...myOption, extensionCount: e.target.value });
+            }}
+            label="extensionCount"
+            placeholder="Example: 2"
+            value={myOption.extensionCount ? myOption.extensionCount : ""}
+          />
+        </React.Fragment>
+      )
+    }
+    case "networkInterface": {
+      const [interfaceSchema, setInterfaceSchema] = useState(myOption.interfaceSchema ? myOption.interfaceSchema : "slot");
+      const [interfaceType, setInterfaceType] = useState(myOption.interfaceType ? myOption.interfaceType : "en");
+      return (
+        <React.Fragment>
+          <FormControl fullWidth>
+            <InputLabel>interfaceSchema</InputLabel>
+            <Select
+              value={myOption.interfaceSchema ? myOption.interfaceSchema : interfaceSchema}
+              label="interfaceSchema"
+              onChange={(e) => {
+                setInterfaceSchema(e.target.value);
+                setMyOption({ ...myOption, interfaceSchema: e.target.value });
+              }}
+            >
+              <MenuItem value={"slot"}>slot</MenuItem>
+              <MenuItem value={"index"}>index</MenuItem>
+              <MenuItem value={"mac"}>mac</MenuItem>
+              <MenuItem value={"pci"}>pci</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControl fullWidth sx={{ mt: 2 }}>
+            <InputLabel>interfaceType</InputLabel>
+            <Select
+              value={myOption.interfaceType ? myOption.interfaceType : interfaceType}
+              label="interfaceType"
+              onChange={(e) => {
+                setInterfaceType(e.target.value);
+                setMyOption({ ...myOption, interfaceType: e.target.value });
+              }}
+            >
+              <MenuItem value={"en"}>en</MenuItem>
+              <MenuItem value={"wl"}>wl</MenuItem>
+              <MenuItem value={"ww"}>ww</MenuItem>
+            </Select>
+          </FormControl>
+        </React.Fragment>
+      )
+    }
 
     case "default":
       return () => {};
@@ -913,6 +1283,19 @@ export const OptionExistFor = [
   "recent",
   "soon",
   "weekday",
+  "cardinalDirection",
+  "countryCode",
+  "direction",
+  "latitude",
+  "longitude",
+  "nearbyGPSCoordinate",
+  "ordinalDirection",
+  "streetAddress",
+  "zipCode",
+  "zipCodeByState",
+  "commonFileName",
+  "fileName",
+  "networkInterface",
 ];
 
 export default SchemaOptionModal;

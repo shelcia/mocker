@@ -469,4 +469,61 @@ export const choices = [
       "vrm",
     ]
   },
+  { category: "address",
+    list: [
+      "buildingNumber",
+      "cardinalDirection",
+      "city",
+      "cityName",
+      "cityPrefix",
+      "citySuffix",
+      "country",
+      "countryCode",
+      "county",
+      "direction",
+      "latitude",
+      "longitude",
+      "nearbyGPSCoordinate",
+      "ordinalDirection",
+      "secondaryAddress",
+      "state",
+      "stateAbbr",
+      "street",
+      "streetAddress",
+      "streetName",
+      "streetPrefix",
+      "streetSuffix",
+      "timeZone",
+      "zipCode",
+      "zipCodeByState",
+    ]
+  },
+  {
+    category: "system",
+    list: [
+      "commonFileExt",
+      "commonFileName",
+      "commonFileType",
+      "cron",
+      "directoryPath",
+      "fileExt",
+      "fileName",
+      "filePath",
+      "fileType",
+      "mimeType",
+      "networkInterface",
+      "semver",
+    ]
+  },
+  {
+    category: "hacker",
+    list: [
+      "abbreviation",
+      "adjective",
+      "ingverb",
+      "noun",
+      "phrase",
+      "verb",
+    ]
+  }
 ];
