@@ -497,5 +497,33 @@ export const choices = [
       "zipCode",
       "zipCodeByState",
     ]
+  },
+  {
+    category: "system",
+    list: [
+      "commonFileExt",
+      "commonFileName",
+      "commonFileType",
+      "cron",
+      "directoryPath",
+      "fileExt",
+      "fileName",
+      "filePath",
+      "fileType",
+      "mimeType",
+      "networkInterface",
+      "semver",
+    ]
+  },
+  {
+    category: "hacker",
+    list: [
+      "abbreviation",
+      "adjective",
+      "ingverb",
+      "noun",
+      "phrase",
+      "verb",
+    ]
   }
 ];

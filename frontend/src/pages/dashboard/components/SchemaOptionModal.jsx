@@ -1179,6 +1179,75 @@ export const Option = ({ fieldInfo, myOption, setMyOption }) => {
         </React.Fragment>
       )
     }
+    case "commonFileName": {
+      return (
+        <React.Fragment>
+          <TextField
+            fullWidth
+            onChange={(e) => {
+              setMyOption({ ...myOption, ext: e.target.value });
+            }}
+            label="ext"
+            placeholder="Example: txt"
+            value={myOption.ext ? myOption.ext : ""}
+          />
+        </React.Fragment>
+      )
+    }
+    case "fileName": {
+      return (
+        <React.Fragment>
+          <TextField
+            fullWidth
+            onChange={(e) => {
+              setMyOption({ ...myOption, extensionCount: e.target.value });
+            }}
+            label="extensionCount"
+            placeholder="Example: 2"
+            value={myOption.extensionCount ? myOption.extensionCount : ""}
+          />
+        </React.Fragment>
+      )
+    }
+    case "networkInterface": {
+      const [interfaceSchema, setInterfaceSchema] = useState(myOption.interfaceSchema ? myOption.interfaceSchema : "slot");
+      const [interfaceType, setInterfaceType] = useState(myOption.interfaceType ? myOption.interfaceType : "en");
+      return (
+        <React.Fragment>
+          <FormControl fullWidth>
+            <InputLabel>interfaceSchema</InputLabel>
+            <Select
+              value={myOption.interfaceSchema ? myOption.interfaceSchema : interfaceSchema}
+              label="interfaceSchema"
+              onChange={(e) => {
+                setInterfaceSchema(e.target.value);
+                setMyOption({ ...myOption, interfaceSchema: e.target.value });
+              }}
+            >
+              <MenuItem value={"slot"}>slot</MenuItem>
+              <MenuItem value={"index"}>index</MenuItem>
+              <MenuItem value={"mac"}>mac</MenuItem>
+              <MenuItem value={"pci"}>pci</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControl fullWidth sx={{ mt: 2 }}>
+            <InputLabel>interfaceType</InputLabel>
+            <Select
+              value={myOption.interfaceType ? myOption.interfaceType : interfaceType}
+              label="interfaceType"
+              onChange={(e) => {
+                setInterfaceType(e.target.value);
+                setMyOption({ ...myOption, interfaceType: e.target.value });
+              }}
+            >
+              <MenuItem value={"en"}>en</MenuItem>
+              <MenuItem value={"wl"}>wl</MenuItem>
+              <MenuItem value={"ww"}>ww</MenuItem>
+            </Select>
+          </FormControl>
+        </React.Fragment>
+      )
+    }
 
     case "default":
       return () => {};
@@ -1224,6 +1293,9 @@ export const OptionExistFor = [
   "streetAddress",
   "zipCode",
   "zipCodeByState",
+  "commonFileName",
+  "fileName",
+  "networkInterface",
 ];
 
 export default SchemaOptionModal;

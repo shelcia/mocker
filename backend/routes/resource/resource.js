@@ -291,6 +291,51 @@ const fakerFuncs = (item, option) => {
       return faker.address.zipCodeByState(
         option?.state
       )
+    
+    case "abbreviation":
+      return faker.hacker.abbreviation()
+    case "adjective":
+      return faker.hacker.adjective()
+    case "ingverb":
+      return faker.hacker.ingverb()
+    case "noun":
+      return faker.hacker.noun()
+    case "phrase":
+      return faker.hacker.phrase()
+    case "verb":
+      return faker.hacker.verb()
+
+    case "commonFileExt":
+      return faker.system.commonFileExt()
+    case "commonFileName":
+      return faker.system.commonFileName(
+        option?.ext
+      )
+    case "commonFileType":
+      return faker.system.commonFileType()
+    case "cron":
+      return faker.system.cron()
+    case "directoryPath":
+      return faker.system.directoryPath()
+    case "fileExt":
+      return faker.system.fileExt()
+    case "fileName":
+      return faker.system.fileName({
+        extensionCount: option?parseInt(option.extensionCount):undefined
+      })
+    case "filePath":
+      return faker.system.filePath()
+    case "fileType":
+      return faker.system.fileType()
+    case "mimeType":
+      return faker.system.mimeType()
+    case "networkInterface":
+      return faker.system.networkInterface({
+        interfaceSchema: option?.interfaceSchema,
+        interfaceType: option?.interfaceType,
+      })
+    case "semver":
+      return faker.system.semver()
 
     case "default":
       return () => {};
