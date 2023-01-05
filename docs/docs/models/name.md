@@ -1,11 +1,17 @@
 ---
-sidebar_position: 9
+sidebar_position: 12
 tags: [name]
 ---
 
 # Name
 
 ## Module to generate people's names and titles.
+
+:::info
+
+For more **schema options** refer, [faker.js documentation](https://fakerjs.dev/).
+
+:::
 
 ### firstName
 

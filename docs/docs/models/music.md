@@ -1,11 +1,17 @@
 ---
-sidebar_position: 9
+sidebar_position: 11
 tags: [music]
 ---
 
 # Music
 
 ## Module to generate music related entries.
+
+:::info
+
+For more **schema options** refer, [faker.js documentation](https://fakerjs.dev/).
+
+:::
 
 ### genre
 

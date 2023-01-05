@@ -1,11 +1,17 @@
 ---
-sidebar_position: 6
+sidebar_position: 8
 tags: [image]
 ---
 
 # Image
 
 ## Module to generate placeholder images.
+
+:::info
+
+For more **schema options** refer, [faker.js documentation](https://fakerjs.dev/).
+
+:::
 
 ### avatar
 

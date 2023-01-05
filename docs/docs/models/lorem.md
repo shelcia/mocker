@@ -1,11 +1,17 @@
 ---
-sidebar_position: 8
+sidebar_position: 10
 tags: [lorem]
 ---
 
 # Lorem
 
 ## Module to generate random texts and words.
+
+:::info
+
+For more **schema options** refer, [faker.js documentation](https://fakerjs.dev/).
+
+:::
 
 ### Lines
 

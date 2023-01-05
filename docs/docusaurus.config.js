@@ -82,12 +82,12 @@ module.exports = {
         },
         docs: {
           sidebarPath: require.resolve("./sidebars.js"),
-          editUrl: "https://github.com/shelcia/mocker/docs/edit/master",
+          editUrl: "https://github.com/shelcia/mocker/edit/master/docs",
         },
-        blog: {
-          showReadingTime: true,
-          editUrl: "https://github.com/shelcia/mocker/docs/edit/master",
-        },
+        // blog: {
+        //   showReadingTime: true,
+        //   editUrl: "https://github.com/shelcia/mocker/docs/edit/master",
+        // },
         theme: {
           customCss: require.resolve("./src/css/custom.css"),
         },

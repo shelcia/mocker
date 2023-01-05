@@ -1,5 +1,5 @@
 ---
-sidebar_position: 10
+sidebar_position: 15
 tags: [system]
 ---
 
@@ -7,7 +7,14 @@ tags: [system]
 
 ## Generates fake data for many computer systems properties.
 
+:::info
+
+For more **schema options** refer, [faker.js documentation](https://fakerjs.dev/).
+
+:::
+
 ### commonFileExt
+
 Returns a commonly used file extension.
 
 #### output
@@ -17,17 +24,18 @@ jpg
 ```
 
 ### commonFileName
+
 Returns a random file name with a given extension or a commonly used extension.
 
-|       Option        | Description                                          |
-| :-----------------: | ---------------------------------------------------- |
-|        ext          | Extension. Empty string is considered to be not set. |
+| Option | Description                                          |
+| :----: | ---------------------------------------------------- |
+|  ext   | Extension. Empty string is considered to be not set. |
 
 #### Input:
 
-|   ext   |
-| :-----: |
-|   txt   |
+| ext |
+| :-: |
+| txt |
 
 #### output
 
@@ -36,6 +44,7 @@ global_borders_wyoming.txt
 ```
 
 ### commonFileType
+
 Returns a commonly used file type.
 
 #### output
@@ -45,6 +54,7 @@ image
 ```
 
 ### cron
+
 Returns a random cron expression.
 
 #### output
@@ -54,6 +64,7 @@ Returns a random cron expression.
 ```
 
 ### directoryPath
+
 Returns a directory path.
 
 #### output
@@ -63,6 +74,7 @@ Returns a directory path.
 ```
 
 ### fileExt
+
 Returns a file extension.
 
 #### output
@@ -72,11 +84,12 @@ json
 ```
 
 ### fileName
+
 Returns a random file name with extension.
 
-|       Option        | Description                                                                                   |
-| :-----------------: | --------------------------------------------------------------------------------------------- |
-|    extensionCount   | Define how many extensions the file name should have. A negative number will be treated as 0. |
+|     Option     | Description                                                                                   |
+| :------------: | --------------------------------------------------------------------------------------------- |
+| extensionCount | Define how many extensions the file name should have. A negative number will be treated as 0. |
 
 #### Input:
 
@@ -91,6 +104,7 @@ bike_table.res.vcs
 ```
 
 ### filePath
+
 Returns a file path.
 
 #### output
@@ -100,6 +114,7 @@ Returns a file path.
 ```
 
 ### fileType
+
 Returns a file type.
 
 #### output
@@ -109,6 +124,7 @@ message
 ```
 
 ### mimeType
+
 mimeType
 
 #### output
@@ -118,18 +134,19 @@ application/vnd.patientecommsdoc
 ```
 
 ### networkInterface
+
 Returns a random network interface.
 
-|       Option        | Description                                                |
-| :-----------------: | ---------------------------------------------------------- |
-|  interfaceSchema    | The interface schema. Can be one of index, slot, mac, pci. |
-|   interfaceType     | The interface type. Can be one of en, wl, ww.              |
+|     Option      | Description                                                |
+| :-------------: | ---------------------------------------------------------- |
+| interfaceSchema | The interface schema. Can be one of index, slot, mac, pci. |
+|  interfaceType  | The interface type. Can be one of en, wl, ww.              |
 
 #### Input:
 
 | interfaceSchema | interfaceType |
 | :-------------: | :-----------: |
-|  en             |     pci       |
+|       en        |      pci      |
 
 #### output
 
@@ -138,6 +155,7 @@ enp5s0f1d0
 ```
 
 ### semver
+
 Returns a semantic version.
 
 #### output
@@ -145,4 +163,3 @@ Returns a semantic version.
 ```json
 5.5.7
 ```
-

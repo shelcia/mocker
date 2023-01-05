@@ -1,11 +1,17 @@
 ---
-sidebar_position: 10
+sidebar_position: 14
 tags: [science]
 ---
 
 # Science
 
 ## Module to generate science related entries.
+
+:::info
+
+For more **schema options** refer, [faker.js documentation](https://fakerjs.dev/).
+
+:::
 
 ### Chemical unit
 

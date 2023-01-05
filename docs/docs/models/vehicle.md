@@ -1,11 +1,17 @@
 ---
-sidebar_position: 10
+sidebar_position: 16
 tags: [vehicle]
 ---
 
 # Vehicle
 
 ## Module to generate vehicle related entries.
+
+:::info
+
+For more **schema options** refer, [faker.js documentation](https://fakerjs.dev/).
+
+:::
 
 ### bicycle
 
@@ -18,8 +24,8 @@ Hybrid Bicycle
 ```
 
 ### color
-Returns a vehicle color.
 
+Returns a vehicle color.
 
 #### Output:
 
@@ -28,8 +34,8 @@ red
 ```
 
 ### fuel
-Returns a fuel type.
 
+Returns a fuel type.
 
 #### Output:
 
@@ -38,8 +44,8 @@ Electric
 ```
 
 ### manufacturer
-Returns a manufacturer name.
 
+Returns a manufacturer name.
 
 #### Output:
 
@@ -48,8 +54,8 @@ Lamborghini
 ```
 
 ### model
-Returns a vehicle model.
 
+Returns a vehicle model.
 
 #### Output:
 
@@ -58,8 +64,8 @@ Explorer
 ```
 
 ### type
-Returns a vehicle type.
 
+Returns a vehicle type.
 
 #### Output:
 
@@ -68,8 +74,8 @@ Minivan
 ```
 
 ### vehicle
-Returns a random vehicle.
 
+Returns a random vehicle.
 
 #### Output:
 
@@ -78,8 +84,8 @@ Lamborghini Model Y
 ```
 
 ### vin
-Returns a vehicle identification number (VIN).
 
+Returns a vehicle identification number (VIN).
 
 #### Output:
 
@@ -88,8 +94,8 @@ JKPUKVHUDLRC49382
 ```
 
 ### vrm
-Returns a vehicle registration number (Vehicle Registration Mark - VRM)
 
+Returns a vehicle registration number (Vehicle Registration Mark - VRM)
 
 #### Output:
 

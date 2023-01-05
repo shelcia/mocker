@@ -1,11 +1,17 @@
 ---
-sidebar_position: 1
+sidebar_position: 2
 tags: [color]
 ---
 
 # Color
 
 ## Module to generate colors.
+
+:::info
+
+For more **schema options** refer, [faker.js documentation](https://fakerjs.dev/).
+
+:::
 
 ### hsl
 

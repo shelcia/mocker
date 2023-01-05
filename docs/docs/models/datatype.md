@@ -1,11 +1,17 @@
 ---
-sidebar_position: 3
+sidebar_position: 4
 tags: [datatype]
 ---
 
 # Datatype
 
 ## Module to generate various primitive values and data types.
+
+:::info
+
+For more **schema options** refer, [faker.js documentation](https://fakerjs.dev/).
+
+:::
 
 ### array
 

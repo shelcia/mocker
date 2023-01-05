@@ -1,11 +1,17 @@
 ---
-sidebar_position: 5
+sidebar_position: 6
 tags: [finance]
 ---
 
 # Finance
 
 ## Module to generate finance related entries.
+
+:::info
+
+For more **schema options** refer, [faker.js documentation](https://fakerjs.dev/).
+
+:::
 
 ### amount
 

@@ -1,11 +1,17 @@
 ---
-sidebar_position: 4
+sidebar_position: 5
 tags: [date]
 ---
 
 # Date
 
 ## Module to generate dates.
+
+:::info
+
+For more **schema options** refer, [faker.js documentation](https://fakerjs.dev/).
+
+:::
 
 ### between
 

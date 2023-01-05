@@ -1,11 +1,17 @@
 ---
-sidebar_position: 2
+sidebar_position: 3
 tags: [commerce]
 ---
 
 # Commerce
 
 ## Module to generate commerce and product related entries.
+
+:::info
+
+For more **schema options** refer, [faker.js documentation](https://fakerjs.dev/).
+
+:::
 
 ### product
 

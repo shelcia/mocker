@@ -1,5 +1,5 @@
 ---
-sidebar_position: 10
+sidebar_position: 7
 tags: [hacker]
 ---
 
@@ -7,7 +7,14 @@ tags: [hacker]
 
 ## Module to generate hacker/IT words and phrases.
 
+:::info
+
+For more **schema options** refer, [faker.js documentation](https://fakerjs.dev/).
+
+:::
+
 ### abbreviation
+
 Returns a random hacker/IT abbreviation.
 
 #### output
@@ -17,6 +24,7 @@ RAM
 ```
 
 ### adjective
+
 Returns a random hacker/IT adjective.
 
 #### output
@@ -26,6 +34,7 @@ cross-platform
 ```
 
 ### ingverb
+
 Returns a random hacker/IT verb for continuous actions (en: ing suffix; e.g. hacking).
 
 #### output
@@ -35,6 +44,7 @@ connecting
 ```
 
 ### noun
+
 Returns a random hacker/IT noun.
 
 #### output
@@ -44,6 +54,7 @@ hard drive
 ```
 
 ### phrase
+
 Generates a random hacker/IT phrase.
 
 #### output
@@ -53,6 +64,7 @@ If we override the card, we can get to the HDD feed through the back-end HDD sen
 ```
 
 ### verb
+
 Returns a random hacker/IT verb.
 
 #### output
@@ -60,4 +72,3 @@ Returns a random hacker/IT verb.
 ```json
 generate
 ```
-
