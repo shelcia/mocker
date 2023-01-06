@@ -33,6 +33,8 @@ import CloneModal from "./components/CloneModal";
 import { CustomTooltip } from "../../components/CustomTooltip";
 import DeleteResourceModal from "./components/DeleteResourceModal";
 import CustomCheckbox from "../../components/CustomCheckbox";
+import { CopyButton } from "../../components/CustomButtons";
+import { copyTextToClipboard } from "../../utils/utils";
 
 const Collection = () => {
   const [open, setOpen] = useState(false);
@@ -42,6 +44,8 @@ const Collection = () => {
   const [resources, setResources] = useState([]);
 
   const [checkedList, setCheckedList] = useState([]);
+
+  const [isCopied, setIsCopied] = useState(false);
 
   const navigate = useNavigate();
 
@@ -113,6 +117,21 @@ const Collection = () => {
     );
   };
 
+  const handleCopyClick = (data) => {
+    copyTextToClipboard(data)
+      .then(() => {
+        setIsCopied(true);
+        toast.success("Copied !");
+        setTimeout(() => {
+          setIsCopied(false);
+        }, 5000);
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error("Couldn't copy !");
+      });
+  };
+
   return (
     <React.Fragment>
       <Button onClick={() => navigate(-1)}>
@@ -126,6 +145,15 @@ const Collection = () => {
         <Alert sx={{ mb: 2 }}>
           <AlertTitle sx={{ fontWeight: 600 }}>API endpoint</AlertTitle>
           <code>{BACKEND_URL}/user/:endpoint</code>
+          <CopyButton
+            sx={{ ml: 1 }}
+            disabled={isCopied ? true : false}
+            onClick={()=>{
+              handleCopyClick(`${BACKEND_URL}/user/:endpoint`)
+            }}
+          >
+            {isCopied ? "Done" : "Copy"}
+          </CopyButton>
         </Alert>
         <Link
           href="https://documenter.getpostman.com/view/21272376/2s8YmUMLP2#f02f8b5d-1988-4177-816a-6da7fcb47d88"
