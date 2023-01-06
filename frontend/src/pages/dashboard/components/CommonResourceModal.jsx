@@ -525,5 +525,15 @@ export const choices = [
       "phrase",
       "verb",
     ]
-  }
+  },
+  {
+    category: "database",
+    list: [
+      "collation",
+      "column",
+      "engine",
+      "mongodbObjectId",
+      "databaseType",
+    ]
+  },
 ];
