@@ -127,14 +127,14 @@ const Collection = () => {
           <AlertTitle sx={{ fontWeight: 600 }}>API endpoint</AlertTitle>
           <code>{BACKEND_URL}/user/:endpoint</code>
         </Alert>
-        <Link
-          href="https://documenter.getpostman.com/view/21272376/2s8YmUMLP2#f02f8b5d-1988-4177-816a-6da7fcb47d88"
-          target="_blank"
-        >
-          <Typography component="p" variant="h6" sx={{ mb: 2 }}>
+        <Typography component="p" variant="h6" sx={{ mb: 2 }}>
+          <Link
+            href="https://documenter.getpostman.com/view/21272376/2s8YmUMLP2#f02f8b5d-1988-4177-816a-6da7fcb47d88"
+            target="_blank"
+          >
             Postman Documentation
-          </Typography>
-        </Link>
+          </Link>
+        </Typography>
         <Button variant="contained" onClick={() => setOpen(true)}>
           New Resource
         </Button>
