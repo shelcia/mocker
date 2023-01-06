@@ -81,11 +81,11 @@ const CommonResourceModal = ({
     // console.log("Im", schema);
   }, [option]);
 
-  const handleSchema = (id, label, field, option) => {
+  const handleSchema = (id, label, field, name, option) => {
     const newArr = schema?.map((obj) => {
       if (obj.id === id) {
         option ? (obj.option = { ...option }) : null;
-        return { ...obj, label: label, field: field };
+        return { ...obj, label: name==="field"?field:label, field: field };
       }
       return obj;
     });
@@ -254,9 +254,10 @@ const CommonResourceModal = ({
                     sx={{ mb: 0 }}
                     size="small"
                     label="Field"
+                    name="field"
                     value={item.field}
                     onChange={(e) => {
-                      handleSchema(item.id, item.label, e.target.value);
+                      handleSchema(item.id, item.label, e.target.value, e.target.name);
                     }}
                   >
                     {choices.map((group) => [
