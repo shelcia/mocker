@@ -337,6 +337,18 @@ const fakerFuncs = (item, option) => {
     case "semver":
       return faker.system.semver()
 
+    case "collation":
+      return faker.database.collation()
+    case "column":
+      return faker.database.column()
+    case "engine":
+      return faker.database.engine()
+    case "mongodbObjectId":
+      return faker.database.mongodbObjectId()
+    case "databaseType":
+      return faker.database.type()
+      
+
     case "default":
       return () => {};
   }
