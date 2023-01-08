@@ -14,6 +14,7 @@ For more **schema options** refer, [faker.js documentation](https://fakerjs.dev/
 :::
 
 ### collation
+
 Returns a random database collation.
 
 #### output
@@ -23,6 +24,7 @@ utf8_unicode_ci
 ```
 
 ### column
+
 Returns a random database column name.
 
 #### output
@@ -32,6 +34,7 @@ createdAt
 ```
 
 ### engine
+
 Returns a random database engine.
 
 #### output
@@ -41,6 +44,7 @@ CSV
 ```
 
 ### mongodbObjectId
+
 Returns a MongoDB ObjectId string.
 
 #### output
@@ -50,6 +54,7 @@ cdfcdcbc9de896d1f58abbba
 ```
 
 ### type
+
 Returns a random database column type.
 
 #### output
@@ -57,4 +62,3 @@ Returns a random database column type.
 ```json
 timestamp
 ```
-
