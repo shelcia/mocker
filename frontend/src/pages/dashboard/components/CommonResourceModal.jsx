@@ -24,7 +24,7 @@ import * as Yup from "yup";
 import { ValidationError } from "../enums/error";
 import { toast } from "react-hot-toast";
 import { FaPlus } from "react-icons/fa";
-import IconButton from '@mui/material/IconButton';
+import IconButton from "@mui/material/IconButton";
 
 const CommonResourceModal = ({
   open = false,
@@ -85,7 +85,11 @@ const CommonResourceModal = ({
     const newArr = schema?.map((obj) => {
       if (obj.id === id) {
         option ? (obj.option = { ...option }) : null;
-        return { ...obj, label: name==="field"?field:label, field: field };
+        return {
+          ...obj,
+          label: name === "field" ? field : label,
+          field: field,
+        };
       }
       return obj;
     });
@@ -102,10 +106,10 @@ const CommonResourceModal = ({
   };
 
   const handleAdd = (idx) => {
-    let newSchema =[ ...schema ];
-    newSchema.splice(idx+1, 0, { id: Date.now(), label: "", field: "" })
-    setSchema(newSchema)
-  }
+    let newSchema = [...schema];
+    newSchema.splice(idx + 1, 0, { id: Date.now(), label: "", field: "" });
+    setSchema(newSchema);
+  };
 
   const ValidationSchema = Yup.object({
     field: Yup.string().required(ValidationError.FIELD_NAME),
@@ -257,7 +261,12 @@ const CommonResourceModal = ({
                     name="field"
                     value={item.field}
                     onChange={(e) => {
-                      handleSchema(item.id, item.label, e.target.value, e.target.name);
+                      handleSchema(
+                        item.id,
+                        item.label,
+                        e.target.value,
+                        e.target.name
+                      );
                     }}
                   >
                     {choices.map((group) => [
@@ -332,8 +341,10 @@ const CommonResourceModal = ({
                 <IconButton
                   color="primary"
                   size="small"
-                  sx={{ mt:10 }}
-                  onClick={()=>{handleAdd(idx)}}
+                  sx={{ mt: 10 }}
+                  onClick={() => {
+                    handleAdd(idx);
+                  }}
                 >
                   <FaPlus size={"0.8rem"} />
                 </IconButton>
@@ -423,7 +434,7 @@ export const choices = [
   },
   {
     category: "Internet",
-    list: ["domainName"],
+    list: ["domainName", "email"],
   },
   {
     category: "Science",
@@ -454,7 +465,15 @@ export const choices = [
   },
   {
     category: "Random",
-    list: ["alpha", "alphaNumeric", "locale", "numeric", "word", "words", "specialCharacter"],
+    list: [
+      "alpha",
+      "alphaNumeric",
+      "locale",
+      "numeric",
+      "word",
+      "words",
+      "specialCharacter",
+    ],
   },
   {
     category: "vehicle",
@@ -468,9 +487,10 @@ export const choices = [
       "vehicle",
       "vin",
       "vrm",
-    ]
+    ],
   },
-  { category: "address",
+  {
+    category: "address",
     list: [
       "buildingNumber",
       "cardinalDirection",
@@ -497,7 +517,7 @@ export const choices = [
       "timeZone",
       "zipCode",
       "zipCodeByState",
-    ]
+    ],
   },
   {
     category: "system",
@@ -514,27 +534,14 @@ export const choices = [
       "mimeType",
       "networkInterface",
       "semver",
-    ]
+    ],
   },
   {
     category: "hacker",
-    list: [
-      "abbreviation",
-      "adjective",
-      "ingverb",
-      "noun",
-      "phrase",
-      "verb",
-    ]
+    list: ["abbreviation", "adjective", "ingverb", "noun", "phrase", "verb"],
   },
   {
     category: "database",
-    list: [
-      "collation",
-      "column",
-      "engine",
-      "mongodbObjectId",
-      "databaseType",
-    ]
+    list: ["collation", "column", "engine", "mongodbObjectId", "databaseType"],
   },
 ];

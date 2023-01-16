@@ -4,7 +4,7 @@ const { v4: uuidv4 } = require("uuid");
 
 const Resource = require("../../models/Resource");
 
-const {specialCharacter} = require("../../utils/customFaker")
+const { specialCharacter } = require("../../utils/customFaker");
 
 // more can be added
 const fakerFuncs = (item, option) => {
@@ -86,51 +86,58 @@ const fakerFuncs = (item, option) => {
       return faker.datatype.uuid();
 
     case "between":
-      return faker.date.between(
-        option?.from, option?.to
-      )
+      return faker.date.between(option?.from, option?.to);
     case "betweens":
       return faker.date.betweens(
-        option?.from, option?.to, option?parseInt(option.num):undefined
-      )
+        option?.from,
+        option?.to,
+        option ? parseInt(option.num) : undefined
+      );
     case "birthdate":
       return faker.date.birthdate({
-        min: option?parseInt(option?.min):undefined,
-        max: option?parseInt(option?.max):undefined,
-        mode: option?.mode,//mode?: "age" | "year" | undefined
-      })
+        min: option ? parseInt(option?.min) : undefined,
+        max: option ? parseInt(option?.max) : undefined,
+        mode: option?.mode, //mode?: "age" | "year" | undefined
+      });
     case "future":
-      return faker.date.future(
-        option?.years
-      )
+      return faker.date.future(option?.years);
     case "month":
       return faker.date.month({
-        abbr: option?(option.abbr==='true'?true:false):undefined,
-      })
+        abbr: option ? (option.abbr === "true" ? true : false) : undefined,
+      });
     case "past":
       return faker.date.past(
         option?.years //number
       );
     case "recent":
       return faker.date.recent(
-        option?parseInt(option.days):undefined,
+        option ? parseInt(option.days) : undefined,
         option?.refDate
-      )
+      );
     case "soon":
       return faker.date.soon(
-        option?parseInt(option.days):undefined,
+        option ? parseInt(option.days) : undefined,
         option?.refDate
-      )
+      );
     case "weekday":
       return faker.date.weekday({
-        abbr: option?(option.abbr==='true'?true:false):undefined,
-      })
+        abbr: option ? (option.abbr === "true" ? true : false) : undefined,
+      });
     case "lines":
       return faker.lorem.lines(
         option?.count //number
       );
     case "domainName":
       return faker.internet.domainName();
+
+    //add options later
+    case "email":
+      return faker.internet.email(
+        option?.firstName, //string
+        option?.lastName, //string
+        option?.provider //string
+      );
+
     case "imageUrl":
       return faker.image.imageUrl(
         option?.width, //number
@@ -194,160 +201,153 @@ const fakerFuncs = (item, option) => {
       return specialCharacter({
         length: option?.count,
         whitelist: option?.whitelist,
-      })
+      });
 
     case "bicycle":
-      return faker.vehicle.bicycle()
+      return faker.vehicle.bicycle();
     case "color":
-      return faker.vehicle.color()
+      return faker.vehicle.color();
     case "fuel":
-      return faker.vehicle.fuel()
+      return faker.vehicle.fuel();
     case "manufacturer":
-      return faker.vehicle.manufacturer()
+      return faker.vehicle.manufacturer();
     case "model":
-      return faker.vehicle.model()
+      return faker.vehicle.model();
     case "type":
-      return faker.vehicle.type()
+      return faker.vehicle.type();
     case "vehicle":
-      return faker.vehicle.vehicle()
+      return faker.vehicle.vehicle();
     case "vin":
-      return faker.vehicle.vin()
+      return faker.vehicle.vin();
     case "vrm":
-      return faker.vehicle.vrm()
-      
+      return faker.vehicle.vrm();
+
     case "buildingNumber":
-      return faker.address.buildingNumber()
+      return faker.address.buildingNumber();
     case "cardinalDirection":
       return faker.address.cardinalDirection(
-        option?(option.useAbbr==='true'?true:false):undefined,
-      )
+        option ? (option.useAbbr === "true" ? true : false) : undefined
+      );
     case "city":
-      return faker.address.city()
+      return faker.address.city();
     case "cityName":
-      return faker.address.cityName()
+      return faker.address.cityName();
     case "cityPrefix":
-      return faker.address.cityPrefix()
+      return faker.address.cityPrefix();
     case "citySuffix":
-      return faker.address.citySuffix()
+      return faker.address.citySuffix();
     case "country":
-      return faker.address.country()
+      return faker.address.country();
     case "countryCode":
-      return faker.address.countryCode(
-        option?.alphaCode
-      )
+      return faker.address.countryCode(option?.alphaCode);
     case "county":
-      return faker.address.county()
+      return faker.address.county();
     case "direction":
       return faker.address.direction(
-        option?(option.useAbbr==='true'?true:false):undefined,
-      )
+        option ? (option.useAbbr === "true" ? true : false) : undefined
+      );
     case "latitude":
       return faker.address.latitude(
         option ? parseInt(option.max) : undefined,
         option ? parseInt(option.min) : undefined,
-        option ? parseInt(option.precision) : undefined,
-      )
+        option ? parseInt(option.precision) : undefined
+      );
     case "longitude":
       return faker.address.longitude(
         option ? parseInt(option.max) : undefined,
         option ? parseInt(option.min) : undefined,
-        option ? parseInt(option.precision) : undefined,
-      )
+        option ? parseInt(option.precision) : undefined
+      );
     case "nearbyGPSCoordinate":
       return faker.address.nearbyGPSCoordinate(
-        option&&option.latitude&&option.longitude?[parseInt(option.latitude), parseInt(option.longitude)]:undefined,
+        option && option.latitude && option.longitude
+          ? [parseInt(option.latitude), parseInt(option.longitude)]
+          : undefined,
         option?.radius,
-        option?(option.metric==='KM'?true:false):undefined
-      )
+        option ? (option.metric === "KM" ? true : false) : undefined
+      );
     case "ordinalDirection":
       return faker.address.ordinalDirection(
-        option?(option.useAbbr==='true'?true:false):undefined,
-      )
+        option ? (option.useAbbr === "true" ? true : false) : undefined
+      );
     case "secondaryAddress":
-      return faker.address.secondaryAddress()
+      return faker.address.secondaryAddress();
     case "state":
-      return faker.address.state()
+      return faker.address.state();
     case "stateAbbr":
-      return faker.address.stateAbbr()
+      return faker.address.stateAbbr();
     case "street":
-      return faker.address.street()
+      return faker.address.street();
     case "streetAddress":
       return faker.address.streetAddress(
-        option?(option.useFullAddress==='true'?true:false):undefined,
-      )
+        option ? (option.useFullAddress === "true" ? true : false) : undefined
+      );
     case "streetName":
-      return faker.address.streetName()
+      return faker.address.streetName();
     case "streetPrefix":
-      return faker.address.streetPrefix()
+      return faker.address.streetPrefix();
     case "streetSuffix":
-      return faker.address.streetSuffix()
+      return faker.address.streetSuffix();
     case "timeZone":
-      return faker.address.timeZone()
+      return faker.address.timeZone();
     case "zipCode":
-      return faker.address.zipCode(
-        option?.format
-      )
+      return faker.address.zipCode(option?.format);
     case "zipCodeByState":
-      return faker.address.zipCodeByState(
-        option?.state
-      )
-    
+      return faker.address.zipCodeByState(option?.state);
+
     case "abbreviation":
-      return faker.hacker.abbreviation()
+      return faker.hacker.abbreviation();
     case "adjective":
-      return faker.hacker.adjective()
+      return faker.hacker.adjective();
     case "ingverb":
-      return faker.hacker.ingverb()
+      return faker.hacker.ingverb();
     case "noun":
-      return faker.hacker.noun()
+      return faker.hacker.noun();
     case "phrase":
-      return faker.hacker.phrase()
+      return faker.hacker.phrase();
     case "verb":
-      return faker.hacker.verb()
+      return faker.hacker.verb();
 
     case "commonFileExt":
-      return faker.system.commonFileExt()
+      return faker.system.commonFileExt();
     case "commonFileName":
-      return faker.system.commonFileName(
-        option?.ext
-      )
+      return faker.system.commonFileName(option?.ext);
     case "commonFileType":
-      return faker.system.commonFileType()
+      return faker.system.commonFileType();
     case "cron":
-      return faker.system.cron()
+      return faker.system.cron();
     case "directoryPath":
-      return faker.system.directoryPath()
+      return faker.system.directoryPath();
     case "fileExt":
-      return faker.system.fileExt()
+      return faker.system.fileExt();
     case "fileName":
       return faker.system.fileName({
-        extensionCount: option?parseInt(option.extensionCount):undefined
-      })
+        extensionCount: option ? parseInt(option.extensionCount) : undefined,
+      });
     case "filePath":
-      return faker.system.filePath()
+      return faker.system.filePath();
     case "fileType":
-      return faker.system.fileType()
+      return faker.system.fileType();
     case "mimeType":
-      return faker.system.mimeType()
+      return faker.system.mimeType();
     case "networkInterface":
       return faker.system.networkInterface({
         interfaceSchema: option?.interfaceSchema,
         interfaceType: option?.interfaceType,
-      })
+      });
     case "semver":
-      return faker.system.semver()
+      return faker.system.semver();
 
     case "collation":
-      return faker.database.collation()
+      return faker.database.collation();
     case "column":
-      return faker.database.column()
+      return faker.database.column();
     case "engine":
-      return faker.database.engine()
+      return faker.database.engine();
     case "mongodbObjectId":
-      return faker.database.mongodbObjectId()
+      return faker.database.mongodbObjectId();
     case "databaseType":
-      return faker.database.type()
-      
+      return faker.database.type();
 
     case "default":
       return () => {};
@@ -461,16 +461,16 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-router.delete("/", async (req, res)=>{
+router.delete("/", async (req, res) => {
   for (const id of req.body.resources) {
     try {
-      await Resource.findOneAndDelete({_id: { $eq: id }})
+      await Resource.findOneAndDelete({ _id: { $eq: id } });
     } catch (error) {
       res.status(200).send({ status: "500", message: "Failed to delete" });
       return;
     }
   }
   res.status(200).send({ status: "200", message: "Deleted" });
-})
+});
 
 module.exports = router;

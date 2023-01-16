@@ -287,7 +287,7 @@ export const Option = ({ fieldInfo, myOption, setMyOption }) => {
             value={myOption.count ? myOption.count : ""}
           />
           <TextField
-          sx={{ mt: 2 }}
+            sx={{ mt: 2 }}
             fullWidth
             onChange={(e) => {
               setMyOption({ ...myOption, whitelist: e.target.value });
@@ -879,7 +879,9 @@ export const Option = ({ fieldInfo, myOption, setMyOption }) => {
       );
     }
     case "cardinalDirection": {
-      const [useAbbr, setUseAbbr] = useState(myOption.useAbbr ? myOption.useAbbr : "false");
+      const [useAbbr, setUseAbbr] = useState(
+        myOption.useAbbr ? myOption.useAbbr : "false"
+      );
       return (
         <React.Fragment>
           <FormControl fullWidth sx={{ mt: 2 }}>
@@ -897,10 +899,12 @@ export const Option = ({ fieldInfo, myOption, setMyOption }) => {
             </Select>
           </FormControl>
         </React.Fragment>
-      )
+      );
     }
     case "countryCode": {
-      const [alphaCode, setAlphaCode] = useState(myOption.alphaCode ? myOption.alphaCode : "alpha-2");
+      const [alphaCode, setAlphaCode] = useState(
+        myOption.alphaCode ? myOption.alphaCode : "alpha-2"
+      );
       return (
         <React.Fragment>
           <FormControl fullWidth sx={{ mt: 2 }}>
@@ -918,10 +922,12 @@ export const Option = ({ fieldInfo, myOption, setMyOption }) => {
             </Select>
           </FormControl>
         </React.Fragment>
-      )
+      );
     }
     case "direction": {
-      const [useAbbr, setUseAbbr] = useState(myOption.useAbbr ? myOption.useAbbr : "false");
+      const [useAbbr, setUseAbbr] = useState(
+        myOption.useAbbr ? myOption.useAbbr : "false"
+      );
       return (
         <React.Fragment>
           <FormControl fullWidth sx={{ mt: 2 }}>
@@ -939,7 +945,7 @@ export const Option = ({ fieldInfo, myOption, setMyOption }) => {
             </Select>
           </FormControl>
         </React.Fragment>
-      )
+      );
     }
     case "latitude": {
       const [balance, setBalance] = useState(true);
@@ -997,7 +1003,7 @@ export const Option = ({ fieldInfo, myOption, setMyOption }) => {
             value={myOption.precision ? myOption.precision : ""}
           />
         </React.Fragment>
-      )
+      );
     }
     case "longitude": {
       const [balance, setBalance] = useState(true);
@@ -1055,10 +1061,12 @@ export const Option = ({ fieldInfo, myOption, setMyOption }) => {
             value={myOption.precision ? myOption.precision : ""}
           />
         </React.Fragment>
-      )
+      );
     }
     case "nearbyGPSCoordinate": {
-      const [metric, setMetric] = useState(myOption.metric ? myOption.metric : "KM");
+      const [metric, setMetric] = useState(
+        myOption.metric ? myOption.metric : "KM"
+      );
       return (
         <React.Fragment>
           <TextField
@@ -1105,10 +1113,12 @@ export const Option = ({ fieldInfo, myOption, setMyOption }) => {
             </Select>
           </FormControl>
         </React.Fragment>
-      )
+      );
     }
     case "ordinalDirection": {
-      const [useAbbr, setUseAbbr] = useState(myOption.useAbbr ? myOption.useAbbr : "false");
+      const [useAbbr, setUseAbbr] = useState(
+        myOption.useAbbr ? myOption.useAbbr : "false"
+      );
       return (
         <React.Fragment>
           <FormControl fullWidth sx={{ mt: 2 }}>
@@ -1126,16 +1136,22 @@ export const Option = ({ fieldInfo, myOption, setMyOption }) => {
             </Select>
           </FormControl>
         </React.Fragment>
-      )
+      );
     }
     case "streetAddress": {
-      const [useFullAddress, setUseFullAddress] = useState(myOption.useFullAddress ? myOption.useFullAddress : "false");
+      const [useFullAddress, setUseFullAddress] = useState(
+        myOption.useFullAddress ? myOption.useFullAddress : "false"
+      );
       return (
         <React.Fragment>
           <FormControl fullWidth sx={{ mt: 2 }}>
             <InputLabel>useFullAddress</InputLabel>
             <Select
-              value={myOption.useFullAddress ? myOption.useFullAddress : useFullAddress}
+              value={
+                myOption.useFullAddress
+                  ? myOption.useFullAddress
+                  : useFullAddress
+              }
               label="useFullAddress"
               onChange={(e) => {
                 setUseFullAddress(e.target.value);
@@ -1147,7 +1163,7 @@ export const Option = ({ fieldInfo, myOption, setMyOption }) => {
             </Select>
           </FormControl>
         </React.Fragment>
-      )
+      );
     }
     case "zipCode": {
       return (
@@ -1162,7 +1178,7 @@ export const Option = ({ fieldInfo, myOption, setMyOption }) => {
             value={myOption.format ? myOption.format : ""}
           />
         </React.Fragment>
-      )
+      );
     }
     case "zipCodeByState": {
       return (
@@ -1177,7 +1193,7 @@ export const Option = ({ fieldInfo, myOption, setMyOption }) => {
             value={myOption.state ? myOption.state : ""}
           />
         </React.Fragment>
-      )
+      );
     }
     case "commonFileName": {
       return (
@@ -1192,7 +1208,7 @@ export const Option = ({ fieldInfo, myOption, setMyOption }) => {
             value={myOption.ext ? myOption.ext : ""}
           />
         </React.Fragment>
-      )
+      );
     }
     case "fileName": {
       return (
@@ -1207,17 +1223,25 @@ export const Option = ({ fieldInfo, myOption, setMyOption }) => {
             value={myOption.extensionCount ? myOption.extensionCount : ""}
           />
         </React.Fragment>
-      )
+      );
     }
     case "networkInterface": {
-      const [interfaceSchema, setInterfaceSchema] = useState(myOption.interfaceSchema ? myOption.interfaceSchema : "slot");
-      const [interfaceType, setInterfaceType] = useState(myOption.interfaceType ? myOption.interfaceType : "en");
+      const [interfaceSchema, setInterfaceSchema] = useState(
+        myOption.interfaceSchema ? myOption.interfaceSchema : "slot"
+      );
+      const [interfaceType, setInterfaceType] = useState(
+        myOption.interfaceType ? myOption.interfaceType : "en"
+      );
       return (
         <React.Fragment>
           <FormControl fullWidth>
             <InputLabel>interfaceSchema</InputLabel>
             <Select
-              value={myOption.interfaceSchema ? myOption.interfaceSchema : interfaceSchema}
+              value={
+                myOption.interfaceSchema
+                  ? myOption.interfaceSchema
+                  : interfaceSchema
+              }
               label="interfaceSchema"
               onChange={(e) => {
                 setInterfaceSchema(e.target.value);
@@ -1233,7 +1257,9 @@ export const Option = ({ fieldInfo, myOption, setMyOption }) => {
           <FormControl fullWidth sx={{ mt: 2 }}>
             <InputLabel>interfaceType</InputLabel>
             <Select
-              value={myOption.interfaceType ? myOption.interfaceType : interfaceType}
+              value={
+                myOption.interfaceType ? myOption.interfaceType : interfaceType
+              }
               label="interfaceType"
               onChange={(e) => {
                 setInterfaceType(e.target.value);
@@ -1246,7 +1272,46 @@ export const Option = ({ fieldInfo, myOption, setMyOption }) => {
             </Select>
           </FormControl>
         </React.Fragment>
-      )
+      );
+    }
+
+    case "email": {
+      return (
+        <React.Fragment>
+          <TextField
+            fullWidth
+            onChange={(e) => {
+              setMyOption({ ...myOption, firstName: e.target.value });
+            }}
+            label="first Name"
+            placeholder="Example: Jeanne"
+            value={myOption.firstName ? myOption.firstName : ""}
+            size="small"
+            sx={{ mb: 2 }}
+          />
+          <TextField
+            fullWidth
+            onChange={(e) => {
+              setMyOption({ ...myOption, lastName: e.target.value });
+            }}
+            label="last Name"
+            placeholder="Example: Doe"
+            value={myOption.lastName ? myOption.lastName : ""}
+            size="small"
+            sx={{ mb: 2 }}
+          />
+          <TextField
+            fullWidth
+            onChange={(e) => {
+              setMyOption({ ...myOption, provider: e.target.value });
+            }}
+            label="provider"
+            placeholder="Example: example.fakerjs.dev"
+            value={myOption.provider ? myOption.provider : ""}
+            size="small"
+          />
+        </React.Fragment>
+      );
     }
 
     case "default":
@@ -1296,6 +1361,7 @@ export const OptionExistFor = [
   "commonFileName",
   "fileName",
   "networkInterface",
+  "email",
 ];
 
 export default SchemaOptionModal;
