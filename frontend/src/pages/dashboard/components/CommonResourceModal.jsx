@@ -251,7 +251,7 @@ const CommonResourceModal = ({
             <Grid item xs={9} sx={{ mb: 2 }}>
               <Stack direction="row" spacing={1} key={item.id}>
                 <FormControl fullWidth>
-                  <InputLabel id="resource-label">Field</InputLabel>
+                  <InputLabel id="resource-label" sx={{top:"-8px"}}>Field</InputLabel>
                   <Select
                     labelId="resource-label"
                     id="resource-id"
