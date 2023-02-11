@@ -11,20 +11,20 @@ import {
   List,
   Box,
 } from "@mui/material";
+import * as Yup from "yup";
 import { FaPlus } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { blue } from "@mui/material/colors";
 import { apiProject } from "../../services/models/projectModel";
 import CustomModal from "../../components/CustomModal";
-import { FiTrash } from "react-icons/fi";
-import { MdDriveFileRenameOutline } from "react-icons/md";
-import * as Yup from "yup";
+import { FiEdit2, FiTrash } from "react-icons/fi";
 import { useFormik } from "formik";
 import ConfirmDeleteModal from "./components/ConfirmDelProjectModal";
 import { PartLoader } from "../../components/CustomLoading";
 import { apiProvider } from "../../services/utilities/provider";
 import CustomCheckbox from "../../components/CustomCheckbox";
+import { CustomTooltip } from "../../components/CustomTooltip";
 
 const Dashboard = () => {
   const { userId } = useParams();
@@ -208,26 +208,30 @@ const Dashboard = () => {
                     </Box>
                   </Stack>
                   <Stack direction={"row"} spacing={2}>
-                    <Button
-                      color="primary"
-                      variant="contained"
-                      onClick={() => {
-                        setProjectToBeRename(project);
-                        setRenameModalOpen(true);
-                      }}
-                    >
-                      <MdDriveFileRenameOutline color="#fff" />
-                    </Button>
-                    <Button
-                      color="error"
-                      variant="contained"
-                      onClick={() => {
-                        setToBeDeleted(project);
-                        setConfirmDeleteModal(true);
-                      }}
-                    >
-                      <FiTrash color="#fff" />
-                    </Button>
+                    <CustomTooltip title="Edit Project" arrow>
+                      <Button
+                        color="primary"
+                        variant="contained"
+                        onClick={() => {
+                          setProjectToBeRename(project);
+                          setRenameModalOpen(true);
+                        }}
+                      >
+                        <FiEdit2 />
+                      </Button>
+                    </CustomTooltip>
+                    <CustomTooltip title="Delete Project" arrow>
+                      <Button
+                        color="error"
+                        variant="contained"
+                        onClick={() => {
+                          setToBeDeleted(project);
+                          setConfirmDeleteModal(true);
+                        }}
+                      >
+                        <FiTrash color="#fff" />
+                      </Button>
+                    </CustomTooltip>
                   </Stack>
                 </ListItem>
               ))}

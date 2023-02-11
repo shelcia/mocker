@@ -213,7 +213,7 @@ const Resource = ({ resource, fetchResource, delResource }) => {
   const [cloneModal, setCloneModal] = useState(false);
   const [delResourceModal, setDelResourceModal] = useState(false);
 
-  const [result, setResult] = useState({});
+  const [result, setResult] = useState([]);
 
   const fetchResult = (signal) => {
     setloading(true);
