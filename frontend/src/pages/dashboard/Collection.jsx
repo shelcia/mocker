@@ -1,4 +1,4 @@
-import React, {  useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   CardContent,
@@ -148,8 +148,8 @@ const Collection = () => {
           <CopyButton
             sx={{ ml: 1 }}
             disabled={isCopied ? true : false}
-            onClick={()=>{
-              handleCopyClick(`${BACKEND_URL}/user/:endpoint`)
+            onClick={() => {
+              handleCopyClick(`${BACKEND_URL}/user/:endpoint`);
             }}
           >
             {isCopied ? "Done" : "Copy"}
@@ -160,7 +160,7 @@ const Collection = () => {
             href="https://documenter.getpostman.com/view/21272376/2s8YmUMLP2#f02f8b5d-1988-4177-816a-6da7fcb47d88"
             target="_blank"
           >
-            Postman Documentation
+            Test Postman Documentation
           </Link>
         </Typography>
         <Button variant="contained" onClick={() => setOpen(true)}>
@@ -237,7 +237,13 @@ const Resource = ({ resource, fetchResource, delResource }) => {
     <React.Fragment>
       <ListItem>
         <Grid container spacing={2}>
-          <Grid item xs={12} md={4} sx={{ display: "flex"}} alignItems="center">
+          <Grid
+            item
+            xs={12}
+            md={4}
+            sx={{ display: "flex" }}
+            alignItems="center"
+          >
             <ListItemAvatar>
               <Avatar sx={{ bgcolor: blue[500] }}>
                 {resource?.name?.charAt(0)}
@@ -253,7 +259,11 @@ const Resource = ({ resource, fetchResource, delResource }) => {
             </Typography>
           </Grid>
           <Grid item xs={12} md={8}>
-            <Stack spacing={2} direction="row" sx={{justifyContent:{sm:"left",md:"right"}}}>
+            <Stack
+              spacing={2}
+              direction="row"
+              sx={{ justifyContent: { sm: "left", md: "right" } }}
+            >
               <CustomTooltip title="View generated JSON data" arrow>
                 <Button variant="contained" onClick={() => setOpenModal(true)}>
                   <FiEye />

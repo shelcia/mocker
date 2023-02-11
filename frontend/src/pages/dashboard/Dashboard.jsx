@@ -273,7 +273,7 @@ const Dashboard = () => {
                 size="small"
                 onClick={() => {
                   setOpen(false);
-                  setName("");
+                  // setName("");
                 }}
               >
                 Cancel
