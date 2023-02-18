@@ -78,7 +78,7 @@ const EndpointModal = ({ open, setOpen, result }) => {
                   <CopyButton
                     onClick={() =>
                       handleCopyClick(
-                        `${BACKEND_URL}/user/${result}${point.endpoint}`,
+                        `${BACKEND_URL}/resource/${result}${point.endpoint}`,
                         idx
                       )
                     }
