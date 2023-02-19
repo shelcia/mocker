@@ -320,18 +320,18 @@ const themesOptions = {
       MuiCard: {
         styleOverrides: {
           root: {
-            boxShadow: "none",
-            border: "1px solid #E5EAF2",
             borderRadius: 8,
+            backgroundColor: "rgba(255, 255, 255, 0.5)",
+            backdropFilter: "saturate(100%) blur(10px)",
+            boxShadow: "inset 1px -1px 2px 2px hsla(0,0%,100%,.1)",
           },
         },
       },
       MuiAppBar: {
         styleOverrides: {
           root: {
-            backgroundColor: "rgba(255, 255, 255)",
-            backdropFilter: "saturate(180%) blur(5px)",
-            boxShadow: "inset 0 -1px 0 0 hsla(0,0%,100%,.1)",
+            backgroundColor: "rgba(255, 255, 255, 0)",
+            backdropFilter: "saturate(100%) blur(5px)",
             color: secondary[500],
           },
         },

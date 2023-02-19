@@ -16,10 +16,18 @@ import {
 } from "@mui/material";
 import CustomToggle from "../components/CustomToggle";
 import { MdStarRate } from "react-icons/md";
+import Grad1 from "../assets/home/gradient-1.svg";
+import Grad2 from "../assets/home/gradient-2.svg";
 
 const AuthLayout = ({ children }) => {
   return (
     <React.Fragment>
+      <img src={Grad1} alt="" style={{ position: "fixed", zIndex: -1 }} />
+      <img
+        src={Grad2}
+        alt=""
+        style={{ position: "fixed", top: 0, zIndex: -1 }}
+      />
       <AppBar component="nav">
         <Toolbar>
           <Typography
@@ -53,7 +61,7 @@ const AuthLayout = ({ children }) => {
             <Intro />
           </Grid>
           <Grid item xs={12} sm={8} md={5}>
-            <Card sx={{ minWidth: 275 }}>
+            <Card sx={{ minWidth: 275, border: 0, boxShadow: 0 }}>
               <CardContent>{children}</CardContent>
             </Card>
           </Grid>
@@ -66,24 +74,24 @@ const AuthLayout = ({ children }) => {
 export default AuthLayout;
 
 const Intro = () => {
-  // const featureList = [
-  //   {
-  //     key: 1,
-  //     name: "Unlimited Resources",
-  //   },
-  //   {
-  //     key: 2,
-  //     name: "Unlimited Projects",
-  //   },
-  //   {
-  //     key: 3,
-  //     name: "Readymade Endpoints",
-  //   },
-  //   {
-  //     key: 4,
-  //     name: "Schema Options",
-  //   },
-  // ];
+  const featureList = [
+    {
+      key: 1,
+      name: "Unlimited Resources",
+    },
+    {
+      key: 2,
+      name: "Unlimited Projects",
+    },
+    {
+      key: 3,
+      name: "Readymade Endpoints",
+    },
+    {
+      key: 4,
+      name: "Schema Options",
+    },
+  ];
 
   return (
     <>
@@ -98,31 +106,23 @@ const Intro = () => {
       >
         Mocker
       </Typography>
+
+      <Typography variant="h6" component="p">
+        Mocker can generate mock data with API endpoints, powered by{"  "}
+        <Link href="https://fakerjs.dev/" target="_blank">
+          faker.js
+        </Link>
+      </Typography>
+
       <List dense={true}>
-        <ListItem>
-          <ListItemIcon>
-            <MdStarRate />
-          </ListItemIcon>
-          <ListItemText primary="Unlimited Resources" />
-        </ListItem>
-        <ListItem>
-          <ListItemIcon>
-            <MdStarRate />
-          </ListItemIcon>
-          <ListItemText primary="Unlimited Projects" />
-        </ListItem>
-        <ListItem>
-          <ListItemIcon>
-            <MdStarRate />
-          </ListItemIcon>
-          <ListItemText primary="Readymade Endpoints" />
-        </ListItem>
-        <ListItem>
-          <ListItemIcon>
-            <MdStarRate />
-          </ListItemIcon>
-          <ListItemText primary="Schema Options" />
-        </ListItem>
+        {featureList.map((feature) => (
+          <ListItem key={feature.key}>
+            <ListItemIcon>
+              <MdStarRate />
+            </ListItemIcon>
+            <ListItemText primary={feature.name} />
+          </ListItem>
+        ))}
       </List>
     </>
   );

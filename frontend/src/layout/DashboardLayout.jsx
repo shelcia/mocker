@@ -15,6 +15,8 @@ import {
 import { HiMenuAlt3 } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 import CustomToggle from "../components/CustomToggle";
+import Grad1 from "../assets/home/gradient-1.svg";
+import Grad2 from "../assets/home/gradient-2.svg";
 
 const drawerWidth = 240;
 
@@ -59,6 +61,12 @@ const DashboardLayout = ({ children }, props) => {
 
   return (
     <Box>
+      <img src={Grad1} alt="" style={{ position: "fixed", zIndex: -1 }} />
+      <img
+        src={Grad2}
+        alt=""
+        style={{ position: "fixed", top: 0, zIndex: -1 }}
+      />
       <AppBar component="nav">
         <Toolbar>
           <Typography
