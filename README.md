@@ -130,6 +130,7 @@ Thanks to all the contributors who worked for this project to stay alive! ðŸ˜ŠðŸ
   <img src="https://contrib.rocks/image?repo=shelcia/mocker&&max=817" />  
 </a>
 
+<br>
 
 ---
 <div align="center">
