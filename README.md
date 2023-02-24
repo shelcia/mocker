@@ -122,4 +122,13 @@ We want to facilitate a healthy and constructive community behavior by adopting 
   <a href="https://github.com/shelcia"><img src="https://avatars.githubusercontent.com/shelcia" width="20%" /></a>
 
 
+---
+<div align="center">
+    <h3><b>Take a moment to star ⭐ the project if you like it</b></h3>
+    <h3>Do checkout the other repos 💫</h3> 
+</div>
+
+
+
+
 <!-- Please adhere toward our [Code-of-Conduct](code-of-conduct.md). -->
