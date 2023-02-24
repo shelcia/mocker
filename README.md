@@ -108,4 +108,18 @@ EMAIL_PWD={password}
 
 We want to facilitate a healthy and constructive community behavior by adopting and enforcing our code of conduct.
 
+# <h1 align=center>🧑‍💻 CONTRIBUTION 👏</h1>
+
+- Contributions make the open source community such an amazing place to learn, inspire, and create.
+- Any contributions you make are greatly appreciated.
+- Check out our [contribution guidelines](/CONTRIBUTING.md) for more information.
+
+<br>
+
+<h1 align=center> Project Admin 💻</h1>
+
+  <p align="center">
+  <a href="https://github.com/shelcia"><img src="https://avatars.githubusercontent.com/shelcia" width="20%" /></a>
+
+
 <!-- Please adhere toward our [Code-of-Conduct](code-of-conduct.md). -->
