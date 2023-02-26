@@ -103,6 +103,9 @@ EMAIL_ID={email}
 EMAIL_PWD={password}
 
 ```
+## How to use this app ?
+[Read Flow Of Control](FlowOfControl.md)
+
 
 ## 💼 Code of Conduct
 
