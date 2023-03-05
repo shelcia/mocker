@@ -6,6 +6,7 @@ import {
   CardContent,
   Container,
   Grid,
+  IconButton,
   Link,
   List,
   ListItem,
@@ -16,6 +17,7 @@ import {
 } from "@mui/material";
 import CustomToggle from "../components/CustomToggle";
 import { MdStarRate } from "react-icons/md";
+import { FiGithub } from "react-icons/fi";
 import Grad1 from "../assets/home/gradient-1.svg";
 import Grad2 from "../assets/home/gradient-2.svg";
 
@@ -36,6 +38,11 @@ const AuthLayout = ({ children }) => {
           >
             Mocker
           </Typography>
+          <Link href="https://github.com/shelcia/mocker" target="_blank">
+            <IconButton color="primary" style={{ cursor: "pointer" }}>
+              <FiGithub size={"1rem"} />
+            </IconButton>
+          </Link>
           <Box sx={{ display: "flex" }}>
             <Link
               href="https://mocker-docs.vercel.app/docs/intro"
@@ -53,7 +60,7 @@ const AuthLayout = ({ children }) => {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          height: "100vh",
+          height: "90vh",
         }}
       >
         <Grid container component="main">
@@ -67,6 +74,21 @@ const AuthLayout = ({ children }) => {
           </Grid>
         </Grid>
       </Container>
+      <Grid
+        container
+        component="footer"
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "10vh",
+        }}
+      >
+        Developed by
+        <Link href="https://shelcia-dev.me/" target="_blank" ml={1}>
+          Shelcia
+        </Link>
+      </Grid>
     </React.Fragment>
   );
 };
@@ -89,7 +111,7 @@ const Intro = () => {
     },
     {
       key: 4,
-      name: "Schema Options",
+      name: "Customise Schema Options",
     },
   ];
 
@@ -113,7 +135,6 @@ const Intro = () => {
           faker.js
         </Link>
       </Typography>
-
       <List dense={true}>
         {featureList.map((feature) => (
           <ListItem key={feature.key}>
