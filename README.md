@@ -18,6 +18,9 @@
 <img src="https://img.shields.io/github/issues-pr-closed-raw/shelcia/mocker?style=for-the-badge" >
 </p>
 
+
+![Mocker Generator](https://github.com/shelcia/mocker/blob/master/mocker.svg)
+
 ## 📌 Introduction
 
 A Web app which lets you generate data with API endpoints
