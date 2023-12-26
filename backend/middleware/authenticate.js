@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
  * authentication for performing various
  * sensitive activity
  */
-const userAuth = async (req, res, next) => {
+const userAuth =  (req, res, next) => {
   const token = req.headers["auth-token"];
 
   if (!token) {
@@ -15,22 +15,18 @@ const userAuth = async (req, res, next) => {
       message: "Token is needed",
     });
   }
-  var payload = await new Promise(async (resolve, reject) => {
-    try {
-      let _payload = jwt.verify(token, process.env.TOKEN_SECRET);
-      resolve(_payload);
-    } catch (error) {
-      console.log(error);
-      return res.send({
+  jwt.verify(token, process.env.TOKEN_SECRET, (err, payload) => {
+    if (err) {
+      return res.status(400).send({
         status: "400",
         message: "Something wrong",
       });
     }
+    //SET USER INFO
+    req.body.user = payload;
+    return next();
   });
-
-  //SET USER INFO
-  req.body.user = payload;
-  return next();
+  
 };
 
 module.exports = userAuth;
