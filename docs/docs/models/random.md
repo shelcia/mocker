@@ -117,10 +117,10 @@ copy Handcrafted bus client-server Point
 
 Generates a given length string of special character.
 
-|     Option     |               Default                | Description                                                          |
-| :------------: | :----------------------------------: | -------------------------------------------------------------------- |
-| Number of word |                  5                   | The number of character to generate.                                 |
-|   Whitelist    | !"#$%&'()\*+,-./:;<=>?@[]^\_`{\|}~\  | Set of characters that are allowed to include in the generated data. |
+|     Option     |                  Default                  | Description                                                          |
+| :------------: | :---------------------------------------: | -------------------------------------------------------------------- |
+| Number of word |                     5                     | The number of character to generate.                                 |
+|   Whitelist    | !"#$%&'()\*+,-./:;\<\=\>?@[]^\_`\{\|\}~\  | Set of characters that are allowed to include in the generated data. |
 
 #### Input:
 
