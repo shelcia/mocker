@@ -1,5 +1,7 @@
-const lightCodeTheme = require("prism-react-renderer/themes/github");
-const darkCodeTheme = require("prism-react-renderer/themes/nightOwl");
+const { themes } = require("prism-react-renderer");
+const lightCodeTheme = themes.lightCodeTheme;
+const darkCodeTheme = themes.darkCodeTheme;
+const nightOwlTheme = themes.nightOwlTheme;
 
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
@@ -21,7 +23,7 @@ module.exports = {
       },
     ],
     prism: {
-      theme: require("prism-react-renderer/themes/nightOwl"),
+      theme: nightOwlTheme,
     },
     navbar: {
       title: "Mocker Docs",
