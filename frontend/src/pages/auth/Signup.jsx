@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { Box, Button, TextField, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { apiAuth } from "../../services/models/authModel";
@@ -9,6 +10,25 @@ import { CustomLoaderButton } from "../../components/CustomButtons";
 import { CustomPwdField } from "../../components/CustomInputFields";
 
 const Signup = () => {
+  let [hasToken, setHasToken] = useState(false);
+  useEffect(() => {
+    const userToken = localStorage.getItem("MockAPI-Token");
+    const headers = {
+      "auth-token": `${userToken}`,
+    };
+    axios
+      .get("https://mocker-backend.vercel.app/api/auth/verify", {
+        headers,
+      })
+      .then((res) => {
+        if (res.data.message === "ok") {
+          setHasToken(true);
+        }
+      })
+      .catch((err) => {
+        setHasToken(false);
+      });
+  }, []);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
@@ -58,7 +78,18 @@ const Signup = () => {
       setLoading(false);
     });
   };
-
+  const logout = () => {
+    localStorage.clear();
+    setHasToken(false);
+    navigate("/");
+  };
+  if (hasToken) {
+    return (
+      <Button variant="contained" onClick={logout} sx={{ mt: 4 }}>
+        Logout
+      </Button>
+    );
+  }
   return (
     <React.Fragment>
       <Typography variant="h4" component="h1" sx={{ mb: 2 }}>

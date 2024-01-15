@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -7,6 +7,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import axios from "axios";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { apiService } from "../../services/models/serviceModel";
 import { toast } from "react-hot-toast";
@@ -17,8 +18,39 @@ import { CustomLoaderButton } from "../../components/CustomButtons";
 import { CustomTypoDisplay } from "../../components/CustomDisplay";
 
 const ForgotPassword = () => {
+  const navigate = useNavigate();
+  let [hasToken, setHasToken] = useState(false);
+  useEffect(() => {
+    const userToken = localStorage.getItem("MockAPI-Token");
+    const headers = {
+      "auth-token": `${userToken}`,
+    };
+    axios
+      .get("https://mocker-backend.vercel.app/api/auth/verify", {
+        headers,
+      })
+      .then((res) => {
+        if (res.data.message === "ok") {
+          setHasToken(true);
+        }
+      })
+      .catch((err) => {
+        setHasToken(false);
+      });
+  }, []);
   const { id } = useParams();
-
+  const logout = () => {
+    localStorage.clear();
+    setHasToken(false);
+    navigate("/");
+  };
+  if (hasToken) {
+    return (
+      <Button variant="contained" onClick={logout} sx={{ mt: 4 }}>
+        Logout
+      </Button>
+    );
+  }
   return (
     <React.Fragment>
       {id ? <SetPasswordForm auth_token={id} /> : <VerifyForm />}
