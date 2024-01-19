@@ -144,12 +144,12 @@ const Collection = () => {
         </Typography>
         <Alert sx={{ mb: 2 }}>
           <AlertTitle sx={{ fontWeight: 600 }}>API endpoint</AlertTitle>
-          <code>{BACKEND_URL}/user/:endpoint</code>
+          <code>{`${BACKEND_URL}/resource/:endpoint`}</code>
           <CopyButton
             sx={{ ml: 1 }}
             disabled={isCopied ? true : false}
             onClick={() => {
-              handleCopyClick(`${BACKEND_URL}/user/:endpoint`);
+              handleCopyClick(`${BACKEND_URL}/resource/:endpoint`);
             }}
           >
             {isCopied ? "Done" : "Copy"}
