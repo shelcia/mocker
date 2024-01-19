@@ -144,7 +144,9 @@ const Collection = () => {
         </Typography>
         <Alert sx={{ mb: 2 }}>
           <AlertTitle sx={{ fontWeight: 600 }}>API endpoint</AlertTitle>
+
           <code>{`${BACKEND_URL}/resource/:endpoint`}</code>
+        //  this above code might work
           <CopyButton
             sx={{ ml: 1 }}
             disabled={isCopied ? true : false}
