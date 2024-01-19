@@ -14,7 +14,7 @@ const cryptr = new Cryptr("myTotallySecretKey");
 
 //VALIDATION OF USER INPUTS PREREQUISITES
 const Joi = require("joi");
-
+let authMiddleWare = require("../../middleware/authenticate");
 //AUTHORISATION RELATED API
 
 const registerSchema = Joi.object({
@@ -26,11 +26,16 @@ const loginSchema = Joi.object({
   email: Joi.string().min(6).required().email(),
   password: Joi.string().min(6).required(),
 });
-
+// adding another route to check that the user has a valid json web token
+router.get("/verify",authMiddleWare, (req, res) => {
+  res.status(200).json({
+    message: "ok",
+  });
+});
 router.post("/register", async (req, res) => {
   try {
     //CHECK IF MAIL ALREADY EXISTS
-    const emailExist = await User.findOne({ email: {$eq: req.body.email} });
+    const emailExist = await User.findOne({ email: { $eq: req.body.email } });
     if (emailExist) {
       res.status(200).send({ status: "400", message: "Email Already Exists" });
       return;
@@ -95,7 +100,7 @@ router.post("/register", async (req, res) => {
 router.post("/signin", async (req, res) => {
   //CHECKING IF EMAIL EXISTS
 
-  const user = await User.findOne({ email: {$eq: req.body.email} });
+  const user = await User.findOne({ email: { $eq: req.body.email } });
   if (!user) {
     res.status(200).send({ status: "400", message: 'Email doesn"t exist' });
     return;
