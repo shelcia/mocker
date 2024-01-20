@@ -27,7 +27,7 @@ const loginSchema = Joi.object({
   password: Joi.string().min(6).required(),
 });
 // adding another route to check that the user has a valid json web token
-router.get("/verify",authMiddleWare, (req, res) => {
+router.get("/verify", authMiddleWare, (req, res) => {
   res.status(200).json({
     message: "ok",
   });
@@ -124,6 +124,7 @@ router.post("/signin", async (req, res) => {
         {
           _id: user._id,
           email: user.email,
+          exp: Math.floor(Date.now() / 1000) + 7 * 24 * 60 * 60, // exp after 7 days
         },
         process.env.TOKEN_SECRET
       );
