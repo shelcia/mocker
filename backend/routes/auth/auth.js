@@ -124,7 +124,7 @@ router.post("/signin", async (req, res) => {
         {
           _id: user._id,
           email: user.email,
-          exp: Math.floor(Date.now() / 1000) + 14 * 24 * 60 * 60, // exp after 7 days
+          exp: Math.floor(Date.now() / 1000) + 14 * 24 * 60 * 60, // exp after 14 days
         },
         process.env.TOKEN_SECRET
       );
