@@ -4,44 +4,29 @@ const Resource = require("../../models/Resource");
 const { v4: uuidv4 } = require("uuid");
 // const { trackAPIRequest } = require("../../utils/trackAPIRequests");
 
+router.use((req, res, next) => {
+  const endpoint = req.originalUrl;
+  Resource.findOneAndUpdate(
+    { _id: req.params.id },
+    { $push: { analytics: { date: new Date() } } },
+    { upsert: true, new: true }
+  ).exec((err, endpointRequest) => {
+    if (err) {
+      console.error("Error updating request history:", err);
+    } else {
+      console.log(
+        `Request history for ${endpointRequest}.${endpoint}:`,
+        endpointRequest.analytics
+      );
+    }
+  });
+  next();
+});
+
 router.get("/:id", async (req, res) => {
-  // const existingAnalytics = resource.analytics || [];
-
-  // const newAnalytics = {
-  //   method: "GET",
-  //   date: Date.now(),
-  // };
-
-  // await resource.set({
-  //   ...req.body,
-  //   analytics: [...existingAnalytics, newAnalytics],
-  // });
-  // console.log(existingAnalytics);
-  // const body = {
-  //   name: resource.name,
-  //   schema: resource.schema,
-  //   data: resource.data,
-  //   number: resource.number,
-  //   userId: resource.userId,
-  //   projectId: resource.projectId,
-  //   analytics: [
-  //     ...existingAnalytics,
-  //     {
-  //       method: "GET",
-  //       date: Date.now(),
-  //     },
-  //   ],
-  // };
-  // resource.set(body);
-  // await resource.save();
-
   try {
-    // await trackAPIRequest(req.params.id, {
-    //   method: "GET",
-    //   date: Date.now(),
-    // });
     const resource = await Resource.findById(req.params.id);
-    if(resource === null){
+    if (resource === null) {
       res.status(200).send({
         status: "400",
         message: 'Seems like resourceId doesn"t exist !',
@@ -57,7 +42,7 @@ router.get("/:id", async (req, res) => {
 router.get("/:id/:objectId", async (req, res) => {
   try {
     const resource = await Resource.findById(req.params.id);
-    if(resource === null){
+    if (resource === null) {
       res.status(200).send({
         status: "400",
         message: 'Seems like resourceId doesn"t exist !',
@@ -91,7 +76,7 @@ router.post("/:id", async (req, res) => {
     }
 
     const resource = await Resource.findById(req.params.id);
-    if(resource === null){
+    if (resource === null) {
       res.status(200).send({
         status: "400",
         message: 'Seems like resourceId doesn"t exist !',
@@ -151,7 +136,7 @@ router.put("/:id/:objectId", async (req, res) => {
     }
 
     const resource = await Resource.findById(req.params.id);
-    if(resource === null){
+    if (resource === null) {
       res.status(200).send({
         status: "400",
         message: 'Seems like resourceId doesn"t exist !',
@@ -217,7 +202,7 @@ router.put("/:id/:objectId", async (req, res) => {
 router.delete("/:id/:objectId", async (req, res) => {
   try {
     const resource = await Resource.findById(req.params.id);
-    if(resource === null){
+    if (resource === null) {
       res.status(200).send({
         status: "400",
         message: 'Seems like resourceId doesn"t exist !',
@@ -228,7 +213,7 @@ router.delete("/:id/:objectId", async (req, res) => {
       (item) => item.id !== req.params.objectId
     );
 
-    if(required.length === resource.data.length){
+    if (required.length === resource.data.length) {
       res.status(200).send({
         status: "400",
         message: 'Seems like objectId doesn"t exist !',

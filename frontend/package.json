@@ -12,6 +12,7 @@
   "dependencies": {
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
+    "@fontsource-variable/dm-sans": "^5.0.6",
     "@fontsource/jetbrains-mono": "^4.5.12",
     "@fontsource/poppins": "^4.5.10",
     "@mui/material": "^5.11.11",

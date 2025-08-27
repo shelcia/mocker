@@ -6,6 +6,9 @@ import App from "./App";
 import "@fontsource/poppins";
 import "@fontsource/jetbrains-mono";
 
+// Supports weights 100-900
+import "@fontsource-variable/dm-sans";
+
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <ThemeProvider>

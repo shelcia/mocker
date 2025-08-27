@@ -217,7 +217,7 @@ const CommonResourceModal = ({
           />
         </Stack>
 
-        <Stack direction="row" spacing={1}>
+        <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
           <TextField value="id" sx={{ mb: 2 }} size="small" disabled />
           <TextField value="uuid" sx={{ mb: 2 }} size="small" disabled />
         </Stack>

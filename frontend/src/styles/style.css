@@ -1,3 +1,8 @@
+@font-face {
+  font-family: "CalSans";
+  src: url("../assets/fonts/CalSans-SemiBold.woff2") format("woff2");
+}
+
 code,
 #json-pretty,
 pre {

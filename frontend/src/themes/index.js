@@ -9,7 +9,7 @@ import {
   success,
   warning,
 } from "./themeColors";
-const fontSize = 14;
+const fontSize = 16;
 
 const THEMES = {
   LIGHT: "light",
@@ -43,6 +43,7 @@ const baseOptions = {
           borderRadius: "4px",
           // color: "inherit",
           boxShadow: "none",
+          fontSize: 16,
           // padding: "0.6rem 1.5rem",
         },
         outlinedPrimary: {
@@ -236,7 +237,8 @@ const baseOptions = {
     MuiButtonBase: {
       styleOverrides: {
         root: {
-          fontFamily: "'Poppins', sans-serif",
+          fontSize: 16,
+          fontFamily: "'DM Sans Variable', sans-serif",
         },
       },
     },
@@ -260,7 +262,7 @@ const baseOptions = {
     button: {
       fontWeight: 600,
     },
-    fontFamily: "'Poppins', sans-serif",
+    fontFamily: "'DM Sans Variable', sans-serif",
     h1: {
       fontWeight: 800,
       fontSize: "4.25rem",
@@ -353,8 +355,12 @@ const themesOptions = {
       success,
       info,
       background: {
-        default: "rgb(10, 20, 28)",
-        paper: "rgb(10, 20, 28)",
+        // default: "rgb(10, 20, 28)",
+        // paper: "rgb(10, 20, 28)",
+        // default: "rgb(9, 15, 36)",
+        // paper: "rgb(9, 15, 36)",
+        default: "#05141a",
+        paper: "#05141a",
       },
       mode: "dark",
     },
@@ -378,8 +384,9 @@ const themesOptions = {
       MuiAppBar: {
         styleOverrides: {
           root: {
-            backgroundColor: "rgba(10, 20, 2,.5)",
-            backdropFilter: "saturate(180%) blur(5px)",
+            backgroundColor: "rgba(0,0,0,0)",
+            // backgroundColor: "rgba(10, 20, 2,.5)",
+            // backdropFilter: "saturate(180%) blur(5px)",
             boxShadow: "inset 0 -1px 0 0 hsla(0,0%,100%,.1)",
           },
         },
@@ -399,9 +406,10 @@ const themesOptions = {
       MuiCard: {
         styleOverrides: {
           root: {
-            backgroundColor: "rgba(10, 20, 2, 0)",
-            backdropFilter: "saturate(100%) blur(10px)",
-            boxShadow: "inset 1px -1px 2px 2px hsla(0,0%,100%,.1)",
+            backgroundColor: "#0f1f2c",
+            // backgroundColor: "rgba(10, 20, 2, 0)",
+            // backdropFilter: "saturate(100%) blur(10px)",
+            // boxShadow: "inset 1px -1px 2px 2px hsla(0,0%,100%,.1)",
           },
         },
       },

@@ -32,7 +32,12 @@ export const CustomTabs = ({ value, handleChange, items = [] }) => {
     <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
       <Tabs value={value} onChange={handleChange} aria-label="navigation tabs">
         {items.map((item, idx) => (
-          <Tab label={item} {...a11yProps(idx)} key={idx} />
+          <Tab
+            label={item}
+            {...a11yProps(idx)}
+            key={idx}
+            sx={{ fontSize: 14 }}
+          />
         ))}
       </Tabs>
     </Box>

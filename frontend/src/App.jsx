@@ -17,7 +17,7 @@ const App = () => {
   const toasterOptions = {
     style: {
       fontWeight: 500,
-      fontFamily: "'Poppins', sans-serif",
+      fontFamily: "'DM Sans Variable', sans-serif",
     },
   };
 

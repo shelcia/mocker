@@ -139,7 +139,11 @@ const Collection = () => {
         Back
       </Button>
       <CardContent>
-        <Typography variant="h4" component="h1" sx={{ mb: 2 }}>
+        <Typography
+          variant="h4"
+          component="h1"
+          sx={{ mb: 2, fontFamily: "CalSans" }}
+        >
           {projectName}
         </Typography>
         <Alert sx={{ mb: 2 }}>
@@ -250,7 +254,7 @@ const Resource = ({ resource, fetchResource, delResource }) => {
               </Avatar>
             </ListItemAvatar>
             <Typography
-              sx={{ display: "inline", mt: 1 }}
+              sx={{ display: "inline", mt: 1, fontSize: 16 }}
               component="h1"
               variant="h6"
               color="text.primary"
