@@ -1,12 +1,12 @@
 @font-face {
-  font-family: "CalSans";
-  src: url("../assets/fonts/CalSans-SemiBold.woff2") format("woff2");
+  font-family: 'CalSans';
+  src: url('../assets/fonts/CalSans-SemiBold.woff2') format('woff2');
 }
 
 code,
 #json-pretty,
 pre {
-  font-family: "JetBrains Mono", monospace;
+  font-family: 'JetBrains Mono', monospace;
 }
 
 .lang-dark span.__json-key__ {
