@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Box, Button, TextField, Typography } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import { apiAuth } from '../../services/models/authModel';
 import { toast } from 'react-hot-toast';
@@ -9,6 +8,9 @@ import { useFormik } from 'formik';
 import { CustomLoaderButton } from '../../components/CustomButtons';
 import { CustomPwdField } from '../../components/CustomInputFields';
 import { ApiStringResponse } from '../../types';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 
 const Signup = () => {
   const [hasToken, setHasToken] = useState<boolean>(false);
@@ -79,37 +81,42 @@ const Signup = () => {
   };
   if (hasToken) {
     return (
-      <Button variant="contained" onClick={logout} sx={{ mt: 4 }}>
+      <Button variant="default" onClick={logout} className="mt-4">
         Logout
       </Button>
     );
   }
   return (
     <React.Fragment>
-      <Typography variant="h4" component="h1" sx={{ mb: 2 }}>
-        Signup
-      </Typography>
-      <Box
-        component="form"
-        noValidate
-        onSubmit={handleSubmit}
-        style={{
-          width: '100%',
-        }}
-      >
-        <TextField
-          label="email"
-          size="small"
-          type="email"
-          sx={{ mb: 2 }}
-          fullWidth
-          name="email"
-          onBlur={handleBlur}
-          onChange={handleChange}
-          value={values.email || ''}
-          error={Boolean(touched.email && errors.email)}
-          helperText={touched.email && errors.email}
-        />
+      <div className="mb-6 space-y-2">
+        <h1 className="text-2xl font-semibold tracking-tight">Create an account</h1>
+        <p className="text-sm text-muted-foreground">Generate mock APIs in minutes</p>
+      </div>
+
+      <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+        <div className="space-y-2">
+          <Label htmlFor="email" className="text-sm font-medium">
+            Email
+          </Label>
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            placeholder="you@example.com"
+            value={values.email || ''}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            className={`w-full rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 ${
+              touched.email && errors.email
+                ? 'border-destructive focus:ring-destructive'
+                : 'border-input focus:ring-ring'
+            }`}
+          />
+          {touched.email && errors.email && (
+            <p className="text-xs text-destructive">{errors.email}</p>
+          )}
+        </div>
+
         <CustomPwdField
           handleBlur={handleBlur}
           handleChange={handleChange}
@@ -117,21 +124,24 @@ const Signup = () => {
           touched={touched}
           errors={errors}
         />
+
         <Button
-          variant="contained"
-          sx={{ display: 'block', mt: 2, mx: 'auto' }}
           type="submit"
           disabled={loading}
+          className="w-full rounded-md bg-primary py-2 text-sm font-medium text-primary-foreground hover:opacity-90 disabled:opacity-50"
         >
-          {loading ? <CustomLoaderButton /> : 'Signup'}
+          {loading ? <CustomLoaderButton /> : 'Create account'}
         </Button>
-        <Typography variant="h6" component="p" sx={{ my: 2 }}>
+        <p className="text-sm text-muted-foreground">
           Have an account already ? Then{'  '}
-          <Link to="/" style={{ color: 'deepskyblue' }}>
+          <Link
+            to="/"
+            className="font-medium text-foreground underline-offset-4 hover:underline"
+          >
             Login
           </Link>
-        </Typography>
-      </Box>
+        </p>
+      </form>
     </React.Fragment>
   );
 };

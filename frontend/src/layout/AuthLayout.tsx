@@ -1,25 +1,10 @@
 import React, { ReactNode } from 'react';
-import {
-  AppBar,
-  Box,
-  Card,
-  CardContent,
-  Container,
-  IconButton,
-  Link,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Toolbar,
-  Typography,
-} from '@mui/material';
-import Grid from '@mui/material/Grid';
 import CustomToggle from '../components/CustomToggle';
-import { MdStarRate } from 'react-icons/md';
 import { FiGithub } from 'react-icons/fi';
-import Grad1 from '../assets/home/gradient-1.svg';
-import Grad2 from '../assets/home/gradient-2.svg';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+import { Card, CardContent } from '@/components/ui/card';
 
 interface AuthLayoutProps {
   children: ReactNode;
@@ -28,119 +13,149 @@ interface AuthLayoutProps {
 const AuthLayout = ({ children }: AuthLayoutProps) => {
   return (
     <React.Fragment>
-      <img src={Grad1} alt="" style={{ position: 'fixed', zIndex: -1 }} />
-      <img src={Grad2} alt="" style={{ position: 'fixed', top: 0, zIndex: -1 }} />
-      <AppBar component="nav">
-        <Toolbar>
-          <Typography
-            variant="h6"
-            sx={{ flexGrow: 1, fontWeight: 800, textTransform: 'uppercase' }}
+      <div className="relative min-h-screen overflow-hidden bg-background text-foreground">
+        <header className="sticky top-0 z-20">
+          <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
+            <div className="flex items-center gap-2">
+              <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-sky-400 to-fuchsia-500" />
+              <span className="text-sm font-semibold tracking-wide">Mocker</span>
+              <Badge
+                variant="secondary"
+                className="ml-2 bg-zinc-900/10 text-zinc-700 dark:bg-white/10 dark:text-zinc-100"
+              >
+                beta
+              </Badge>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Button
+                asChild
+                variant="ghost"
+                className="h-9 rounded-full bg-zinc-900/5 px-3 hover:bg-zinc-900/10 dark:bg-white/5 dark:hover:bg-white/10"
+              >
+                <a
+                  href="https://mocker-docs.vercel.app/docs/intro"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Docs
+                </a>
+              </Button>
+
+              <Button
+                asChild
+                variant="ghost"
+                className="h-9 w-9 rounded-full bg-zinc-900/5 p-0 hover:bg-zinc-900/10 dark:bg-white/5 dark:hover:bg-white/10"
+              >
+                <a
+                  href="https://github.com/shelcia/mocker"
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="GitHub"
+                >
+                  <FiGithub className="h-4 w-4" />
+                </a>
+              </Button>
+
+              <Separator
+                orientation="vertical"
+                className="mx-1 h-6 bg-zinc-900/10 dark:bg-white/10"
+              />
+
+              <div className="rounded-full bg-zinc-900/5 px-2 py-1 hover:bg-zinc-900/10 dark:bg-white/5 dark:hover:bg-white/10">
+                <CustomToggle />
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <main className="mx-auto flex max-w-6xl items-center px-4 py-10">
+          <div className="grid w-full grid-cols-1 gap-8 lg:grid-cols-12">
+            <section className="lg:col-span-7">
+              <div className="space-y-6">
+                <div className="inline-flex items-center gap-2 rounded-full bg-zinc-900/5 px-3 py-1 text-xs text-zinc-700 ring-1 ring-zinc-900/10 dark:bg-white/5 dark:text-zinc-200 dark:ring-white/10">
+                  <span className="h-2 w-2 rounded-full bg-emerald-500 dark:bg-emerald-400" />
+                  Generate mock APIs in minutes — not days
+                </div>
+
+                <h1 className="text-4xl font-semibold leading-tight tracking-tight sm:text-5xl">
+                  Mock data + endpoints{' '}
+                  <span className="bg-gradient-to-r from-sky-400 via-fuchsia-400 to-emerald-300 bg-clip-text text-transparent">
+                    that feel real
+                  </span>
+                  .
+                </h1>
+
+                <p className="max-w-xl text-base text-muted-foreground">
+                  Define a schema, get unlimited resources & projects, and ship usable endpoints
+                  powered by{' '}
+                  <a
+                    href="https://fakerjs.dev/"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="font-medium text-foreground underline underline-offset-4 hover:opacity-90"
+                  >
+                    faker.js
+                  </a>
+                  .
+                </p>
+
+                <div className="flex flex-wrap gap-2 pt-2">
+                  <FeatureChip>Unlimited projects</FeatureChip>
+                  <FeatureChip>Unlimited resources</FeatureChip>
+                  <FeatureChip>Schema options</FeatureChip>
+                  <FeatureChip>Instant endpoints</FeatureChip>
+                </div>
+
+                <div className="mt-6 rounded-2xl bg-white/70 p-4 ring-1 ring-zinc-900/10 dark:bg-white/5 dark:ring-white/10">
+                  <div className="text-xs text-muted-foreground">Example endpoint</div>
+                  <pre className="mt-2 overflow-x-auto rounded-xl bg-zinc-900/5 p-3 text-xs text-zinc-700 ring-1 ring-zinc-900/10 dark:bg-black/30 dark:text-zinc-100 dark:ring-white/10">
+                    {`GET /user/:endpoint
+→ 200 OK
+[
+  { "id": 1, "firstName": "Jeanne", "email": "jeanne@example.com" }
+]`}
+                  </pre>
+                </div>
+              </div>
+            </section>
+
+            <section className="lg:col-span-5">
+              <div className="relative">
+                <Card className="relative rounded-3xl border-border/60 bg-card/80 shadow-sm backdrop-blur-xl dark:border-white/10 dark:bg-white/5">
+                  <CardContent className="p-6">{children}</CardContent>
+                </Card>
+                <p className="mt-4 text-center text-xs text-muted-foreground">
+                  By continuing, you agree to the terms and privacy policy.
+                </p>
+              </div>
+            </section>
+          </div>
+        </main>
+
+        {/* Footer */}
+        <footer className="mx-auto flex h-16 max-w-6xl items-center justify-center px-4 text-xs text-muted-foreground">
+          <span>Built by</span>
+          <a
+            href="https://shelcia-dev.me/"
+            target="_blank"
+            rel="noreferrer"
+            className="ml-1 font-medium text-foreground underline underline-offset-4 hover:opacity-90"
           >
-            Mocker
-          </Typography>
-          <Link href="https://github.com/shelcia/mocker" target="_blank">
-            <IconButton color="primary" style={{ cursor: 'pointer' }}>
-              <FiGithub size={'1rem'} />
-            </IconButton>
-          </Link>
-          <Box sx={{ display: 'flex' }}>
-            <Link href="https://mocker-docs.vercel.app/docs/intro" target="_blank" sx={{ mr: 2 }}>
-              Docs
-            </Link>
-            <CustomToggle />
-          </Box>
-        </Toolbar>
-      </AppBar>
-      <Container
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '90vh',
-        }}
-      >
-        <Grid container component="main">
-          <Grid size={{ xs: 0, sm: 4, md: 7 }}>
-            <Intro />
-          </Grid>
-          <Grid size={{ xs: 12, sm: 8, md: 5 }}>
-            <Card sx={{ minWidth: 275, border: 0, boxShadow: 0 }}>
-              <CardContent>{children}</CardContent>
-            </Card>
-          </Grid>
-        </Grid>
-      </Container>
-      <Grid
-        container
-        component="footer"
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '10vh',
-        }}
-      >
-        Developed by
-        <Link href="https://shelcia-dev.me/" target="_blank" ml={1}>
-          Shelcia
-        </Link>
-      </Grid>
+            Shelcia
+          </a>
+        </footer>
+      </div>
     </React.Fragment>
   );
 };
 
 export default AuthLayout;
 
-const Intro = () => {
-  const featureList = [
-    {
-      key: 1,
-      name: 'Unlimited Resources',
-    },
-    {
-      key: 2,
-      name: 'Unlimited Projects',
-    },
-    {
-      key: 3,
-      name: 'Readymade Endpoints',
-    },
-    {
-      key: 4,
-      name: 'Customise Schema Options',
-    },
-  ];
-
+function FeatureChip({ children }: { children: ReactNode }) {
   return (
-    <>
-      <Typography
-        sx={{
-          background: 'linear-gradient(#1A77CD, #2499EF)',
-          backgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-        }}
-        variant="h2"
-        component="h1"
-      >
-        Mocker
-      </Typography>
-
-      <Typography variant="h6" component="p">
-        Mocker can generate mock data with API endpoints, powered by{'  '}
-        <Link href="https://fakerjs.dev/" target="_blank">
-          faker.js
-        </Link>
-      </Typography>
-      <List dense={true}>
-        {featureList.map((feature) => (
-          <ListItem key={feature.key}>
-            <ListItemIcon>
-              <MdStarRate />
-            </ListItemIcon>
-            <ListItemText primary={feature.name} />
-          </ListItem>
-        ))}
-      </List>
-    </>
+    <span className="inline-flex items-center gap-2 rounded-full bg-zinc-900/5 px-3 py-1 text-xs text-zinc-700 ring-1 ring-zinc-900/10 dark:bg-white/5 dark:text-zinc-200 dark:ring-white/10">
+      {children}
+    </span>
   );
-};
+}

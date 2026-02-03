@@ -25,6 +25,11 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
     }
   }, []);
 
+  useEffect(() => {
+    const root = document.documentElement;
+    root.classList.toggle('dark', darkTheme);
+  }, [darkTheme]);
+
   return (
     <ThemeContext.Provider value={[darkTheme, setDarkTheme]}>{children}</ThemeContext.Provider>
   );

@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import { Stack } from '@mui/material';
 import { FaMoon, FaSun } from 'react-icons/fa';
 import { ThemeContext } from '../context/ThemeContext';
 
@@ -8,14 +7,7 @@ const CustomToggle = () => {
 
   return (
     <React.Fragment>
-      <Stack
-        direction="row"
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
+      <div className="flex items-center justify-center">
         {darkTheme ? (
           <FaMoon
             onClick={() => {
@@ -36,7 +28,7 @@ const CustomToggle = () => {
             style={{ cursor: 'pointer' }}
           />
         )}
-      </Stack>
+      </div>
     </React.Fragment>
   );
 };
