@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { Box, Button, InputAdornment, IconButton, TextField, Typography } from '@mui/material';
-import axios from 'axios';
+import React, { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { apiService } from '../../services/models/serviceModel';
 import { toast } from 'react-hot-toast';
@@ -8,31 +6,15 @@ import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import { MdVisibility, MdVisibilityOff } from 'react-icons/md';
 import { CustomLoaderButton } from '../../components/CustomButtons';
-import { CustomTypoDisplay } from '../../components/CustomDisplay';
 import { ApiStringResponse } from '../../types';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { useVerifyToken } from '@/hooks/useVerifyToken';
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
-  const [hasToken, setHasToken] = useState<boolean>(false);
-
-  useEffect(() => {
-    const userToken = localStorage.getItem('MockAPI-Token');
-    const headers = {
-      'auth-token': `${userToken}`,
-    };
-    axios
-      .get('https://mocker-backend.vercel.app/api/auth/verify', {
-        headers,
-      })
-      .then((res) => {
-        if (res.data.message === 'ok') {
-          setHasToken(true);
-        }
-      })
-      .catch(() => {
-        setHasToken(false);
-      });
-  }, []);
+  const [hasToken, setHasToken] = useVerifyToken();
 
   const { id } = useParams();
   const logout = () => {
@@ -43,7 +25,7 @@ const ForgotPassword = () => {
 
   if (hasToken) {
     return (
-      <Button variant="contained" onClick={logout} sx={{ mt: 4 }}>
+      <Button onClick={logout} className="mt-4">
         Logout
       </Button>
     );
@@ -114,91 +96,103 @@ const SetPasswordForm = ({ auth_token }) => {
 
   return (
     <>
-      <Typography variant="h6" sx={{ mb: 2 }}>
-        Change password
-      </Typography>
-      <Box
-        component="form"
-        noValidate
-        onSubmit={handleSubmit}
-        style={{
-          width: '100%',
-        }}
-      >
-        <TextField
-          label="password"
-          size="small"
-          type={showPassword ? 'text' : 'password'}
-          fullWidth
-          name="password"
-          onBlur={handleBlur}
-          onChange={handleChange}
-          value={values.password || ''}
-          error={Boolean(touched.password && errors.password)}
-          helperText={touched.password && errors.password}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={handleClickShowPassword}
-                  onMouseDown={handleMouseDownPassword}
-                >
-                  {showPassword ? <MdVisibility /> : <MdVisibilityOff />}
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-        />
-        <TextField
-          label="confirm password"
-          size="small"
-          type={showConfirmPassword ? 'text' : 'password'}
-          sx={{ mt: 2 }}
-          fullWidth
-          name="confirmPassword"
-          onBlur={handleBlur}
-          onChange={handleChange}
-          value={values.confirmPassword || ''}
-          error={Boolean(touched.confirmPassword && errors.confirmPassword)}
-          helperText={touched.confirmPassword && errors.confirmPassword}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={handleClickShowConfirmPassword}
-                  onMouseDown={handleMouseDownConfirmPassword}
-                >
-                  {showConfirmPassword ? <MdVisibility /> : <MdVisibilityOff />}
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-        />
+      <h2 className="mb-2 text-lg font-semibold tracking-tight">Change password</h2>
+
+      <form noValidate onSubmit={handleSubmit} className="w-full space-y-4">
+        {/* Password */}
+        <div className="space-y-1">
+          <label className="text-sm font-medium">Password</label>
+          <div className="relative">
+            <input
+              type={showPassword ? 'text' : 'password'}
+              name="password"
+              value={values.password || ''}
+              onBlur={handleBlur}
+              onChange={handleChange}
+              className={`h-10 w-full rounded-md border px-3 pr-10 text-sm outline-none transition
+            ${
+              touched.password && errors.password
+                ? 'border-destructive focus:ring-destructive'
+                : 'border-input focus:ring-primary'
+            }
+          `}
+            />
+
+            <Button
+              onClick={handleClickShowPassword}
+              className="absolute inset-y-0 right-2 flex items-center text-muted-foreground hover:text-foreground"
+            >
+              {showPassword ? <MdVisibility /> : <MdVisibilityOff />}
+            </Button>
+          </div>
+
+          {touched.password && errors.password && (
+            <p className="text-xs text-destructive">{errors.password}</p>
+          )}
+        </div>
+
+        {/* Confirm Password */}
+        <div className="space-y-1">
+          <Label className="text-sm font-medium">Confirm password</Label>
+          <div className="relative">
+            <Input
+              type={showConfirmPassword ? 'text' : 'password'}
+              name="confirmPassword"
+              value={values.confirmPassword || ''}
+              onBlur={handleBlur}
+              onChange={handleChange}
+              className={`h-10 w-full rounded-md border px-3 pr-10 text-sm outline-none transition
+            ${
+              touched.confirmPassword && errors.confirmPassword
+                ? 'border-destructive focus:ring-destructive'
+                : 'border-input focus:ring-primary'
+            }
+          `}
+            />
+
+            <Button
+              type="button"
+              onClick={handleClickShowConfirmPassword}
+              className="absolute inset-y-0 right-2 flex items-center text-muted-foreground hover:text-foreground"
+            >
+              {showConfirmPassword ? <MdVisibility /> : <MdVisibilityOff />}
+            </Button>
+          </div>
+
+          {touched.confirmPassword && errors.confirmPassword && (
+            <p className="text-xs text-destructive">{errors.confirmPassword}</p>
+          )}
+        </div>
+
+        {/* Response message */}
         {isResponse && (
-          <CustomTypoDisplay status={status}>
+          <div
+            className={`rounded-md px-3 py-2 text-sm ${
+              status ? 'bg-emerald-500/10 text-emerald-600' : 'bg-red-500/10 text-red-600'
+            }`}
+          >
             {status ? 'Password successfully changed' : 'Failed to reset password'}
-          </CustomTypoDisplay>
+          </div>
         )}
+
+        {/* Submit */}
         <Button
-          variant="contained"
-          sx={{ display: 'block', mt: 2, mx: 'auto' }}
           type="submit"
           disabled={loading}
+          className="inline-flex h-10 w-full items-center justify-center rounded-md bg-primary text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-60"
         >
           {loading ? <CustomLoaderButton /> : 'Reset password'}
         </Button>
+
+        {/* Back to login */}
         {status && (
-          <>
-            <Typography align="center" variant="h6" component="p" sx={{ mt: 4 }}>
-              <Link to="/" style={{ color: 'deepskyblue' }}>
-                Login
-              </Link>
-            </Typography>
-          </>
+          <p className="pt-4 text-center text-sm text-muted-foreground">
+            <Link to="/" className="font-medium text-primary hover:underline">
+              Login
+            </Link>
+          </p>
         )}
-      </Box>
+      </form>
     </>
   );
 };
@@ -254,51 +248,61 @@ const VerifyForm = () => {
 
   return (
     <>
-      <Typography variant="h6" component="h1" sx={{ mb: 2 }}>
-        Reset password
-      </Typography>
-      <Box
-        component="form"
-        noValidate
-        onSubmit={handleSubmit}
-        style={{
-          width: '100%',
-        }}
-      >
-        <TextField
-          label="email"
-          size="small"
-          type="email"
-          fullWidth
-          name="email"
-          onBlur={handleBlur}
-          onChange={handleChange}
-          value={values.email || ''}
-          error={Boolean(touched.email && errors.email)}
-          helperText={touched.email && errors.email}
-        />
+      <h2 className="mb-2 text-lg font-semibold tracking-tight">Reset password</h2>
+
+      <form noValidate onSubmit={handleSubmit} className="w-full space-y-4">
+        {/* Email */}
+        <div className="space-y-1">
+          <Label className="text-sm font-medium">Email</Label>
+
+          <Input
+            type="email"
+            name="email"
+            value={values.email || ''}
+            onBlur={handleBlur}
+            onChange={handleChange}
+            placeholder="you@example.com"
+            className={`h-10 w-full rounded-md border px-3 text-sm outline-none transition
+          ${
+            touched.email && errors.email
+              ? 'border-destructive focus:ring-destructive'
+              : 'border-input focus:ring-primary'
+          }`}
+          />
+
+          {touched.email && errors.email && (
+            <p className="text-xs text-destructive">{errors.email}</p>
+          )}
+        </div>
+
+        {/* Mail sent message */}
         {isMailSent && (
-          <CustomTypoDisplay status={status}>
+          <div
+            className={`rounded-md px-3 py-2 text-sm ${
+              status ? 'bg-emerald-500/10 text-emerald-600' : 'bg-red-500/10 text-red-600'
+            }`}
+          >
             {status ? 'Verification link sent' : 'Failed to send verification link'}
-          </CustomTypoDisplay>
+          </div>
         )}
+
+        {/* Verify button */}
         <Button
-          variant="contained"
-          sx={{ display: 'block', mt: 2, mx: 'auto' }}
           type="submit"
           disabled={loading}
+          className="inline-flex h-10 w-full items-center justify-center rounded-md bg-primary text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-60"
         >
           {loading ? <CustomLoaderButton /> : 'Verify'}
         </Button>
 
+        {/* Go back */}
         <Button
-          variant="outlined"
-          sx={{ display: 'block', mt: 2, mx: 'auto' }}
           onClick={() => navigate('/')}
+          className="inline-flex h-10 w-full items-center justify-center rounded-md border border-input bg-background text-sm font-medium transition hover:bg-accent"
         >
           Go Back
         </Button>
-      </Box>
+      </form>
     </>
   );
 };

@@ -13,6 +13,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useVerifyToken } from '@/hooks/useVerifyToken';
 
 type LoginFormValues = {
   email: string;
@@ -37,33 +38,8 @@ type ApiResponse<T> = {
 const Login = () => {
   const navigate = useNavigate();
 
-  const [hasToken, setHasToken] = useState<boolean>(false);
+  const [hasToken, setHasToken] = useVerifyToken();
   const [loading, setLoading] = useState<boolean>(false);
-
-  // Verify existing token
-  useEffect(() => {
-    const ac = new AbortController();
-
-    const userToken = localStorage.getItem('MockAPI-Token');
-    if (!userToken) {
-      setHasToken(false);
-      return;
-    }
-
-    axios
-      .get<VerifyResponse>('https://mocker-backend.vercel.app/api/auth/verify', {
-        headers: { 'auth-token': userToken },
-        signal: ac.signal,
-      })
-      .then((res) => {
-        setHasToken(res.data?.message === 'ok');
-      })
-      .catch(() => {
-        setHasToken(false);
-      });
-
-    return () => ac.abort();
-  }, []);
 
   const validationSchema = Yup.object({
     email: Yup.string()

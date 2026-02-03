@@ -1,6 +1,7 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import Img from "../../assets/404.png";
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import Img from '../../assets/404.png';
+import { Button } from '@/components/ui/button';
 
 const Error404Page: React.FC = () => {
   const navigate = useNavigate();
@@ -28,21 +29,20 @@ const Error404Page: React.FC = () => {
           </p>
 
           <div className="mt-8 flex items-center justify-center gap-3">
-            <button
+            <Button
               type="button"
-              onClick={() => navigate("/")}
+              onClick={() => navigate('/')}
               className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground shadow-sm transition hover:opacity-90"
             >
               Go Home
-            </button>
+            </Button>
 
-            <button
-              type="button"
+            <Button
               onClick={() => navigate(-1)}
               className="inline-flex h-10 items-center justify-center rounded-md border px-4 text-sm font-medium transition hover:bg-accent"
             >
               Go Back
-            </button>
+            </Button>
           </div>
         </div>
 

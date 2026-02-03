@@ -11,28 +11,11 @@ import { ApiStringResponse } from '../../types';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
+import { useVerifyToken } from '@/hooks/useVerifyToken';
 
 const Signup = () => {
-  const [hasToken, setHasToken] = useState<boolean>(false);
+  const [hasToken, setHasToken] = useVerifyToken();
 
-  useEffect(() => {
-    const userToken = localStorage.getItem('MockAPI-Token');
-    const headers = {
-      'auth-token': `${userToken}`,
-    };
-    axios
-      .get('https://mocker-backend.vercel.app/api/auth/verify', {
-        headers,
-      })
-      .then((res) => {
-        if (res.data.message === 'ok') {
-          setHasToken(true);
-        }
-      })
-      .catch((err) => {
-        setHasToken(false);
-      });
-  }, []);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
@@ -40,7 +23,7 @@ const Signup = () => {
     email: '',
     password: '',
     submit: null,
-  }; // form field value validation schema
+  };
 
   const validationSchema = Yup.object().shape({
     email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
@@ -134,10 +117,7 @@ const Signup = () => {
         </Button>
         <p className="text-sm text-muted-foreground">
           Have an account already ? Then{'  '}
-          <Link
-            to="/"
-            className="font-medium text-foreground underline-offset-4 hover:underline"
-          >
+          <Link to="/" className="font-medium text-foreground underline-offset-4 hover:underline">
             Login
           </Link>
         </p>

@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Paper } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import { apiAuth } from '../../services/models/authModel';
-import { CustomTypoDisplay } from '../../components/CustomDisplay';
 import { ApiStringResponse } from '../../types';
 
 const EmailVerify = () => {
@@ -29,11 +27,13 @@ const EmailVerify = () => {
   }, []);
 
   return (
-    <Container>
-      <Paper elevation={4}>
-        <CustomTypoDisplay status={status === '200'}>{message}</CustomTypoDisplay>
-      </Paper>
-    </Container>
+    <div
+      className={`rounded-md px-4 py-3 text-sm font-medium ${
+        status === '200' ? 'bg-emerald-500/10 text-emerald-600' : 'bg-red-500/10 text-red-600'
+      }`}
+    >
+      {message}
+    </div>
   );
 };
 

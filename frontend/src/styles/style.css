@@ -145,6 +145,7 @@ pre {
     @apply border-border outline-ring/50;
   }
   body {
+    font-family: 'DM Sans Variable', 'DM Sans', sans-serif;
     @apply bg-background text-foreground;
   }
 }
