@@ -1,8 +1,6 @@
 import {
   Box,
-  Button,
   Chip,
-  Container,
   Divider,
   FormControl,
   InputLabel,
@@ -17,6 +15,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateTimePicker } from '@mui/x-date-pickers';
 import utc from 'dayjs/plugin/utc';
 import dayjs from 'dayjs';
+import { Button } from '@/components/ui/button';
 
 dayjs.extend(utc);
 
@@ -29,26 +28,23 @@ const SchemaOptionModal = ({ optionOpen, setOptionOpen, fieldInfo, setOption }) 
 
   return (
     <CustomModal open={optionOpen} setOpen={setOptionOpen} width={500}>
-      <Container>
-        <Option
-          // fieldName={fieldName}
-          fieldInfo={fieldInfo}
-          myOption={myOption}
-          setMyOption={setMyOption}
-        />
-        <Box sx={{ mt: 2 }}>
+      <div className="space-y-4">
+        <Option fieldInfo={fieldInfo} myOption={myOption} setMyOption={setMyOption} />
+
+        <div className="pt-2">
           <Button
-            variant="contained"
+            type="button"
+            className="w-full sm:w-auto"
             onClick={() => {
               setOptionOpen(false);
               setOption({ ...myOption });
               setMyOption({});
             }}
           >
-            Done !
+            Done!
           </Button>
-        </Box>
-      </Container>
+        </div>
+      </div>
     </CustomModal>
   );
 };

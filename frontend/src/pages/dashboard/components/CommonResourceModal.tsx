@@ -1,31 +1,25 @@
 import React, { useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import CustomModal from '../../../components/CustomModal';
-import {
-  Box,
-  Button,
-  FormControl,
-  Grid,
-  InputLabel,
-  ListSubheader,
-  MenuItem,
-  Select,
-  Stack,
-  TextField,
-  Typography,
-} from '@mui/material';
-import IconButton from '@mui/material/IconButton';
-import { blueGrey } from '@mui/material/colors';
-import { BiSliderAlt } from 'react-icons/bi';
-import { FaPlus } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 import * as Yup from 'yup';
 
 import { ThemeContext } from '../../../context/ThemeContext';
 import SchemaOptionModal from './SchemaOptionModal';
-import { secondary, error } from '../../../themes/themeColors';
-import { CustomTooltip } from '../../../components/CustomTooltip';
-import { ValidationError } from '../enums/error';
-import { CHOICES, OPTION_EXIST_FOR } from '../../../data/constants';
+import { CHOICES, OPTION_EXIST_FOR, VALIDATION_ERROR } from '../../../data/constants';
+import { Plus, Settings2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 export type SchemaField = string;
 
@@ -156,8 +150,8 @@ const CommonResourceModal = ({
   const ValidationSchema = useMemo(
     () =>
       Yup.object({
-        field: Yup.string().required(ValidationError.FIELD_NAME),
-        label: Yup.string().required(ValidationError.LABEL_NAME),
+        field: Yup.string().required(VALIDATION_ERROR.FIELD_NAME),
+        label: Yup.string().required(VALIDATION_ERROR.LABEL_NAME),
       }),
     [],
   );
@@ -168,7 +162,7 @@ const CommonResourceModal = ({
 
     schema.forEach((val, idx) => {
       if (labelMap.has(val.label)) {
-        errs.set(idx, { errCode: ValidationError.LABEL_NAME });
+        errs.set(idx, { errCode: VALIDATION_ERROR.LABEL_NAME });
         return;
       }
       labelMap.set(val.label, idx);
@@ -231,172 +225,190 @@ const CommonResourceModal = ({
         setOption={setOption}
       />
 
-      <Stack sx={{ mb: 2 }}>
-        <TextField
-          label="Resource name"
-          size="small"
-          fullWidth
+      {/* Resource name */}
+      <div className="space-y-2">
+        <Label htmlFor="resource-name">Resource name</Label>
+        <Input
+          id="resource-name"
           name="name"
           value={inputs.name}
           onChange={handleInputs}
-          error={!validName}
-          helperText={!validName ? 'Resource name is required' : ''}
+          aria-invalid={!validName}
         />
-      </Stack>
+        {!validName ? <p className="text-sm text-destructive">Resource name is required</p> : null}
+      </div>
 
-      <Stack sx={{ mb: 2 }}>
-        <TextField
-          label="Number of Objects"
-          size="small"
-          fullWidth
+      {/* Number of objects */}
+      <div className="mt-4 space-y-2">
+        <Label htmlFor="resource-number">Number of Objects</Label>
+        <Input
+          id="resource-number"
           name="number"
-          value={Number.isNaN(inputs.number) ? '' : inputs.number}
+          inputMode="numeric"
+          value={Number.isNaN(inputs.number) ? '' : String(inputs.number)}
           onChange={handleInputs}
-          error={!validNumber}
-          helperText={!validNumber ? 'Number of object cannot be empty and must be a number' : ''}
+          aria-invalid={!validNumber}
         />
-      </Stack>
+        {!validNumber ? (
+          <p className="text-sm text-destructive">
+            Number of object cannot be empty and must be a number
+          </p>
+        ) : null}
+      </div>
 
-      <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
-        <TextField value="id" size="small" disabled />
-        <TextField value="uuid" size="small" disabled />
-      </Stack>
+      {/* Reserved fields */}
+      <div className="mt-4 grid grid-cols-2 gap-2">
+        <div className="space-y-2">
+          <Label>id</Label>
+          <Input value="id" disabled />
+        </div>
+        <div className="space-y-2">
+          <Label>uuid</Label>
+          <Input value="uuid" disabled />
+        </div>
+      </div>
 
-      {schema.map((item, idx) => (
-        <Grid container spacing={2} key={item.id}>
-          <Grid size={{ xs: 3 }} sx={{ mb: 2 }}>
-            <TextField
-              size="small"
-              value={item.label}
-              label="Label"
-              onChange={(e) => updateSchemaItem(item.id, { label: e.target.value })}
-            />
+      <div className="space-y-3">
+        {schema.map((item, idx) => {
+          const labelErr = validationInfo.get(idx)?.errCode === VALIDATION_ERROR.LABEL_NAME;
+          const fieldErr = validationInfo.get(idx)?.errCode === VALIDATION_ERROR.FIELD_NAME;
 
-            {validationInfo.get(idx)?.errCode === ValidationError.LABEL_NAME && (
-              <Typography
-                sx={{
-                  pl: 1,
-                  bgcolor: error.main,
-                  borderRadius: '.25rem',
-                  color: '#FFFFFF',
-                }}
-              >
-                {isLabelSame ? 'Same label' : 'Required'}
-              </Typography>
-            )}
-          </Grid>
+          return (
+            <div key={item.id} className="grid grid-cols-12 gap-2 items-start">
+              {/* Label column (xs=3) */}
+              <div className="col-span-12 sm:col-span-3 space-y-2">
+                <Label htmlFor={`schema-label-${item.id}`}>Label</Label>
+                <Input
+                  id={`schema-label-${item.id}`}
+                  value={item.label}
+                  onChange={(e) => updateSchemaItem(item.id, { label: e.target.value })}
+                  aria-invalid={labelErr}
+                />
 
-          <Grid size={{ xs: 9 }} sx={{ mb: 2 }}>
-            <Stack direction="row" spacing={1}>
-              <FormControl fullWidth>
-                <InputLabel id={`resource-label-${item.id}`}>Field</InputLabel>
-                <Select
-                  labelId={`resource-label-${item.id}`}
-                  id={`resource-id-${item.id}`}
-                  size="small"
-                  label="Field"
-                  name="field"
-                  value={item.field ?? ''}
-                  onChange={(e) => updateSchemaItem(item.id, { field: e.target.value as string })}
-                  MenuProps={{ disableScrollLock: true }}
-                >
-                  {CHOICES.flatMap((group) => [
-                    <ListSubheader
-                      key={`${group.category}-header`}
-                      disableSticky
-                      sx={{
-                        color: darkTheme ? '#fff' : '#1d2438',
-                        fontWeight: 600,
-                        backgroundColor: darkTheme ? secondary[900] : blueGrey[50],
-                        pointerEvents: 'none',
-                      }}
+                {labelErr ? (
+                  <p className="text-xs text-destructive">
+                    {isLabelSame ? 'Same label' : 'Required'}
+                  </p>
+                ) : null}
+              </div>
+
+              {/* Field + actions column (xs=9) */}
+              <div className="col-span-12 sm:col-span-9">
+                <div className="flex flex-wrap gap-2 items-start">
+                  {/* Field select */}
+                  <div className="flex-1 min-w-[220px] space-y-2">
+                    <Label htmlFor={`schema-field-${item.id}`}>Field</Label>
+
+                    {/* shadcn Select is controlled via value + onValueChange */}
+                    <Select
+                      value={item.field ?? ''}
+                      onValueChange={(val) => updateSchemaItem(item.id, { field: val })}
                     >
-                      {group.category}
-                    </ListSubheader>,
-                    ...group.list.map((choice) => (
-                      <MenuItem value={choice} key={`${group.category}-${choice}`}>
-                        {choice}
-                      </MenuItem>
-                    )),
-                  ])}
-                </Select>
+                      <SelectTrigger id={`schema-field-${item.id}`} aria-invalid={fieldErr}>
+                        <SelectValue placeholder="Select a field" />
+                      </SelectTrigger>
 
-                {validationInfo.get(idx)?.errCode === ValidationError.FIELD_NAME && (
-                  <Typography
-                    sx={{
-                      pl: 1,
-                      bgcolor: error.main,
-                      borderRadius: '.25rem',
-                      color: '#FFFFFF',
-                    }}
+                      <SelectContent>
+                        {CHOICES.map((group) => (
+                          <SelectGroup key={group.category}>
+                            <SelectLabel className="text-muted-foreground">
+                              {group.category}
+                            </SelectLabel>
+                            {group.list.map((choice) => (
+                              <SelectItem key={`${group.category}-${choice}`} value={choice}>
+                                {choice}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        ))}
+                      </SelectContent>
+                    </Select>
+
+                    {fieldErr ? <p className="text-xs text-destructive">Required</p> : null}
+                  </div>
+
+                  {/* Options button */}
+                  {OPTION_EXIST_FOR.includes(item.field) && (
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            type="button"
+                            size="icon"
+                            variant="secondary"
+                            className="mt-7"
+                            onClick={() => {
+                              setFieldInfo({
+                                id: item.id,
+                                label: item.label,
+                                field: item.field,
+                                option: item.option,
+                              });
+                              setOptionOpen(true);
+                            }}
+                          >
+                            <Settings2 className="h-4 w-4" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>More options for {item.field}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  )}
+
+                  {/* Delete */}
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    className="mt-7"
+                    onClick={() => deleteSchema(item.id)}
                   >
-                    Required
-                  </Typography>
-                )}
-              </FormControl>
+                    Delete
+                  </Button>
 
-              {OPTION_EXIST_FOR.includes(item.field) && (
-                <CustomTooltip title={`More options for ${item.field}`} arrow>
-                  <Box>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={() => {
-                        setFieldInfo({
-                          id: item.id,
-                          label: item.label,
-                          field: item.field,
-                          option: item.option,
-                        });
-                        setOptionOpen(true);
-                      }}
-                    >
-                      <BiSliderAlt />
-                    </Button>
-                  </Box>
-                </CustomTooltip>
-              )}
+                  {/* Add row (+) */}
+                  <Button
+                    type="button"
+                    size="icon"
+                    variant="outline"
+                    className="mt-7"
+                    onClick={() => handleAdd(idx)}
+                    aria-label="Add schema row"
+                  >
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
 
-              <Box>
-                <Button variant="contained" color="error" onClick={() => deleteSchema(item.id)}>
-                  Delete
-                </Button>
-              </Box>
-
-              <IconButton
-                color="primary"
-                size="small"
-                sx={{ mt: 1 }}
-                onClick={() => handleAdd(idx)}
-              >
-                <FaPlus size="0.8rem" />
-              </IconButton>
-            </Stack>
-          </Grid>
-        </Grid>
-      ))}
-
-      <Button onClick={addSchema} variant="contained" size="small">
-        Add Resource
-      </Button>
-
-      <Stack direction="row" spacing={3} mt={2}>
-        <Button
-          variant="contained"
-          size="small"
-          onClick={() => {
-            if (validateForm() && isLabelMatch()) {
-              void func();
-            }
-          }}
-        >
-          {buttonTxt}
+      <div className="flex flex-col gap-4">
+        {/* Add Resource */}
+        <Button size="sm" onClick={addSchema} className="w-fit">
+          Add Resource
         </Button>
 
-        <Button variant="contained" color="secondary" size="small" onClick={() => setOpen(false)}>
-          Cancel
-        </Button>
-      </Stack>
+        {/* Actions */}
+        <div className="flex gap-3">
+          <Button
+            size="sm"
+            onClick={() => {
+              if (validateForm() && isLabelMatch()) {
+                void func();
+              }
+            }}
+          >
+            {buttonTxt}
+          </Button>
+
+          <Button size="sm" variant="secondary" onClick={() => setOpen(false)}>
+            Cancel
+          </Button>
+        </div>
+      </div>
 
       {children}
     </CustomModal>

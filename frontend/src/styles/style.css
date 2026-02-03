@@ -149,3 +149,7 @@ pre {
     @apply bg-background text-foreground;
   }
 }
+
+* {
+  font-family: 'DM Sans Variable', 'DM Sans', sans-serif;
+}

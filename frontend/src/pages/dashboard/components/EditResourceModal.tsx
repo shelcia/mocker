@@ -3,7 +3,6 @@ import { apiResource } from '../../../services/models/resourceModal';
 import CommonResourceModal from './CommonResourceModal';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
-import { Stack, LinearProgress, Typography } from '@mui/material';
 import { ApiStringResponse } from '../../../types';
 
 export interface Resource {
@@ -92,12 +91,13 @@ const EditResourceModal = ({ open, setOpen, result, fetchResult }) => {
       func={updateResource}
     >
       {loading && (
-        <Stack direction="column" spacing={3} mt={4}>
-          <LinearProgress sx={{ mb: -2 }} />
-          <Typography component="p" color="primary" align="center">
-            Updating Data...
-          </Typography>
-        </Stack>
+        <div className="mt-6 flex flex-col items-center gap-3">
+          <div className="relative h-2 w-full overflow-hidden rounded-full bg-muted">
+            <div className="absolute inset-y-0 left-0 w-1/3 animate-progress rounded-full bg-primary" />
+          </div>
+
+          <p className="text-sm font-medium text-primary">Updating data…</p>
+        </div>
       )}
     </CommonResourceModal>
   );

@@ -1,10 +1,10 @@
 import React, { ReactNode } from 'react';
 import CustomToggle from '../components/CustomToggle';
-import { FiGithub } from 'react-icons/fi';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Card, CardContent } from '@/components/ui/card';
+import { Github } from 'lucide-react';
 
 interface AuthLayoutProps {
   children: ReactNode;
@@ -53,7 +53,7 @@ const AuthLayout = ({ children }: AuthLayoutProps) => {
                   rel="noreferrer"
                   aria-label="GitHub"
                 >
-                  <FiGithub className="h-4 w-4" />
+                  <Github className="h-4 w-4" />
                 </a>
               </Button>
 

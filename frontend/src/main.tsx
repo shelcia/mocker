@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
 import App from './App';
-import '@fontsource/poppins';
 import '@fontsource/jetbrains-mono';
 
 // Supports weights 100-900

@@ -4,13 +4,13 @@ import { apiService } from '../../services/models/serviceModel';
 import { toast } from 'react-hot-toast';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
-import { MdVisibility, MdVisibilityOff } from 'react-icons/md';
 import { CustomLoaderButton } from '../../components/CustomButtons';
 import { ApiStringResponse } from '../../types';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { useVerifyToken } from '@/hooks/useVerifyToken';
+import { Eye, EyeOff } from 'lucide-react';
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
@@ -122,7 +122,7 @@ const SetPasswordForm = ({ auth_token }) => {
               onClick={handleClickShowPassword}
               className="absolute inset-y-0 right-2 flex items-center text-muted-foreground hover:text-foreground"
             >
-              {showPassword ? <MdVisibility /> : <MdVisibilityOff />}
+              {showPassword ? <Eye /> : <EyeOff />}
             </Button>
           </div>
 
@@ -155,7 +155,7 @@ const SetPasswordForm = ({ auth_token }) => {
               onClick={handleClickShowConfirmPassword}
               className="absolute inset-y-0 right-2 flex items-center text-muted-foreground hover:text-foreground"
             >
-              {showConfirmPassword ? <MdVisibility /> : <MdVisibilityOff />}
+              {showConfirmPassword ? <Eye /> : <EyeOff />}
             </Button>
           </div>
 

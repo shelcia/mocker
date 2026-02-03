@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { getIn, type FormikErrors, type FormikTouched } from 'formik';
-import { MdVisibility, MdVisibilityOff } from 'react-icons/md';
 
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
+import { Eye, EyeOff } from 'lucide-react';
 
 type CustomPwdFieldProps<T extends Record<string, any>> = {
   field?: keyof T & string;
@@ -63,11 +63,7 @@ export function CustomPwdField<T extends Record<string, any>>({
           className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 text-muted-foreground hover:text-foreground"
           aria-label={showPassword ? 'Hide password' : 'Show password'}
         >
-          {showPassword ? (
-            <MdVisibilityOff className="h-4 w-4" />
-          ) : (
-            <MdVisibility className="h-4 w-4" />
-          )}
+          {showPassword ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
         </Button>
       </div>
 

@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
-import { FaMoon, FaSun } from 'react-icons/fa';
 import { ThemeContext } from '../context/ThemeContext';
+import { Moon, Sun } from 'lucide-react';
 
 const CustomToggle = () => {
   const [darkTheme, setDarkTheme] = useContext(ThemeContext);
@@ -9,7 +9,7 @@ const CustomToggle = () => {
     <React.Fragment>
       <div className="flex items-center justify-center">
         {darkTheme ? (
-          <FaMoon
+          <Moon
             onClick={() => {
               setDarkTheme(!darkTheme);
               localStorage.setItem('mockapi-theme', 'false');
@@ -18,7 +18,7 @@ const CustomToggle = () => {
             style={{ cursor: 'pointer' }}
           />
         ) : (
-          <FaSun
+          <Sun
             onClick={() => {
               setDarkTheme(!darkTheme);
               localStorage.setItem('mockapi-theme', 'true');

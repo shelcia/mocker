@@ -1,5 +1,7 @@
 import React, { useEffect, useMemo } from 'react';
-import { Box, Button, Stack, TextField } from '@mui/material';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import toast from 'react-hot-toast';
@@ -77,36 +79,32 @@ export const RenameModal = ({
     <>
       {renameModalOpen && (
         <CustomModal open={renameModalOpen} setOpen={setRenameModalOpen} title="Rename project">
-          <Box component="form" onSubmit={formik.handleSubmit}>
-            <TextField
-              label="Project rename"
-              type="text"
-              name="name"
-              sx={{ mb: 3 }}
-              size="small"
-              fullWidth
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              value={formik.values.name || ''}
-              error={Boolean(formik.touched.name && formik.errors.name)}
-              helperText={formik.touched.name && formik.errors.name}
-            />
+          <form onSubmit={formik.handleSubmit} className="space-y-4">
+            <div className="space-y-1">
+              <Label htmlFor="name">Project name</Label>
+              <Input
+                id="name"
+                name="name"
+                type="text"
+                placeholder="Enter project name"
+                onBlur={formik.handleBlur}
+                onChange={formik.handleChange}
+                value={formik.values.name || ''}
+                className={formik.touched.name && formik.errors.name ? 'border-destructive' : ''}
+              />
+              {formik.touched.name && formik.errors.name && (
+                <p className="text-sm text-destructive">{formik.errors.name}</p>
+              )}
+            </div>
 
-            <Stack direction="row" spacing={3}>
-              <Button variant="contained" size="small" type="submit">
-                Rename
-              </Button>
+            <div className="flex gap-3">
+              <Button type="submit">Rename</Button>
 
-              <Button
-                variant="contained"
-                color="secondary"
-                size="small"
-                onClick={() => setRenameModalOpen(false)}
-              >
+              <Button type="button" variant="secondary" onClick={() => setRenameModalOpen(false)}>
                 Cancel
               </Button>
-            </Stack>
-          </Box>
+            </div>
+          </form>
         </CustomModal>
       )}
     </>

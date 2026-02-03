@@ -1,6 +1,7 @@
 import React, { type ReactNode } from 'react';
-import { Box, Button, Modal, Stack, Typography, useMediaQuery } from '@mui/material';
-import { MdClose } from 'react-icons/md';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 export interface CustomModalProps {
   open: boolean;
@@ -11,50 +12,35 @@ export interface CustomModalProps {
 }
 
 const CustomModal = ({ open, setOpen, title = '', width = 400, children }: CustomModalProps) => {
-  const mobileMatches = useMediaQuery('(max-width:425px)');
-
-  const style = {
-    position: 'absolute' as const,
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: mobileMatches ? '80%' : width,
-    bgcolor: 'background.paper',
-    boxShadow: 24,
-    p: mobileMatches ? 1 : 4,
-    maxHeight: '80vh',
-    overflowY: 'auto',
-  };
-
   return (
-    <Modal open={open} onClose={() => setOpen(false)}>
-      <Box sx={style}>
-        <Stack
-          direction="row"
-          sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 3 }}
-        >
-          <Typography variant="h5" component="h2" color="primary">
-            {title}
-          </Typography>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogContent
+        className={cn('max-h-[80vh] overflow-y-auto p-4 sm:p-6', 'w-[80vw] sm:w-auto')}
+        style={{
+          minWidth: width,
+        }}
+      >
+        {/* Header */}
+        {(title || true) && (
+          <DialogHeader className="flex flex-row items-center justify-between gap-4">
+            <DialogTitle className="text-lg font-semibold text-primary">{title}</DialogTitle>
 
-          <Button
-            color="error"
-            variant="contained"
-            onClick={() => setOpen(false)}
-            sx={{
-              p: 0.5,
-              minWidth: 0,
-              borderRadius: '50ex',
-              fontSize: '1rem',
-            }}
-          >
-            <MdClose />
-          </Button>
-        </Stack>
+            {/* <Button
+              variant="destructive"
+              size="icon"
+              onClick={() => setOpen(false)}
+              className="h-8 w-8 rounded-full"
+              aria-label="Close modal"
+            >
+              <MdClose className="h-4 w-4" />
+            </Button> */}
+          </DialogHeader>
+        )}
 
-        {children}
-      </Box>
-    </Modal>
+        {/* Body */}
+        <div className="mt-2">{children}</div>
+      </DialogContent>
+    </Dialog>
   );
 };
 

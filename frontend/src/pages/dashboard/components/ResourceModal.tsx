@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import { Stack, Typography } from '@mui/material';
-import LinearProgress from '@mui/material/LinearProgress';
 import { useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
@@ -93,12 +91,13 @@ const ResourceModal = ({
       func={createProject}
     >
       {loading && (
-        <Stack direction="column" spacing={3} mt={4}>
-          <LinearProgress sx={{ mb: -2 }} />
-          <Typography component="p" color="primary" align="center">
-            Generating Data...
-          </Typography>
-        </Stack>
+        <div className="mt-6 flex flex-col items-center gap-3">
+          <div className="relative h-2 w-full overflow-hidden rounded-full bg-muted">
+            <div className="absolute inset-y-0 left-0 w-1/3 animate-progress rounded-full bg-primary" />
+          </div>
+
+          <p className="text-sm font-medium text-primary">Generating data…</p>
+        </div>
       )}
     </CommonResourceModal>
   );

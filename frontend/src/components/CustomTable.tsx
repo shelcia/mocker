@@ -1,55 +1,60 @@
 import React, { useContext } from 'react';
-import { Box, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
-import { ThemeContext } from '../context/ThemeContext';
-import { secondary } from '../themes/themeColors';
-import { grey } from '@mui/material/colors';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 
-export const CustomJSONTable = ({ keys = [], data }) => {
-  const [darkTheme] = useContext(ThemeContext);
+type CustomJSONTableProps = {
+  keys?: string[];
+  data: Array<Record<string, any>>;
+};
+
+export const CustomJSONTable = ({ keys = [], data }: CustomJSONTableProps) => {
+  const hasKeys = Array.isArray(keys) && keys.length > 0;
 
   return (
-    <Box
-      sx={{
-        width: '100%',
-        overflowX: 'auto',
-        bgcolor: darkTheme ? secondary[900] : grey[100],
-      }}
-    >
-      <Table sx={{ width: '100%' }} aria-label="json table" stickyHeader size="small">
-        <TableHead>
-          {keys?.length !== 0 && (
+    <div className="w-full overflow-x-auto rounded-md border bg-background">
+      <Table>
+        {hasKeys && (
+          <TableHeader className="sticky top-0 z-10 bg-background">
             <TableRow>
               {keys.map((key) => (
-                <TableCell key={key} sx={{ fontWeight: 600 }}>
+                <TableHead key={key} className="whitespace-nowrap font-semibold">
                   {key}
-                </TableCell>
+                </TableHead>
               ))}
             </TableRow>
-          )}
-        </TableHead>
+          </TableHeader>
+        )}
+
         <TableBody>
-          {data.map((row, idx) => (
+          {data?.map((row, idx) => (
             <TableRow key={idx}>
-              {keys.map((key) => (
-                <TableCell
-                  component="td"
-                  key={key}
-                  sx={{
-                    width: key === 'id' && 10,
-                    textOverflow: key === 'id' ? 'ellipsis' : 'inherit',
-                    whiteSpace: key === 'id' && 'nowrap',
-                    overflow: key === 'id' && 'hidden',
-                    borderBottom: 1,
-                    borderColor: 'divider',
-                  }}
-                >
-                  {row?.[key]}
-                </TableCell>
-              ))}
+              {keys.map((key) => {
+                const isId = key === 'id';
+                const value = row?.[key];
+
+                return (
+                  <TableCell
+                    key={key}
+                    className={[
+                      'align-top',
+                      isId ? 'max-w-[10rem] truncate whitespace-nowrap' : '',
+                    ].join(' ')}
+                    title={isId ? String(value ?? '') : undefined}
+                  >
+                    {value == null ? '' : String(value)}
+                  </TableCell>
+                );
+              })}
             </TableRow>
           ))}
         </TableBody>
       </Table>
-    </Box>
+    </div>
   );
 };

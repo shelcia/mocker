@@ -1,18 +1,17 @@
 import React, { useContext, useState } from 'react';
-import { Box } from '@mui/material';
-import { grey } from '@mui/material/colors';
 import JSONPretty from 'react-json-pretty';
 import toast from 'react-hot-toast';
 import jsonBeautify from 'json-beautify';
 
 import CustomModal from '../../../components/CustomModal';
-import { CopyButton } from '../../../components/CustomButtons';
-import { PartLoader } from '../../../components/CustomLoading';
-import { CustomTabs, CustomTabPanel } from '../../../components/CustomTabPanel';
 import { CustomJSONTable } from '../../../components/CustomTable';
 import { ThemeContext } from '../../../context/ThemeContext';
-import { secondary } from '../../../themes/themeColors';
 import { copyTextToClipboard } from '../../../utils/utils';
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Button } from '@/components/ui/button';
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { PartLoader } from '@/components/CustomLoading';
 
 type ResultRow = Record<string, unknown>;
 
@@ -48,37 +47,57 @@ const ResultModal = ({ open, setOpen, result = [], loading }: ResultModalProps) 
 
   return (
     <CustomModal open={open} setOpen={setOpen} width={600} title="Result">
-      <CustomTabs value={value} handleChange={handleChange} items={['JSON View', 'Table View']} />
+      <Tabs
+        value={String(value)}
+        onValueChange={(v) => handleChange(null, Number(v))}
+        className="w-full"
+      >
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="0">JSON View</TabsTrigger>
+          <TabsTrigger value="1">Table View</TabsTrigger>
+        </TabsList>
 
-      <CustomTabPanel value={value} index={0}>
-        <Box
-          sx={{
-            bgcolor: darkTheme ? secondary[900] : grey[100],
-            p: 2,
-            overflowX: 'auto',
-          }}
-        >
-          <CopyButton
-            onClick={copyJsonBeautify}
-            sx={{ marginLeft: '90%' }}
-            disabled={isBeautifyCopied}
+        {/* --- JSON View --- */}
+        <TabsContent value="0" className="mt-3">
+          <div
+            className={[
+              'relative rounded-lg border p-4',
+              'overflow-hidden', // keeps padding clean
+              'bg-muted/60',
+              darkTheme ? 'bg-zinc-950/40' : '',
+            ].join(' ')}
           >
-            {isBeautifyCopied ? 'Done' : 'Copy'}
-          </CopyButton>
+            <Button
+              type="button"
+              size="sm"
+              variant="secondary"
+              onClick={copyJsonBeautify}
+              disabled={isBeautifyCopied}
+              className="absolute right-3 top-3"
+            >
+              {isBeautifyCopied ? 'Done' : 'Copy'}
+            </Button>
 
-          {loading ? (
-            <PartLoader />
-          ) : (
-            <Box className={darkTheme ? 'lang-dark' : 'lang-light'}>
-              <JSONPretty id="json-pretty" data={result} />
-            </Box>
-          )}
-        </Box>
-      </CustomTabPanel>
+            {loading ? (
+              <PartLoader />
+            ) : (
+              <ScrollArea className="max-h-[420px] w-full rounded-md">
+                <div className={darkTheme ? 'lang-dark' : 'lang-light'}>
+                  <JSONPretty id="json-pretty" data={result} />
+                </div>
+                <ScrollBar orientation="horizontal" />
+              </ScrollArea>
+            )}
+          </div>
+        </TabsContent>
 
-      <CustomTabPanel value={value} index={1}>
-        <CustomJSONTable keys={result[0] ? Object.keys(result[0]) : []} data={result} />
-      </CustomTabPanel>
+        {/* --- Table View --- */}
+        <TabsContent value="1" className="mt-3">
+          <div className="rounded-lg border bg-muted/30 p-3">
+            <CustomJSONTable keys={result?.[0] ? Object.keys(result[0]) : []} data={result} />
+          </div>
+        </TabsContent>
+      </Tabs>
     </CustomModal>
   );
 };

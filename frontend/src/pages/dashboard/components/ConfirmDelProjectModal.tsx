@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import CustomModal from '../../../components/CustomModal';
-import { Button, Stack, TextField, Typography } from '@mui/material';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 const ConfirmDeleteModal = ({
   confirmDeleteModal,
@@ -41,58 +42,58 @@ const ConfirmDeleteModal = ({
 
   return (
     <CustomModal open={confirmDeleteModal} setOpen={setConfirmDeleteModal} title="Delete Project">
-      <Typography component="p" color="text.primary" sx={{ mb: 3 }}>
-        This action cannot be undone. This will permanently delete the{' '}
-        <i>{isMultipleDelete ? 'selected' : <b>{project.name}</b>}</i>{' '}
-        {/* eslint-disable-next-line react/no-unescaped-entities */}
-        project and it's associated resources.
-      </Typography>
-      <Typography component="p" color="text.primary" sx={{ mb: 3 }}>
-        Please type{' '}
-        <i>
-          <b>{isMultipleDelete ? 'DELETE' : project.name}</b>
-        </i>{' '}
-        to confirm.
-      </Typography>
+      <div className="space-y-4">
+        <p className="text-sm text-foreground">
+          This action cannot be undone. This will permanently delete the{' '}
+          <span className="italic">
+            {isMultipleDelete ? 'selected' : <span className="font-semibold">{project.name}</span>}
+          </span>{' '}
+          project and its associated resources.
+        </p>
 
-      <TextField
-        label="Project name"
-        sx={{ mb: 3 }}
-        size="small"
-        fullWidth
-        value={formData}
-        onChange={(e) => {
-          setFormData(e.target.value);
-          checkProjectName();
-        }}
-      />
+        <p className="text-sm text-foreground">
+          Please type{' '}
+          <span className="italic font-semibold">{isMultipleDelete ? 'DELETE' : project.name}</span>{' '}
+          to confirm.
+        </p>
 
-      <Stack direction="row" spacing={3}>
-        <Button
-          variant="contained"
-          disabled={disabled}
-          color="error"
-          onClick={() => {
-            isMultipleDelete ? delSelected() : deleteProject(project._id);
-            setFormData('');
-            setDisabled(true);
-          }}
-        >
-          Confirm Delete
-        </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          size="small"
-          onClick={() => {
-            setFormData('');
-            setDisabled(true);
-            setConfirmDeleteModal(false);
-          }}
-        >
-          Cancel
-        </Button>
-      </Stack>
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-foreground">Project name</label>
+          <Input
+            value={formData}
+            onChange={(e) => {
+              setFormData(e.target.value);
+              checkProjectName();
+            }}
+            placeholder={isMultipleDelete ? 'Type DELETE' : `Type ${project.name}`}
+          />
+        </div>
+
+        <div className="flex gap-3">
+          <Button
+            variant="destructive"
+            disabled={disabled}
+            onClick={() => {
+              isMultipleDelete ? delSelected() : deleteProject(project._id);
+              setFormData('');
+              setDisabled(true);
+            }}
+          >
+            Confirm Delete
+          </Button>
+
+          <Button
+            variant="secondary"
+            onClick={() => {
+              setFormData('');
+              setDisabled(true);
+              setConfirmDeleteModal(false);
+            }}
+          >
+            Cancel
+          </Button>
+        </div>
+      </div>
     </CustomModal>
   );
 };

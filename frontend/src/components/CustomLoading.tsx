@@ -1,18 +1,9 @@
 import React from 'react';
-import { Box } from '@mui/material';
 import { Rings } from 'react-loader-spinner';
 
 const Loading = ({ children }: { children?: React.ReactNode }) => {
   return (
-    <Box
-      sx={{
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: '100%',
-        height: '100%',
-        display: 'flex',
-      }}
-    >
+    <div className="flex justify-center items-center w-full h-full">
       <Rings
         color="#2499EF"
         height={150}
@@ -23,14 +14,14 @@ const Loading = ({ children }: { children?: React.ReactNode }) => {
         }}
       />
       {children}
-    </Box>
+    </div>
   );
 };
 
 export default Loading;
 
 export const PartLoader = ({ children }: { children?: React.ReactNode }) => (
-  <Box>
+  <div>
     <Rings
       color="#2499EF"
       height={150}
@@ -41,5 +32,5 @@ export const PartLoader = ({ children }: { children?: React.ReactNode }) => (
       }}
     />
     {children}
-  </Box>
+  </div>
 );

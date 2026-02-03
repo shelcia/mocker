@@ -1,25 +1,35 @@
 import React from 'react';
 import CustomModal from '../../../components/CustomModal';
-import { Button, Stack } from '@mui/material';
+import { Button } from '@/components/ui/button';
 
-const DeleteResourceModal = ({ open, setOpen, result, delResource }) => (
+interface DeleteResourceModalProps {
+  open?: boolean;
+  setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+  result?: string;
+  delResource: (id: string) => void;
+}
+
+const DeleteResourceModal = ({ open, setOpen, result, delResource }: DeleteResourceModalProps) => (
   <CustomModal open={open} setOpen={setOpen} title="Delete Resource" width={600}>
-    Are you sure you want to delete resource ?
-    <Stack direction="row" sx={{ mt: 2 }}>
-      <Button
-        color="error"
-        variant="contained"
-        onClick={() => {
-          delResource(result);
-          setOpen(false);
-        }}
-      >
-        Yes delete please !
-      </Button>
-      <Button color="secondary" variant="contained" onClick={() => setOpen(false)} sx={{ ml: 2 }}>
-        Cancel
-      </Button>
-    </Stack>
+    <div className="space-y-4">
+      <p className="text-sm text-foreground">Are you sure you want to delete this resource?</p>
+
+      <div className="flex gap-3">
+        <Button
+          variant="destructive"
+          onClick={() => {
+            delResource(result);
+            setOpen(false);
+          }}
+        >
+          Yes, delete
+        </Button>
+
+        <Button variant="secondary" onClick={() => setOpen(false)}>
+          Cancel
+        </Button>
+      </div>
+    </div>
   </CustomModal>
 );
 
