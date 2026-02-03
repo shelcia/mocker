@@ -1,26 +1,25 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from "react";
+import * as Yup from "yup";
+import { useFormik } from "formik";
+import { useNavigate, useParams } from "react-router-dom";
+import toast from "react-hot-toast";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import * as Yup from 'yup';
-import { useFormik } from 'formik';
-import { useNavigate, useParams } from 'react-router-dom';
-import toast from 'react-hot-toast';
+import ConfirmDeleteModal from "./components/ConfirmDelProjectModal";
+import { RenameModal } from "./components/RenameModal";
+import CreateProject from "./components/CreateProject";
 
-import ConfirmDeleteModal from './components/ConfirmDelProjectModal';
+import { apiProject } from "../../services/models/projectModel";
+import { queryKeys } from "@/utils";
 
-import { apiProject } from '../../services/models/projectModel';
-import { RenameModal } from './components/RenameModal';
-import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
-import { CardContent } from '@/components/ui/card';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Skeleton } from '@/components/ui/skeleton';
-import CreateProject from './components/CreateProject';
-import { Pencil, Plus, Trash } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { CardContent } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Skeleton } from "@/components/ui/skeleton";
 
-type RouteParams = {
-  userId?: string;
-};
+import { Pencil, Plus, Trash } from "lucide-react";
 
 export type Project = {
   _id: string;
@@ -33,128 +32,137 @@ type ApiResult<T = unknown> = {
 };
 
 const Dashboard = () => {
-  const { userId } = useParams<RouteParams>();
+  const { userId } = useParams<{ userId: string }>();
+  const qc = useQueryClient();
   const navigate = useNavigate();
 
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [open, setOpen] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [open, setOpen] = useState(false);
 
-  const [confirmDeleteModal, setConfirmDeleteModal] = useState<boolean>(false);
+  // selection + modals
+  const [checkedList, setCheckedList] = useState<string[]>([]);
+  const [confirmDeleteModal, setConfirmDeleteModal] = useState(false);
+  const [isMultipleDelete, setIsMultipleDelete] = useState(false);
   const [toBeDeleted, setToBeDeleted] = useState<Project | null>(null);
 
-  const [renameModalOpen, setRenameModalOpen] = useState<boolean>(false);
+  const [renameModalOpen, setRenameModalOpen] = useState(false);
   const [projectToBeRename, setProjectToBeRename] = useState<Project | null>(null);
 
-  const [checkedList, setCheckedList] = useState<string[]>([]);
-  const [isMultipleDelete, setIsMultipleDelete] = useState<boolean>(false);
-
-  const validationSchema = useMemo(
-    () =>
-      Yup.object().shape({
-        name: Yup.string()
-          .min(3, 'Project should be of minimum 3 characters length')
-          .max(25)
-          .required('Project Name is required'),
-      }),
-    [],
-  );
-
-  const formik = useFormik<{ name: string }>({
-    initialValues: { name: '' },
-    validationSchema,
-    onSubmit: (values, helpers) => {
-      addProject(values.name, helpers);
+  // -----------------------
+  // Query: Projects
+  // -----------------------
+  const projectsQuery = useQuery({
+    queryKey: userId ? queryKeys.projects(userId) : ["projects", "missing-userId"],
+    enabled: Boolean(userId),
+    queryFn: async ({ signal }) => {
+      const res = (await apiProject.getSingle(userId!, signal)) as ApiResult<Project[]>;
+      if (res.status !== "200") throw new Error(String(res.message ?? "Failed to load projects"));
+      return Array.isArray(res.message) ? res.message : [];
     },
   });
 
-  const addProject = async (name: string, helpers: { resetForm: () => void }) => {
-    if (!userId) {
-      toast.error('Missing userId in route');
-      return;
-    }
-
-    const body = { name, userId };
-
-    const res = (await apiProject.post(body)) as ApiResult<string>;
-    if (res.status === '200') {
-      toast.success(res.message);
-      setOpen(false);
-      helpers.resetForm();
-      fetchProjects();
-    } else {
-      toast.error(res.message);
-    }
-  };
-
-  const fetchProjects = () => {
-    if (!userId) {
-      toast.error('Missing userId in route');
-      setLoading(false);
-      return;
-    }
-
-    const ac = new AbortController();
-    const signal = ac.signal;
-
-    apiProject.getSingle(userId, signal).then((res: any) => {
-      if (res.status === '200') {
-        setLoading(false);
-        setProjects(Array.isArray(res.message) ? (res.message as Project[]) : []);
+  // -----------------------
+  // Mutations
+  // -----------------------
+  const addProjectMutation = useMutation({
+    mutationFn: async (name: string) => {
+      if (!userId) throw new Error("Missing userId");
+      const res = (await apiProject.post({ name, userId })) as ApiResult<string>;
+      return res;
+    },
+    onSuccess: async (res) => {
+      if (res.status === "200") {
+        toast.success(String(res.message));
+        setOpen(false);
+        await qc.invalidateQueries({ queryKey: queryKeys.projects(userId!) });
       } else {
-        toast.error('Error !');
-        setLoading(false);
+        toast.error(String(res.message));
       }
-    });
+    },
+    onError: () => toast.error("Error"),
+  });
 
-    return () => ac.abort();
-  };
-
-  useEffect(() => {
-    const cleanup = fetchProjects();
-    return () => {
-      if (typeof cleanup === 'function') cleanup();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const delProject = (id: string) => {
-    toast('Deleting !');
-    apiProject.remove(id).then((res: any) => {
-      if (res.status === '200') {
-        fetchProjects();
+  const deleteProjectMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const res = (await apiProject.remove(id)) as ApiResult<string>;
+      return res;
+    },
+    onSuccess: async (res) => {
+      if (res.status === "200") {
+        toast.success("Deleted");
+        await qc.invalidateQueries({ queryKey: queryKeys.projects(userId!) });
+      } else {
+        toast.error(String(res.message));
       }
-    });
-    setConfirmDeleteModal(false);
-  };
+    },
+    onError: () => toast.error("Delete failed"),
+  });
 
-  const handleChecked = (checked: boolean | string, id: string) => {
-    setCheckedList((prev) => (checked ? [...prev, id] : prev.filter((_id) => _id !== id)));
-  };
+  const deleteSelectedMutation = useMutation({
+    mutationFn: async (ids: string[]) => {
+      const res = (await apiProject.removeAll({ projects: ids })) as ApiResult<string>;
+      return res;
+    },
+    onSuccess: async (res) => {
+      if (res.status === "200") {
+        toast.success(String(res.message));
+        setCheckedList([]);
+        await qc.invalidateQueries({ queryKey: queryKeys.projects(userId!) });
+      } else {
+        toast.error(String(res.message));
+      }
+    },
+    onError: () => toast.error("Delete failed"),
+  });
 
-  const delSelected = () => {
-    const body = { projects: checkedList };
-
-    toast.promise(
-      new Promise<string>((resolve, reject) => {
-        apiProject.removeAll(body).then((res: any) => {
-          if (res.status === '200') {
-            fetchProjects();
-            setCheckedList([]);
-            resolve(String(res.message));
-            return;
-          }
-          reject(String(res.message));
-        });
-        setConfirmDeleteModal(false);
+  // -----------------------
+  // Formik: Create
+  // -----------------------
+  const validationSchema = useMemo(
+    () =>
+      Yup.object().shape({
+        name: Yup.string().min(3).max(25).required("Project Name is required"),
       }),
-      {
-        loading: 'Deleting',
-        success: (message) => message,
-        error: (err) => String(err),
-      },
-    );
+    []
+  );
+
+  const formik = useFormik<{ name: string }>({
+    initialValues: { name: "" },
+    validationSchema,
+    onSubmit: async (values, helpers) => {
+      await addProjectMutation.mutateAsync(values.name);
+      helpers.resetForm();
+    },
+  });
+
+  // -----------------------
+  // Handlers
+  // -----------------------
+  const handleChecked = (checked: boolean, id: string) => {
+    setCheckedList((prev) => (checked ? [...prev, id] : prev.filter((x) => x !== id)));
   };
+
+  // used by ConfirmDeleteModal (single)
+  const deleteProject = async (id?: string) => {
+    if (!id) return;
+    setConfirmDeleteModal(false);
+    toast.promise(deleteProjectMutation.mutateAsync(id), {
+      loading: "Deleting...",
+      success: "Deleted",
+      error: "Delete failed",
+    });
+  };
+
+  // used by ConfirmDeleteModal (bulk)
+  const delSelected = async () => {
+    setConfirmDeleteModal(false);
+    toast.promise(deleteSelectedMutation.mutateAsync(checkedList), {
+      loading: "Deleting...",
+      success: "Deleted",
+      error: "Delete failed",
+    });
+  };
+
+  const projects = projectsQuery.data ?? [];
 
   return (
     <>
@@ -176,8 +184,12 @@ const Dashboard = () => {
         <Separator className="my-4" />
 
         {/* Body */}
-        {loading ? (
+        {projectsQuery.isLoading ? (
           <ProjectsSkeleton />
+        ) : projectsQuery.isError ? (
+          <div className="rounded-xl border bg-card/50 p-4 text-sm text-muted-foreground">
+            Failed to load projects.
+          </div>
         ) : (
           <div className="space-y-2">
             {projects.map((project) => (
@@ -189,7 +201,7 @@ const Dashboard = () => {
                 <div className="flex items-center gap-3">
                   <Checkbox
                     checked={checkedList.includes(project._id)}
-                    onCheckedChange={(v) => handleChecked(v, project._id)}
+                    onCheckedChange={(v) => handleChecked(Boolean(v), project._id)}
                     aria-label={`Select ${project.name}`}
                   />
 
@@ -200,7 +212,7 @@ const Dashboard = () => {
                   >
                     {/* Avatar */}
                     <div className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white transition group-hover:bg-blue-800">
-                      {(project.name?.charAt(0) ?? '?').toUpperCase()}
+                      {(project.name?.charAt(0) ?? "?").toUpperCase()}
                     </div>
 
                     <div className="leading-tight">
@@ -241,6 +253,7 @@ const Dashboard = () => {
                           className="h-9 w-9"
                           onClick={() => {
                             setToBeDeleted(project);
+                            setIsMultipleDelete(false);
                             setConfirmDeleteModal(true);
                           }}
                           aria-label="Delete project"
@@ -261,8 +274,9 @@ const Dashboard = () => {
                 <Button
                   variant="destructive"
                   onClick={() => {
-                    setConfirmDeleteModal(true);
+                    setToBeDeleted(null);
                     setIsMultipleDelete(true);
+                    setConfirmDeleteModal(true);
                   }}
                 >
                   Delete selected ({checkedList.length})
@@ -273,23 +287,25 @@ const Dashboard = () => {
         )}
       </CardContent>
 
+      {/* Create */}
       {open && <CreateProject setOpen={setOpen} formik={formik} open={open} />}
 
+      {/* Delete confirm */}
       <ConfirmDeleteModal
         confirmDeleteModal={confirmDeleteModal}
         setConfirmDeleteModal={setConfirmDeleteModal}
         project={toBeDeleted ?? ({} as Project)}
-        deleteProject={delProject}
+        deleteProject={(id: string) => void deleteProject(id)}
         isMultipleDelete={isMultipleDelete}
         setIsMultipleDelete={setIsMultipleDelete}
-        delSelected={delSelected}
+        delSelected={() => void delSelected()}
       />
 
       <RenameModal
-        fetchProjects={fetchProjects}
-        setRenameModalOpen={setRenameModalOpen}
+        userId={userId!}
         projectToBeRename={projectToBeRename}
         renameModalOpen={renameModalOpen}
+        setRenameModalOpen={setRenameModalOpen}
       />
     </>
   );

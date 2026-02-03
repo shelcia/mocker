@@ -1,13 +1,16 @@
-import React, { useEffect, useMemo } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import * as Yup from 'yup';
-import { useFormik } from 'formik';
-import toast from 'react-hot-toast';
+import React, { useEffect, useMemo } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import toast from "react-hot-toast";
 
-import CustomModal from '../../../components/CustomModal';
-import { apiProvider } from '../../../services/utilities/provider';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+
+import CustomModal from "../../../components/CustomModal";
+import { apiProvider } from "../../../services/utilities/provider";
+import { queryKeys } from "@/utils";
 
 export type Project = {
   _id: string;
@@ -15,60 +18,70 @@ export type Project = {
 };
 
 type RenameModalProps = {
-  fetchProjects: () => void;
+  userId: string;
   projectToBeRename: Project | null;
   renameModalOpen: boolean;
   setRenameModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export const RenameModal = ({
-  fetchProjects,
+  userId,
   projectToBeRename,
   renameModalOpen,
   setRenameModalOpen,
 }: RenameModalProps) => {
+  const qc = useQueryClient();
+
   const validationSchema = useMemo(
     () =>
       Yup.object().shape({
         name: Yup.string()
-          .min(3, 'Project should be of minimum 3 characters length')
+          .min(3, "Project should be of minimum 3 characters length")
           .max(25)
-          .required('Project Name is required'),
+          .required("Project Name is required"),
       }),
-    [],
+    []
   );
 
-  const renameProject = (values: { name: string }, id: string) => {
-    setRenameModalOpen(false);
-
-    toast.promise(
-      new Promise<any>((resolve, reject) => {
-        apiProvider.putById('project/single', id, { name: values.name }).then((res: any) => {
-          if (res.status === '200') {
-            fetchProjects();
-            resolve(res);
-            return;
-          }
-          reject();
-        });
-      }),
-      {
-        loading: 'Renaming...',
-        success: (res) => res.message,
-        error: 'Rename failed',
-      },
-    );
-  };
+  const renameMutation = useMutation({
+    mutationFn: async (payload: { id: string; name: string }) => {
+      const res = await apiProvider.putById("project/single", payload.id, { name: payload.name });
+      return res as { status: string; message: string };
+    },
+    onSuccess: async (res) => {
+      if (res.status === "200") {
+        toast.success(res.message);
+        await qc.invalidateQueries({ queryKey: queryKeys.projects(userId) });
+      } else {
+        toast.error(res.message || "Rename failed");
+      }
+    },
+    onError: () => toast.error("Rename failed"),
+  });
 
   const formik = useFormik<{ name: string }>({
-    initialValues: { name: '' },
+    initialValues: { name: "" },
     validationSchema,
-    onSubmit: (values) => {
+    enableReinitialize: true,
+    onSubmit: async (values, helpers) => {
       if (!projectToBeRename?._id) return;
-      renameProject(values, projectToBeRename._id);
+
+      setRenameModalOpen(false);
+
+      toast.promise(
+        renameMutation.mutateAsync({ id: projectToBeRename._id, name: values.name }),
+        {
+          loading: "Renaming...",
+          success: "Renamed",
+          error: "Rename failed",
+        }
+      );
+
+      helpers.resetForm();
     },
   });
 
+  // Prefill when project changes
   useEffect(() => {
     if (!projectToBeRename) return;
     formik.setValues({ name: projectToBeRename.name });
@@ -89,8 +102,8 @@ export const RenameModal = ({
                 placeholder="Enter project name"
                 onBlur={formik.handleBlur}
                 onChange={formik.handleChange}
-                value={formik.values.name || ''}
-                className={formik.touched.name && formik.errors.name ? 'border-destructive' : ''}
+                value={formik.values.name || ""}
+                className={formik.touched.name && formik.errors.name ? "border-destructive" : ""}
               />
               {formik.touched.name && formik.errors.name && (
                 <p className="text-sm text-destructive">{formik.errors.name}</p>
@@ -98,7 +111,9 @@ export const RenameModal = ({
             </div>
 
             <div className="flex gap-3">
-              <Button type="submit">Rename</Button>
+              <Button type="submit" disabled={renameMutation.isPending}>
+                Rename
+              </Button>
 
               <Button type="button" variant="secondary" onClick={() => setRenameModalOpen(false)}>
                 Cancel

@@ -2,12 +2,12 @@ import React, { useContext, useState } from 'react';
 import CustomModal from '../../../components/CustomModal';
 import { ThemeContext } from '../../../context/ThemeContext';
 import { toast } from 'react-hot-toast';
-import { copyTextToClipboard } from '../../../utils/utils';
 import { BACKEND_URL } from '../../../services/api';
 import { ENDPOINTS } from '@/data/constants';
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { copyTextToClipboard } from '@/utils';
 
 const EndpointModal = ({ open, setOpen, result }) => {
   const [darkTheme] = useContext(ThemeContext);

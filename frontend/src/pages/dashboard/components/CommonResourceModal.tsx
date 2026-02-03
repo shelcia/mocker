@@ -20,6 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Separator } from '@/components/ui/separator';
 
 export type SchemaField = string;
 
@@ -257,7 +258,7 @@ const CommonResourceModal = ({
       </div>
 
       {/* Reserved fields */}
-      <div className="mt-4 grid grid-cols-2 gap-2">
+      <div className="my-4 grid grid-cols-2 gap-2">
         <div className="space-y-2">
           <Label>id</Label>
           <Input value="id" disabled />
@@ -387,14 +388,18 @@ const CommonResourceModal = ({
 
       <div className="flex flex-col gap-4">
         {/* Add Resource */}
-        <Button size="sm" onClick={addSchema} className="w-fit">
+        <Button size="sm" onClick={addSchema} className="w-fit" variant="outline">
           Add Resource
         </Button>
 
+        <Separator />
+
         {/* Actions */}
-        <div className="flex gap-3">
+        <div className="flex gap-2 justify-end">
+          <Button variant="secondary" onClick={() => setOpen(false)}>
+            Cancel
+          </Button>
           <Button
-            size="sm"
             onClick={() => {
               if (validateForm() && isLabelMatch()) {
                 void func();
@@ -402,10 +407,6 @@ const CommonResourceModal = ({
             }}
           >
             {buttonTxt}
-          </Button>
-
-          <Button size="sm" variant="secondary" onClick={() => setOpen(false)}>
-            Cancel
           </Button>
         </div>
       </div>

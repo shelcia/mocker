@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { BACKEND_URL } from '../../services/api';
-import { apiResource } from '../../services/models/resourceModal';
-import { apiUser } from '../../services/models/userModal';
-import { apiProject } from '../../services/models/projectModel';
 
 import ResourceModal from './components/ResourceModal';
 import EndpointModal from './components/EndpointModal';
@@ -13,8 +9,6 @@ import ResultModal from './components/ResultModal';
 import CloneModal from './components/CloneModal';
 import DeleteResourceModal from './components/DeleteResourceModal';
 
-import { copyTextToClipboard } from '../../utils/utils';
-import type { ApiStringResponse } from '../../types';
 import { ChevronLeft, Copy, ExternalLink, Eye, Pencil, Trash } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
@@ -24,6 +18,12 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Card, CardContent } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
+import { copyTextToClipboard } from '@/utils';
+import { ApiStringResponse } from '@/types';
+import { BACKEND_URL } from '@/services/api';
+import { apiResource } from '@/services/models/resourceModal';
+import { apiProject } from '@/services/models/projectModel';
+import { apiUser } from '@/services/models/userModal';
 
 type RouteParams = {
   projectId?: string;
@@ -132,7 +132,7 @@ const Collection = () => {
 
   return (
     <>
-      <div className="space-y-4">
+      <div className="space-y-1">
         {/* Back */}
         <div>
           <Button variant="ghost" onClick={() => navigate(-1)} className="gap-2">
@@ -141,14 +141,16 @@ const Collection = () => {
           </Button>
         </div>
 
-        <Card className="border-border/60 bg-background/60 backdrop-blur-sm">
+        <Card className="border-0 shadow-none pt-0">
           <CardContent className="p-4 md:p-6">
             {/* Title + CTA row */}
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <h1 className="text-2xl font-semibold tracking-tight">{projectName}</h1>
 
               <div className="flex flex-wrap items-center gap-2">
-                <Button onClick={() => setOpen(true)}>New Resource</Button>
+                <Button onClick={() => setOpen(true)} variant="outline">
+                  New Resource
+                </Button>
 
                 {checkedList.length !== 0 && (
                   <Button variant="destructive" onClick={delSelected}>
@@ -199,10 +201,11 @@ const Collection = () => {
             {/* Resource list */}
             <div className="mt-6 space-y-2">
               {resources.map((resource) => (
-                <div key={resource._id} className="flex items-start gap-2">
-                  {/* Keep your checkbox for now */}
+                <div
+                  key={resource._id}
+                  className="flex items-start gap-2 w-full rounded-xl border bg-background/60 p-3 backdrop-blur-sm"
+                >
                   <div className="pt-3">
-                    {/* <CustomCheckbox handleChecked={handleChecked} id={resource._id} /> */}
                     <Checkbox
                       checked={checkedList.includes(resource._id)}
                       onCheckedChange={(v) => handleChecked(v, resource._id)}
@@ -210,7 +213,6 @@ const Collection = () => {
                     />
                   </div>
 
-                  {/* Your shadcn Resource row component */}
                   <Resource
                     resource={resource}
                     fetchResource={fetchResource}
@@ -284,87 +286,86 @@ const Resource = ({ resource, fetchResource, delResource }: ResourceProps) => {
 
   return (
     <>
-      <li className="w-full rounded-xl border bg-background/60 p-3 backdrop-blur-sm">
-        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-          {/* Left: Avatar + name */}
-          <div className="flex items-center gap-3">
-            <Avatar className="h-10 w-10">
-              <AvatarFallback className="text-sm font-semibold">
-                {resource?.name?.charAt(0)?.toUpperCase() ?? 'R'}
-              </AvatarFallback>
-            </Avatar>
+      <div className="flex w-full flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        {/* Left: Avatar + name */}
+        <div className="flex items-center gap-3">
+          <Avatar className="h-10 w-10">
+            <AvatarFallback className="text-sm font-medium">
+              {resource?.name?.charAt(0)?.toUpperCase() ?? 'R'}
+            </AvatarFallback>
+          </Avatar>
 
-            <div className="min-w-0">
-              <div className="truncate text-base font-semibold">{resource?.name}</div>
-            </div>
+          <div className="min-w-0">
+            <div className="truncate text-base font-medium">{resource?.name}</div>
           </div>
-
-          {/* Right: actions */}
-          <TooltipProvider>
-            <div className="flex flex-wrap gap-2 md:justify-end">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button size="icon" onClick={() => setOpenModal(true)} aria-label="View JSON">
-                    <Eye />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>View generated JSON data</TooltipContent>
-              </Tooltip>
-
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    size="icon"
-                    variant="outline"
-                    onClick={() => setEditModal(true)}
-                    aria-label="Edit Resource"
-                  >
-                    <Pencil />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Edit Resource</TooltipContent>
-              </Tooltip>
-
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    size="icon"
-                    variant="secondary"
-                    onClick={() => setCloneModal(true)}
-                    aria-label="Clone Resource"
-                  >
-                    <Copy />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Clone Resource</TooltipContent>
-              </Tooltip>
-
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    size="icon"
-                    variant="destructive"
-                    onClick={() => setDelResourceModal(true)}
-                    aria-label="Delete Resource"
-                  >
-                    <Trash />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Delete Resource</TooltipContent>
-              </Tooltip>
-
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button onClick={() => setEndModal(true)} className="px-3">
-                    View Endpoints
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>View generated API endpoints</TooltipContent>
-              </Tooltip>
-            </div>
-          </TooltipProvider>
         </div>
-      </li>
+
+        {/* Right: actions */}
+        <TooltipProvider>
+          <div className="flex flex-wrap gap-2 md:justify-end">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  size="icon"
+                  onClick={() => setOpenModal(true)}
+                  aria-label="View JSON"
+                  variant="outline"
+                >
+                  <Eye />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>View generated JSON data</TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  size="icon"
+                  variant="secondary"
+                  onClick={() => setEditModal(true)}
+                  aria-label="Edit Resource"
+                >
+                  <Pencil />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Edit Resource</TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button size="icon" onClick={() => setCloneModal(true)} aria-label="Clone Resource">
+                  <Copy />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Clone Resource</TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  size="icon"
+                  variant="destructive"
+                  onClick={() => setDelResourceModal(true)}
+                  aria-label="Delete Resource"
+                >
+                  <Trash />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Delete Resource</TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button onClick={() => setEndModal(true)} className="px-3" variant="secondary">
+                  View Endpoints
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>View generated API endpoints</TooltipContent>
+            </Tooltip>
+          </div>
+        </TooltipProvider>
+      </div>
+
       <ResultModal open={openModal} setOpen={setOpenModal} result={result} loading={loading} />
 
       <EndpointModal open={endModal} setOpen={setEndModal} result={resource._id} />

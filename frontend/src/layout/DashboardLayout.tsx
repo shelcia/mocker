@@ -29,9 +29,11 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
           </div>
 
           {/* actions */}
-          <div className="ml-auto flex items-center gap-2">
+          <div className="ml-auto flex items-center gap-4">
             <CustomToggle />
-            <Button onClick={logout}>Logout</Button>
+            <Button onClick={logout} variant="ghost">
+              Logout
+            </Button>
           </div>
         </div>
       </header>

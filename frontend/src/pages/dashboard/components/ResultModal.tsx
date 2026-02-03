@@ -3,15 +3,14 @@ import JSONPretty from 'react-json-pretty';
 import toast from 'react-hot-toast';
 import jsonBeautify from 'json-beautify';
 
-import CustomModal from '../../../components/CustomModal';
-import { CustomJSONTable } from '../../../components/CustomTable';
-import { ThemeContext } from '../../../context/ThemeContext';
-import { copyTextToClipboard } from '../../../utils/utils';
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { PartLoader } from '@/components/CustomLoading';
+import { ThemeContext } from '@/context/ThemeContext';
+import { copyTextToClipboard } from '@/utils';
+import { CustomJSONTable } from '@/components/CustomTable';
+import CustomModal from '@/components/CustomModal';
 
 type ResultRow = Record<string, unknown>;
 
