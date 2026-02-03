@@ -1,36 +1,15 @@
-import React, { useState } from 'react';
-import {
-  AppBar,
-  Box,
-  Drawer,
-  IconButton,
-  Toolbar,
-  Typography,
-  Divider,
-  Card,
-  Button,
-  useMediaQuery,
-  Stack,
-} from '@mui/material';
-import { HiMenuAlt3 } from 'react-icons/hi';
+import React, { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CustomToggle from '../components/CustomToggle';
-// import Grad1 from "../assets/home/gradient-1.svg";
-// import Grad2 from "../assets/home/gradient-2.svg";
 import Logo from '../assets/images/logo.png';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 
-const drawerWidth = 240;
+interface DashboardLayoutProps {
+  children: ReactNode;
+}
 
-const DashboardLayout = ({ children }, props) => {
-  const mobileMatches = useMediaQuery('(max-width:425px)');
-
-  const { window } = props;
-  const [mobileOpen, setMobileOpen] = useState(false);
-
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
-  };
-
+const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const navigate = useNavigate();
 
   const logout = () => {
@@ -38,84 +17,32 @@ const DashboardLayout = ({ children }, props) => {
     navigate('/');
   };
 
-  const drawer = (
-    <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
-      <Stack direction="row" sx={{ justifyContent: 'center', my: 2 }}>
-        <Typography variant="h6" sx={{ mr: 1, fontWeight: 900, textTransform: 'uppercase' }}>
-          Mocker
-        </Typography>
-        <CustomToggle />
-      </Stack>
-
-      <Divider />
-      <Button variant="contained" onClick={logout} sx={{ mt: 4 }}>
-        Logout
-      </Button>
-    </Box>
-  );
-
-  const container = window !== undefined ? () => window().document.body : undefined;
-
   return (
-    <Box>
-      {/* <img src={Grad1} alt="" style={{ position: "fixed", zIndex: -1 }} />
-      <img
-        src={Grad2}
-        alt=""
-        style={{ position: "fixed", top: 0, zIndex: -1 }}
-      /> */}
-      <AppBar component="nav">
-        <Toolbar>
-          <Typography
-            variant="h6"
-            sx={{ flexGrow: 1, fontWeight: 900, textTransform: 'uppercase' }}
-          >
-            <img src={Logo} alt="logo" width={16} height={16} /> Mocker
-          </Typography>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: 'none' } }}
-          >
-            <HiMenuAlt3 />
-          </IconButton>
-          <Box sx={{ display: { xs: 'none', sm: 'flex' } }}>
+    <div className="min-h-screen bg-background">
+      {/* header */}
+      <header className="sticky top-0 z-50 border-b bg-background/70 backdrop-blur supports-[backdrop-filter]:bg-background/55">
+        <div className="mx-auto flex h-14 max-w-7xl items-center px-4">
+          {/* brand */}
+          <div className="flex items-center gap-2">
+            <img src={Logo} alt="logo" className="h-4 w-4" />
+            <span className="text-sm font-extrabold uppercase">Mocker</span>
+          </div>
+
+          {/* actions */}
+          <div className="ml-auto flex items-center gap-2">
             <CustomToggle />
-            <Button sx={{ ml: 2 }} onClick={logout}>
-              Logout
-            </Button>
-          </Box>
-        </Toolbar>
-      </AppBar>
-      <Box component="nav">
-        <Drawer
-          container={container}
-          variant="temporary"
-          open={mobileOpen}
-          onClose={handleDrawerToggle}
-          ModalProps={{
-            keepMounted: true, // Better open performance on mobile.
-          }}
-          sx={{
-            display: { xs: 'block', sm: 'none' },
-            '& .MuiDrawer-paper': {
-              boxSizing: 'border-box',
-              width: drawerWidth,
-            },
-          }}
-        >
-          {drawer}
-        </Drawer>
-      </Box>
-      <Box component="main" className="w-100">
-        <Toolbar />
-        <Box className="row w-100" sx={{ px: 2, pt: 2 }}>
-          <Card sx={{ m: mobileMatches ? 1 : 4, p: mobileMatches ? 1 : 4 }}>{children}</Card>
-        </Box>
-      </Box>
-    </Box>
+            <Button onClick={logout}>Logout</Button>
+          </div>
+        </div>
+      </header>
+
+      {/* content */}
+      <main className="mx-auto max-w-7xl px-4 py-6">
+        <Card className="rounded-2xl border bg-card/70 p-4 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-card/55 sm:p-6">
+          {children}
+        </Card>
+      </main>
+    </div>
   );
 };
 
