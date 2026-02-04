@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react';
 
-import CustomModal from '@/components/common/CustomModal';
+import { CustomModal } from '@/components/common';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
 import { ThemeContext } from '@/context/ThemeContext';

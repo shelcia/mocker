@@ -3,12 +3,12 @@ import React from 'react';
 import { CustomToggle } from '@/components/common';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { useVerifyToken } from '@/hooks/useVerifyToken';
+import { logout } from '@/utils';
 
 import { Component } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { logout } from '@/utils';
-import { useVerifyToken } from '@/hooks/useVerifyToken';
 
 interface DashboardLayoutProps {
   children: ReactNode;

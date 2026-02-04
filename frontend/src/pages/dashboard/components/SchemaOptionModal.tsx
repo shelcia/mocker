@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
+import { CustomModal } from '@/components/common';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
@@ -18,8 +19,6 @@ import { fromISO, toISO } from '@/utils';
 
 import dayjs from 'dayjs';
 import { Calendar as CalendarIcon } from 'lucide-react';
-
-import CustomModal from '../../../components/common/CustomModal';
 
 const SchemaOptionModal = ({ optionOpen, setOptionOpen, fieldInfo, setOption }) => {
   const [myOption, setMyOption] = useState({});

@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 
-import { CustomLoaderButton } from '@/components/common';
-import { CustomPwdField } from '@/components/CustomInputFields';
+import { CustomLoaderButton, CustomPwdField } from '@/components/common';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useVerifyToken } from '@/hooks/useVerifyToken';
 import type { ApiStringResponse } from '@/types';
+import { logout } from '@/utils';
 
 import { useFormik } from 'formik';
 import { toast } from 'react-hot-toast';
@@ -14,7 +14,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 
 import { apiAuth } from '../../services/models/authModel';
-import { logout } from '@/utils';
 
 const Signup = () => {
   const [hasToken, setHasToken] = useVerifyToken();

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 
-import CustomTooltip from '@/components/common/CustomTooltip';
+import { CustomAvatarDisplayname,CustomTooltip } from '@/components/common';
 import { Button } from '@/components/ui/button';
 import { CardContent } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -199,7 +199,7 @@ const Dashboard = () => {
             {projects.map((project) => (
               <div
                 key={project._id}
-                className="flex items-center justify-between rounded-xl border bg-card/50 px-3 py-2 transition hover:bg-card"
+                className="flex items-center justify-between rounded-xl border bg-card/50 px-4 py-3 transition hover:bg-card"
               >
                 {/* Left side */}
                 <div className="flex items-center gap-3">
@@ -215,16 +215,7 @@ const Dashboard = () => {
                     className="group flex items-center gap-3 text-left"
                   >
                     {/* Avatar */}
-                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white transition group-hover:bg-blue-800">
-                      {(project.name?.charAt(0) ?? '?').toUpperCase()}
-                    </div>
-
-                    <div className="leading-tight">
-                      <div className="text-sm font-medium text-foreground group-hover:text-blue-800">
-                        {project.name}
-                      </div>
-                      <div className="text-xs text-muted-foreground">Open project</div>
-                    </div>
+                    <CustomAvatarDisplayname text={project.name} />
                   </button>
                 </div>
 

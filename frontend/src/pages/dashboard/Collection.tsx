@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 
-import CustomTooltip from '@/components/common/CustomTooltip';
+import { CustomAvatarDisplayname,CustomTooltip } from '@/components/common';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -150,7 +149,7 @@ const Collection = () => {
           <CardContent className="p-4 md:p-6">
             {/* Title + CTA row */}
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-              <h1 className="text-2xl font-semibold tracking-tight">{projectName}</h1>
+              <h1 className="text-2xl font-medium tracking-tight">{projectName}</h1>
 
               <div className="flex flex-wrap items-center gap-2">
                 <Button onClick={() => setOpen(true)} variant="outline">
@@ -295,17 +294,7 @@ const Resource = ({ resource, fetchResource, delResource }: ResourceProps) => {
     <>
       <div className="flex w-full flex-col gap-3 md:flex-row md:items-center md:justify-between">
         {/* Left: Avatar + name */}
-        <div className="flex items-center gap-3">
-          <Avatar className="h-10 w-10">
-            <AvatarFallback className="text-sm font-medium">
-              {resource?.name?.charAt(0)?.toUpperCase() ?? 'R'}
-            </AvatarFallback>
-          </Avatar>
-
-          <div className="min-w-0">
-            <div className="truncate text-base font-medium">{resource?.name}</div>
-          </div>
-        </div>
+        <CustomAvatarDisplayname text={resource.name} />
 
         {/* Right: actions */}
         <div className="flex flex-wrap gap-2 md:justify-end">

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import CustomModal from '@/components/common/CustomModal';
+import { CustomModal } from '@/components/common';
 import { Button } from '@/components/ui/button';
 
 interface DeleteResourceModalProps {

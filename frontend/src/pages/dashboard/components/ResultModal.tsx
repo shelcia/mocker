@@ -1,8 +1,6 @@
 import React, { useContext, useState } from 'react';
 
-import { PartLoader } from '@/components/common/CustomLoading';
-import CustomModal from '@/components/common/CustomModal';
-import { CustomJSONTable } from '@/components/common/CustomTable';
+import { CustomJSONTable,CustomModal, PartLoader } from '@/components/common';
 import { Button } from '@/components/ui/button';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
