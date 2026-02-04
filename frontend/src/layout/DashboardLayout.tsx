@@ -1,14 +1,12 @@
-import React from 'react';
-
-import { CustomToggle } from '@/components/common';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useVerifyToken } from '@/hooks/useVerifyToken';
 import { logout } from '@/utils';
 
-import { Component } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+import { FooterComponent, HeaderActions, HeaderLogo } from './common';
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -24,14 +22,11 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       <header className="sticky top-0 z-50 border-b bg-background/70 backdrop-blur supports-[backdrop-filter]:bg-background/55">
         <div className="mx-auto flex h-14 max-w-7xl items-center px-4">
           {/* brand */}
-          <div className="flex items-center gap-2">
-            <Component className="size-4" />
-            <span className="text-sm font-extrabold uppercase">Mocker</span>
-          </div>
+          <HeaderLogo />
 
           {/* actions */}
-          <div className="ml-auto flex items-center gap-4">
-            <CustomToggle />
+          <div className="flex items-center gap-2 ml-auto">
+            <HeaderActions />
             <Button onClick={() => logout(setHasToken, navigate)} variant="ghost">
               Logout
             </Button>
@@ -45,6 +40,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
           {children}
         </Card>
       </main>
+      <FooterComponent />
     </div>
   );
 };

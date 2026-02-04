@@ -55,7 +55,9 @@ const EndpointModal = ({ open, setOpen, result }: EndpointModalProps) => {
           <TableBody>
             {ENDPOINTS.map((point, idx) => (
               <TableRow key={idx} className="hover:bg-muted/50">
-                <TableCell className="font-semibold text-green-500 w-24">{point.method}</TableCell>
+                <TableCell className="font-semibold text-emerald-600 w-24">
+                  {point.method}
+                </TableCell>
 
                 <TableCell className="font-mono text-sm">
                   /{result}

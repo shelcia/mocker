@@ -1,14 +1,10 @@
 import React from 'react';
 
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
 
-import { Component, Github } from 'lucide-react';
 import type { ReactNode } from 'react';
 
-import { CustomToggle } from '../components/common';
+import { FooterComponent, HeaderActions, HeaderLogo } from './common';
 
 interface AuthLayoutProps {
   children: ReactNode;
@@ -20,55 +16,10 @@ const AuthLayout = ({ children }: AuthLayoutProps) => {
       <div className="relative min-h-screen overflow-hidden bg-background text-foreground">
         <header className="sticky top-0 z-20">
           <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
-            <div className="flex items-center gap-2">
-              <Component className="size-4" />
-              <span className="text-md font-semibold tracking-wide">Mocker</span>
-              <Badge
-                variant="secondary"
-                className="bg-zinc-900/10 text-zinc-700 dark:bg-white/10 dark:text-zinc-100 text-xs font-light"
-              >
-                beta
-              </Badge>
-            </div>
+            <HeaderLogo />
 
             <div className="flex items-center gap-2">
-              <Button
-                asChild
-                variant="ghost"
-                className="h-9 rounded-full bg-zinc-900/5 px-3 hover:bg-zinc-900/10 dark:bg-white/5 dark:hover:bg-white/10"
-              >
-                <a
-                  href="https://mocker-docs.vercel.app/docs/intro"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Docs
-                </a>
-              </Button>
-
-              <Button
-                asChild
-                variant="ghost"
-                className="h-9 w-9 rounded-full bg-zinc-900/5 p-0 hover:bg-zinc-900/10 dark:bg-white/5 dark:hover:bg-white/10"
-              >
-                <a
-                  href="https://github.com/shelcia/mocker"
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label="GitHub"
-                >
-                  <Github className="h-4 w-4" />
-                </a>
-              </Button>
-
-              <Separator
-                orientation="vertical"
-                className="mx-1 h-6 bg-zinc-900/10 dark:bg-white/10"
-              />
-
-              <div className="rounded-full bg-zinc-900/5 px-2 py-1 hover:bg-zinc-900/10 dark:bg-white/5 dark:hover:bg-white/10">
-                <CustomToggle />
-              </div>
+              <HeaderActions />
             </div>
           </div>
         </header>
@@ -138,17 +89,7 @@ const AuthLayout = ({ children }: AuthLayoutProps) => {
         </main>
 
         {/* Footer */}
-        <footer className="flex h-16 items-center justify-center px-4 text-xs text-muted-foreground fixed bottom-0 w-full bg-background">
-          <span>Built by</span>
-          <a
-            href="https://shelcia-dev.me/"
-            target="_blank"
-            rel="noreferrer"
-            className="ml-1 font-medium text-foreground underline underline-offset-4 hover:opacity-90"
-          >
-            Shelcia
-          </a>
-        </footer>
+        <FooterComponent />
       </div>
     </React.Fragment>
   );
