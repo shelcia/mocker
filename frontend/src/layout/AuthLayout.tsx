@@ -25,7 +25,7 @@ const AuthLayout = ({ children }: AuthLayoutProps) => {
               <span className="text-md font-semibold tracking-wide">Mocker</span>
               <Badge
                 variant="secondary"
-                className="ml-1 bg-zinc-900/10 text-zinc-700 dark:bg-white/10 dark:text-zinc-100"
+                className="bg-zinc-900/10 text-zinc-700 dark:bg-white/10 dark:text-zinc-100 text-xs font-light"
               >
                 beta
               </Badge>
@@ -91,7 +91,7 @@ const AuthLayout = ({ children }: AuthLayoutProps) => {
                 </h1>
 
                 <p className="max-w-xl text-base text-muted-foreground">
-                  Define a schema, get unlimited resources & projects, and ship usable endpoints
+                  Define a schema, get unlimited resources & projects, and generate usable endpoints for testing,
                   powered by{' '}
                   <a
                     href="https://fakerjs.dev/"
