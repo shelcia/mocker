@@ -28,10 +28,12 @@ export function handleError(error) {
     // toast.error(error.data);
     return error.data;
   }
+
   if (error.message) {
     // toast.error(error.message);
     return error.message;
   }
+
   // toast.error(error);
   return error;
 }

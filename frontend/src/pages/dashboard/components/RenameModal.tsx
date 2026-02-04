@@ -1,30 +1,33 @@
 import React, { useEffect, useMemo } from 'react';
-import { Box, Button, Stack, TextField } from '@mui/material';
-import * as Yup from 'yup';
+
+import { CustomModal } from '@/components/common';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { apiProvider } from '@/services/utilities/provider';
+import type { Project } from '@/types';
+import { queryKeys } from '@/utils';
+
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useFormik } from 'formik';
 import toast from 'react-hot-toast';
+import * as Yup from 'yup';
 
-import CustomModal from '../../../components/CustomModal';
-import { apiProvider } from '../../../services/utilities/provider';
-
-export type Project = {
-  _id: string;
-  name: string;
-};
-
-type RenameModalProps = {
-  fetchProjects: () => void;
+interface RenameModalProps {
+  userId: string;
   projectToBeRename: Project | null;
   renameModalOpen: boolean;
   setRenameModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-};
+}
 
-export const RenameModal = ({
-  fetchProjects,
+const RenameModal = ({
+  userId,
   projectToBeRename,
   renameModalOpen,
   setRenameModalOpen,
 }: RenameModalProps) => {
+  const qc = useQueryClient();
+
   const validationSchema = useMemo(
     () =>
       Yup.object().shape({
@@ -36,79 +39,81 @@ export const RenameModal = ({
     [],
   );
 
-  const renameProject = (values: { name: string }, id: string) => {
-    setRenameModalOpen(false);
+  const renameMutation = useMutation({
+    mutationFn: async (payload: { id: string; name: string }) => {
+      const res = await apiProvider.putById('project/single', payload.id, { name: payload.name });
 
-    toast.promise(
-      new Promise<any>((resolve, reject) => {
-        apiProvider.putById('project/single', id, { name: values.name }).then((res: any) => {
-          if (res.status === '200') {
-            fetchProjects();
-            resolve(res);
-            return;
-          }
-          reject();
-        });
-      }),
-      {
-        loading: 'Renaming...',
-        success: (res) => res.message,
-        error: 'Rename failed',
-      },
-    );
-  };
+      return res as { status: string; message: string };
+    },
+    onSuccess: async (res) => {
+      if (res.status === '200') {
+        await qc.invalidateQueries({ queryKey: queryKeys.projects(userId) });
+      }
+    },
+    onError: () => toast.error('Rename failed'),
+  });
 
   const formik = useFormik<{ name: string }>({
     initialValues: { name: '' },
     validationSchema,
-    onSubmit: (values) => {
+    enableReinitialize: true,
+    onSubmit: async (values, helpers) => {
       if (!projectToBeRename?._id) return;
-      renameProject(values, projectToBeRename._id);
+
+      setRenameModalOpen(false);
+
+      toast.promise(renameMutation.mutateAsync({ id: projectToBeRename._id, name: values.name }), {
+        loading: 'Renaming...',
+        success: 'Renamed',
+        error: 'Rename failed',
+      });
+
+      helpers.resetForm();
     },
   });
 
   useEffect(() => {
     if (!projectToBeRename) return;
+
     formik.setValues({ name: projectToBeRename.name });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectToBeRename]);
 
   return (
     <>
       {renameModalOpen && (
         <CustomModal open={renameModalOpen} setOpen={setRenameModalOpen} title="Rename project">
-          <Box component="form" onSubmit={formik.handleSubmit}>
-            <TextField
-              label="Project rename"
-              type="text"
-              name="name"
-              sx={{ mb: 3 }}
-              size="small"
-              fullWidth
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              value={formik.values.name || ''}
-              error={Boolean(formik.touched.name && formik.errors.name)}
-              helperText={formik.touched.name && formik.errors.name}
-            />
+          <form onSubmit={formik.handleSubmit} className="space-y-4">
+            <div className="space-y-1">
+              <Label htmlFor="name">Project name</Label>
+              <Input
+                id="name"
+                name="name"
+                type="text"
+                placeholder="Enter project name"
+                onBlur={formik.handleBlur}
+                onChange={formik.handleChange}
+                value={formik.values.name || ''}
+                className={formik.touched.name && formik.errors.name ? 'border-destructive' : ''}
+              />
+              {formik.touched.name && formik.errors.name && (
+                <p className="text-sm text-destructive">{formik.errors.name}</p>
+              )}
+            </div>
 
-            <Stack direction="row" spacing={3}>
-              <Button variant="contained" size="small" type="submit">
+            <div className="flex gap-3">
+              <Button type="submit" disabled={renameMutation.isPending}>
                 Rename
               </Button>
 
-              <Button
-                variant="contained"
-                color="secondary"
-                size="small"
-                onClick={() => setRenameModalOpen(false)}
-              >
+              <Button type="button" variant="secondary" onClick={() => setRenameModalOpen(false)}>
                 Cancel
               </Button>
-            </Stack>
-          </Box>
+            </div>
+          </form>
         </CustomModal>
       )}
     </>
   );
 };
+
+export default RenameModal;

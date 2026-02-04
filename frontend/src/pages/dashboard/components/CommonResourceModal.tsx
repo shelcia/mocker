@@ -1,50 +1,29 @@
-import React, { useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
-import CustomModal from '../../../components/CustomModal';
+import React, { type ReactNode, useEffect, useMemo, useState } from 'react';
+
+import { CustomModal, CustomTooltip } from '@/components/common';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
-  Box,
-  Button,
-  FormControl,
-  Grid,
-  InputLabel,
-  ListSubheader,
-  MenuItem,
   Select,
-  Stack,
-  TextField,
-  Typography,
-} from '@mui/material';
-import IconButton from '@mui/material/IconButton';
-import { blueGrey } from '@mui/material/colors';
-import { BiSliderAlt } from 'react-icons/bi';
-import { FaPlus } from 'react-icons/fa';
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Separator } from '@/components/ui/separator';
+import { CHOICES, OPTION_EXIST_FOR, VALIDATION_ERROR } from '@/data/constants';
+import type { Resource, ResultRow, SchemaItem } from '@/types';
+
+import { Plus, Settings2, Trash } from 'lucide-react';
 import toast from 'react-hot-toast';
 import * as Yup from 'yup';
 
-import { ThemeContext } from '../../../context/ThemeContext';
 import SchemaOptionModal from './SchemaOptionModal';
-import { secondary, error } from '../../../themes/themeColors';
-import { CustomTooltip } from '../../../components/CustomTooltip';
-import { ValidationError } from '../enums/error';
-import { CHOICES, OPTION_EXIST_FOR } from '../../../data/constants';
 
 export type SchemaField = string;
-
-export type SchemaOption = Record<string, unknown>;
-
-export type SchemaItem = {
-  id: number;
-  label: string;
-  field: SchemaField;
-  option?: SchemaOption;
-};
-
-export type InputsState = {
-  name: string;
-  number: number; // keep as number
-  userId?: string;
-  projectId?: string;
-  id?: string;
-};
 
 type ValidationMapValue = { errCode: string };
 
@@ -53,8 +32,8 @@ interface CommonResourceModalProps {
   setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
   title?: string;
 
-  inputs: InputsState;
-  setInputs: React.Dispatch<React.SetStateAction<InputsState>>;
+  inputs: Resource;
+  setInputs: React.Dispatch<React.SetStateAction<Resource>>;
 
   schema: SchemaItem[];
   setSchema: React.Dispatch<React.SetStateAction<SchemaItem[]>>;
@@ -76,15 +55,13 @@ const CommonResourceModal = ({
   func,
   children,
 }: CommonResourceModalProps) => {
-  const [darkTheme] = useContext(ThemeContext);
-
   const [optionOpen, setOptionOpen] = useState<boolean>(false);
-  const [option, setOption] = useState<SchemaOption>({});
+  const [option, setOption] = useState<ResultRow>({});
   const [fieldInfo, setFieldInfo] = useState<{
     id?: number;
     label?: string;
     field?: string;
-    option?: SchemaOption;
+    option?: ResultRow;
   }>({});
 
   const [validationInfo, setValidationInfo] = useState<Map<number, ValidationMapValue>>(
@@ -102,6 +79,7 @@ const CommonResourceModal = ({
 
     if (name === 'number') {
       const num = Number(value);
+
       setInputs((prev) => ({ ...prev, number: num }));
 
       if (!value.length || Number.isNaN(num)) {
@@ -109,10 +87,11 @@ const CommonResourceModal = ({
       } else if (!validNumber) {
         setValidNumber(true);
       }
+
       return;
     }
 
-    setInputs((prev) => ({ ...prev, [name]: value }) as InputsState);
+    setInputs((prev) => ({ ...prev, [name]: value }) as Resource);
 
     if (name === 'name') {
       if (value.length === 0) setValidName(false);
@@ -129,6 +108,7 @@ const CommonResourceModal = ({
 
   useEffect(() => {
     if (!fieldInfo.id) return;
+
     // When SchemaOptionModal updates `option`, apply it to the selected schema row
     updateSchemaItem(fieldInfo.id, { option: { ...option } });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -145,7 +125,9 @@ const CommonResourceModal = ({
   const handleAdd = (idx: number) => {
     setSchema((prev) => {
       const next = [...prev];
+
       next.splice(idx + 1, 0, { id: Date.now(), label: '', field: '' });
+
       return next;
     });
   };
@@ -156,8 +138,8 @@ const CommonResourceModal = ({
   const ValidationSchema = useMemo(
     () =>
       Yup.object({
-        field: Yup.string().required(ValidationError.FIELD_NAME),
-        label: Yup.string().required(ValidationError.LABEL_NAME),
+        field: Yup.string().required(VALIDATION_ERROR.FIELD_NAME),
+        label: Yup.string().required(VALIDATION_ERROR.LABEL_NAME),
       }),
     [],
   );
@@ -168,19 +150,24 @@ const CommonResourceModal = ({
 
     schema.forEach((val, idx) => {
       if (labelMap.has(val.label)) {
-        errs.set(idx, { errCode: ValidationError.LABEL_NAME });
+        errs.set(idx, { errCode: VALIDATION_ERROR.LABEL_NAME });
+
         return;
       }
+
       labelMap.set(val.label, idx);
     });
 
     setValidationInfo(errs);
+
     if (errs.size) {
       setIsLabelSame(true);
+
       return false;
     }
 
     setIsLabelSame(false);
+
     return true;
   };
 
@@ -191,16 +178,19 @@ const CommonResourceModal = ({
 
     if (schema.length === 0) {
       toast.error('Atleast one resource is required');
+
       return false;
     }
 
     if (!inputs.name || inputs.name.length === 0) {
       setValidName(false);
+
       return false;
     }
 
     if (Number.isNaN(inputs.number) || inputs.number <= 0) {
       setValidNumber(false);
+
       return false;
     }
 
@@ -211,11 +201,13 @@ const CommonResourceModal = ({
         ValidationSchema.validateSync(val);
       } catch (e) {
         const yupErr = e as Yup.ValidationError;
+
         errs.set(idx, { errCode: yupErr.message });
       }
     });
 
     setValidationInfo(errs);
+
     return errs.size === 0;
   };
 
@@ -231,117 +223,118 @@ const CommonResourceModal = ({
         setOption={setOption}
       />
 
-      <Stack sx={{ mb: 2 }}>
-        <TextField
-          label="Resource name"
-          size="small"
-          fullWidth
+      {/* Resource name */}
+      <div className="space-y-2">
+        <Label htmlFor="resource-name">Resource name</Label>
+        <Input
+          id="resource-name"
           name="name"
           value={inputs.name}
           onChange={handleInputs}
-          error={!validName}
-          helperText={!validName ? 'Resource name is required' : ''}
+          aria-invalid={!validName}
         />
-      </Stack>
+        {!validName ? <p className="text-sm text-destructive">Resource name is required</p> : null}
+      </div>
 
-      <Stack sx={{ mb: 2 }}>
-        <TextField
-          label="Number of Objects"
-          size="small"
-          fullWidth
+      {/* Number of objects */}
+      <div className="mt-4 space-y-2">
+        <Label htmlFor="resource-number">Number of Objects</Label>
+        <Input
+          id="resource-number"
           name="number"
-          value={Number.isNaN(inputs.number) ? '' : inputs.number}
+          inputMode="numeric"
+          value={Number.isNaN(inputs.number) ? '' : String(inputs.number)}
           onChange={handleInputs}
-          error={!validNumber}
-          helperText={!validNumber ? 'Number of object cannot be empty and must be a number' : ''}
+          aria-invalid={!validNumber}
         />
-      </Stack>
+        {!validNumber ? (
+          <p className="text-sm text-destructive">
+            Number of object cannot be empty and must be a number
+          </p>
+        ) : null}
+      </div>
 
-      <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
-        <TextField value="id" size="small" disabled />
-        <TextField value="uuid" size="small" disabled />
-      </Stack>
+      {/* Reserved fields */}
+      <div className="my-4 grid grid-cols-2 gap-2">
+        <div className="space-y-2">
+          <Label>id</Label>
+          <Input value="id" disabled />
+        </div>
+        <div className="space-y-2">
+          <Label>uuid</Label>
+          <Input value="uuid" disabled />
+        </div>
+      </div>
 
-      {schema.map((item, idx) => (
-        <Grid container spacing={2} key={item.id}>
-          <Grid size={{ xs: 3 }} sx={{ mb: 2 }}>
-            <TextField
-              size="small"
-              value={item.label}
-              label="Label"
-              onChange={(e) => updateSchemaItem(item.id, { label: e.target.value })}
-            />
+      <div className="space-y-3">
+        {schema.map((item, idx) => {
+          const labelErr = validationInfo.get(idx)?.errCode === VALIDATION_ERROR.LABEL_NAME;
+          const fieldErr = validationInfo.get(idx)?.errCode === VALIDATION_ERROR.FIELD_NAME;
 
-            {validationInfo.get(idx)?.errCode === ValidationError.LABEL_NAME && (
-              <Typography
-                sx={{
-                  pl: 1,
-                  bgcolor: error.main,
-                  borderRadius: '.25rem',
-                  color: '#FFFFFF',
-                }}
-              >
-                {isLabelSame ? 'Same label' : 'Required'}
-              </Typography>
-            )}
-          </Grid>
+          return (
+            <div
+              key={item.id}
+              className="grid grid-cols-12 gap-2 items-start border p-2 rounded-md"
+            >
+              {/* Label column (xs=3) */}
+              <div className="col-span-12 sm:col-span-3 space-y-2">
+                <Label htmlFor={`schema-label-${item.id}`}>Label</Label>
+                <Input
+                  id={`schema-label-${item.id}`}
+                  value={item.label}
+                  onChange={(e) => updateSchemaItem(item.id, { label: e.target.value })}
+                  aria-invalid={labelErr}
+                />
 
-          <Grid size={{ xs: 9 }} sx={{ mb: 2 }}>
-            <Stack direction="row" spacing={1}>
-              <FormControl fullWidth>
-                <InputLabel id={`resource-label-${item.id}`}>Field</InputLabel>
-                <Select
-                  labelId={`resource-label-${item.id}`}
-                  id={`resource-id-${item.id}`}
-                  size="small"
-                  label="Field"
-                  name="field"
-                  value={item.field ?? ''}
-                  onChange={(e) => updateSchemaItem(item.id, { field: e.target.value as string })}
-                  MenuProps={{ disableScrollLock: true }}
-                >
-                  {CHOICES.flatMap((group) => [
-                    <ListSubheader
-                      key={`${group.category}-header`}
-                      disableSticky
-                      sx={{
-                        color: darkTheme ? '#fff' : '#1d2438',
-                        fontWeight: 600,
-                        backgroundColor: darkTheme ? secondary[900] : blueGrey[50],
-                        pointerEvents: 'none',
-                      }}
+                {labelErr ? (
+                  <p className="text-xs text-destructive">
+                    {isLabelSame ? 'Same label' : 'Required'}
+                  </p>
+                ) : null}
+              </div>
+
+              {/* Field + actions column (xs=9) */}
+              <div className="col-span-12 sm:col-span-9">
+                <div className="flex flex-wrap gap-2 items-end">
+                  {/* Field select */}
+                  <div className="flex-1 min-w-[220px] space-y-2 w-full">
+                    <Label htmlFor={`schema-field-${item.id}`}>Field</Label>
+
+                    <Select
+                      value={item.field ?? ''}
+                      onValueChange={(val) => updateSchemaItem(item.id, { field: val })}
                     >
-                      {group.category}
-                    </ListSubheader>,
-                    ...group.list.map((choice) => (
-                      <MenuItem value={choice} key={`${group.category}-${choice}`}>
-                        {choice}
-                      </MenuItem>
-                    )),
-                  ])}
-                </Select>
+                      <SelectTrigger
+                        id={`schema-field-${item.id}`}
+                        aria-invalid={fieldErr}
+                        className="w-full"
+                      >
+                        <SelectValue placeholder="Select a field" />
+                      </SelectTrigger>
 
-                {validationInfo.get(idx)?.errCode === ValidationError.FIELD_NAME && (
-                  <Typography
-                    sx={{
-                      pl: 1,
-                      bgcolor: error.main,
-                      borderRadius: '.25rem',
-                      color: '#FFFFFF',
-                    }}
-                  >
-                    Required
-                  </Typography>
-                )}
-              </FormControl>
+                      <SelectContent className="w-full">
+                        {CHOICES.map((group) => (
+                          <SelectGroup key={group.category} className="w-full">
+                            <SelectLabel className="text-muted-foreground">
+                              {group.category}
+                            </SelectLabel>
+                            {group.list.map((choice) => (
+                              <SelectItem key={`${group.category}-${choice}`} value={choice}>
+                                {choice}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        ))}
+                      </SelectContent>
+                    </Select>
 
-              {OPTION_EXIST_FOR.includes(item.field) && (
-                <CustomTooltip title={`More options for ${item.field}`} arrow>
-                  <Box>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={() => {
+                    {fieldErr ? <p className="text-xs text-destructive">Required</p> : null}
+                  </div>
+
+                  {/* Options button */}
+                  {OPTION_EXIST_FOR.includes(item.field) && (
+                    <CustomTooltip
+                      onClickFn={() => {
                         setFieldInfo({
                           id: item.id,
                           label: item.label,
@@ -350,53 +343,64 @@ const CommonResourceModal = ({
                         });
                         setOptionOpen(true);
                       }}
+                      text={`More options for ${item.field}`}
+                      variant="secondary"
                     >
-                      <BiSliderAlt />
-                    </Button>
-                  </Box>
-                </CustomTooltip>
-              )}
+                      <Settings2 className="h-4 w-4" />
+                    </CustomTooltip>
+                  )}
 
-              <Box>
-                <Button variant="contained" color="error" onClick={() => deleteSchema(item.id)}>
-                  Delete
-                </Button>
-              </Box>
+                  {/* Delete */}
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    onClick={() => deleteSchema(item.id)}
+                    size="icon"
+                  >
+                    <Trash className="h-4 w-4" />
+                  </Button>
 
-              <IconButton
-                color="primary"
-                size="small"
-                sx={{ mt: 1 }}
-                onClick={() => handleAdd(idx)}
-              >
-                <FaPlus size="0.8rem" />
-              </IconButton>
-            </Stack>
-          </Grid>
-        </Grid>
-      ))}
+                  {/* Add row (+) */}
+                  <Button
+                    type="button"
+                    size="icon"
+                    variant="outline"
+                    onClick={() => handleAdd(idx)}
+                    aria-label="Add schema row"
+                  >
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
 
-      <Button onClick={addSchema} variant="contained" size="small">
-        Add Resource
-      </Button>
-
-      <Stack direction="row" spacing={3} mt={2}>
-        <Button
-          variant="contained"
-          size="small"
-          onClick={() => {
-            if (validateForm() && isLabelMatch()) {
-              void func();
-            }
-          }}
-        >
-          {buttonTxt}
+      <div className="flex flex-col gap-4">
+        {/* Add field row */}
+        <Button size="sm" onClick={addSchema} className="w-fit mt-4" variant="outline">
+          Add Field Row
         </Button>
 
-        <Button variant="contained" color="secondary" size="small" onClick={() => setOpen(false)}>
-          Cancel
-        </Button>
-      </Stack>
+        <Separator />
+
+        {/* Actions */}
+        <div className="flex gap-2 justify-end">
+          <Button variant="secondary" onClick={() => setOpen(false)}>
+            Cancel
+          </Button>
+          <Button
+            onClick={() => {
+              if (validateForm() && isLabelMatch()) {
+                void func();
+              }
+            }}
+          >
+            {buttonTxt}
+          </Button>
+        </div>
+      </div>
 
       {children}
     </CustomModal>

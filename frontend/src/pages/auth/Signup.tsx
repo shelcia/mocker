@@ -1,138 +1,110 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Box, Button, TextField, Typography } from '@mui/material';
-import { Link, useNavigate } from 'react-router-dom';
-import { apiAuth } from '../../services/models/authModel';
-import { toast } from 'react-hot-toast';
-import * as Yup from 'yup';
+import React from 'react';
+
+import { CustomLoaderButton, CustomPwdField } from '@/components/common';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useVerifyToken } from '@/hooks/useVerifyToken';
+import { useRegisterMutation } from '@/services/auth/auth.queries';
+import { logout } from '@/utils';
+
 import { useFormik } from 'formik';
-import { CustomLoaderButton } from '../../components/CustomButtons';
-import { CustomPwdField } from '../../components/CustomInputFields';
-import { ApiStringResponse } from '../../types';
+import { Link, useNavigate } from 'react-router-dom';
+import * as Yup from 'yup';
+
+type SignupFormValues = {
+  email: string;
+  password: string;
+  submit: null;
+};
 
 const Signup = () => {
-  const [hasToken, setHasToken] = useState<boolean>(false);
-
-  useEffect(() => {
-    const userToken = localStorage.getItem('MockAPI-Token');
-    const headers = {
-      'auth-token': `${userToken}`,
-    };
-    axios
-      .get('https://mocker-backend.vercel.app/api/auth/verify', {
-        headers,
-      })
-      .then((res) => {
-        if (res.data.message === 'ok') {
-          setHasToken(true);
-        }
-      })
-      .catch((err) => {
-        setHasToken(false);
-      });
-  }, []);
+  const [hasToken, setHasToken] = useVerifyToken();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
 
-  const initialValues = {
-    email: '',
-    password: '',
-    submit: null,
-  }; // form field value validation schema
+  const registerMutation = useRegisterMutation({
+    onSuccess: () => navigate('/'),
+  });
 
   const validationSchema = Yup.object().shape({
     email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
     password: Yup.string().min(6, 'Minimum 6 characters required').required('Password is required'),
   });
 
-  const { errors, values, touched, handleBlur, handleChange, handleSubmit } = useFormik({
-    initialValues,
+  const formik = useFormik<SignupFormValues>({
+    initialValues: {
+      email: '',
+      password: '',
+      submit: null,
+    },
     validationSchema,
-    onSubmit: (values) => {
-      setLoading(true);
-      registerUser(values.email, values.password);
+    onSubmit: async (values) => {
+      await registerMutation.mutateAsync({
+        email: values.email,
+        password: values.password,
+      });
     },
   });
 
-  const registerUser = (email, password) => {
-    const body = {
-      email: email,
-      password: password,
-    };
-
-    apiAuth.post(body, 'register').then((res: ApiStringResponse) => {
-      if (res.status === '200') {
-        navigate('/');
-        toast.success('We have sent you verification mail. Please verify and come back');
-      } else if (res.status === '400') {
-        toast.error(res.message);
-      } else {
-        toast.error('Error');
-      }
-      setLoading(false);
-    });
-  };
-  const logout = () => {
-    localStorage.clear();
-    setHasToken(false);
-    navigate('/');
-  };
   if (hasToken) {
     return (
-      <Button variant="contained" onClick={logout} sx={{ mt: 4 }}>
+      <Button variant="default" onClick={() => logout(setHasToken, navigate)} className="mt-4">
         Logout
       </Button>
     );
   }
+
   return (
-    <React.Fragment>
-      <Typography variant="h4" component="h1" sx={{ mb: 2 }}>
-        Signup
-      </Typography>
-      <Box
-        component="form"
-        noValidate
-        onSubmit={handleSubmit}
-        style={{
-          width: '100%',
-        }}
-      >
-        <TextField
-          label="email"
-          size="small"
-          type="email"
-          sx={{ mb: 2 }}
-          fullWidth
-          name="email"
-          onBlur={handleBlur}
-          onChange={handleChange}
-          value={values.email || ''}
-          error={Boolean(touched.email && errors.email)}
-          helperText={touched.email && errors.email}
+    <>
+      <div className="mb-6 space-y-2">
+        <h1 className="text-2xl font-semibold tracking-tight">Create an account</h1>
+        <p className="text-sm text-muted-foreground">Generate mock APIs in minutes</p>
+      </div>
+
+      <form onSubmit={formik.handleSubmit} className="mt-6 space-y-4">
+        <div className="space-y-2">
+          <Label htmlFor="email" className="text-sm font-medium">
+            Email
+          </Label>
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            placeholder="you@example.com"
+            value={formik.values.email}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            className={
+              formik.touched.email && formik.errors.email
+                ? 'border-destructive focus-visible:ring-destructive'
+                : ''
+            }
+          />
+          {formik.touched.email && formik.errors.email && (
+            <p className="text-xs text-destructive">{formik.errors.email}</p>
+          )}
+        </div>
+
+        <CustomPwdField<SignupFormValues>
+          handleBlur={formik.handleBlur}
+          handleChange={formik.handleChange}
+          values={formik.values}
+          touched={formik.touched}
+          errors={formik.errors}
         />
-        <CustomPwdField
-          handleBlur={handleBlur}
-          handleChange={handleChange}
-          values={values}
-          touched={touched}
-          errors={errors}
-        />
-        <Button
-          variant="contained"
-          sx={{ display: 'block', mt: 2, mx: 'auto' }}
-          type="submit"
-          disabled={loading}
-        >
-          {loading ? <CustomLoaderButton /> : 'Signup'}
+
+        <Button type="submit" disabled={registerMutation.isPending} className="w-full">
+          {registerMutation.isPending ? <CustomLoaderButton /> : 'Create account'}
         </Button>
-        <Typography variant="h6" component="p" sx={{ my: 2 }}>
-          Have an account already ? Then{'  '}
-          <Link to="/" style={{ color: 'deepskyblue' }}>
+
+        <p className="text-sm text-muted-foreground">
+          Have an account already?{' '}
+          <Link to="/" className="font-medium text-foreground underline-offset-4 hover:underline">
             Login
           </Link>
-        </Typography>
-      </Box>
-    </React.Fragment>
+        </p>
+      </form>
+    </>
   );
 };
 

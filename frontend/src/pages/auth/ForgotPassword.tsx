@@ -1,204 +1,126 @@
-import React, { useState, useEffect } from 'react';
-import { Box, Button, InputAdornment, IconButton, TextField, Typography } from '@mui/material';
-import axios from 'axios';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import { apiService } from '../../services/models/serviceModel';
-import { toast } from 'react-hot-toast';
-import * as Yup from 'yup';
+import React, { useState } from 'react';
+
+import { CustomLoaderButton, CustomPwdField } from '@/components/common';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useVerifyToken } from '@/hooks/useVerifyToken';
+import { useChangePasswordMutation, useSendResetLinkMutation } from '@/services/auth/auth.queries';
+import { logout } from '@/utils';
+
 import { useFormik } from 'formik';
-import { MdVisibility, MdVisibilityOff } from 'react-icons/md';
-import { CustomLoaderButton } from '../../components/CustomButtons';
-import { CustomTypoDisplay } from '../../components/CustomDisplay';
-import { ApiStringResponse } from '../../types';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import * as Yup from 'yup';
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
-  const [hasToken, setHasToken] = useState<boolean>(false);
-
-  useEffect(() => {
-    const userToken = localStorage.getItem('MockAPI-Token');
-    const headers = {
-      'auth-token': `${userToken}`,
-    };
-    axios
-      .get('https://mocker-backend.vercel.app/api/auth/verify', {
-        headers,
-      })
-      .then((res) => {
-        if (res.data.message === 'ok') {
-          setHasToken(true);
-        }
-      })
-      .catch(() => {
-        setHasToken(false);
-      });
-  }, []);
-
-  const { id } = useParams();
-  const logout = () => {
-    localStorage.clear();
-    setHasToken(false);
-    navigate('/');
-  };
+  const [hasToken, setHasToken] = useVerifyToken();
+  const { id } = useParams<{ id?: string }>();
 
   if (hasToken) {
     return (
-      <Button variant="contained" onClick={logout} sx={{ mt: 4 }}>
+      <Button onClick={() => logout(setHasToken, navigate)} className="mt-4">
         Logout
       </Button>
     );
   }
-  return (
-    <React.Fragment>{id ? <SetPasswordForm auth_token={id} /> : <VerifyForm />}</React.Fragment>
-  );
+
+  return <>{id ? <SetPasswordForm authToken={id} /> : <VerifyForm />}</>;
 };
 
-const SetPasswordForm = ({ auth_token }) => {
-  const [loading, setLoading] = useState(false);
+type SetPasswordFormProps = { authToken: string };
+
+const SetPasswordForm = ({ authToken }: SetPasswordFormProps) => {
   const [isResponse, setIsResponse] = useState(false);
   const [status, setStatus] = useState(false);
 
-  const [showPassword, setShowPassword] = useState(false);
-  const handleClickShowPassword = () => setShowPassword(!showPassword);
-  const handleMouseDownPassword = () => setShowPassword(!showPassword);
-
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const handleClickShowConfirmPassword = () => setShowConfirmPassword(!showConfirmPassword);
-  const handleMouseDownConfirmPassword = () => setShowConfirmPassword(!showConfirmPassword);
-
-  const initialValues = {
-    password: '',
-    confirmPassword: '',
-    submit: null,
-  }; // form field value validation schema
+  const changePwdMutation = useChangePasswordMutation();
 
   const validationSchema = Yup.object().shape({
     password: Yup.string().min(6, 'Minimum 6 characters required').required('Password is required'),
-    confirmPassword: Yup.string().when('password', {
-      is: (password: string | undefined) => !!password,
-      then: (schema) => schema.oneOf([Yup.ref('password')], 'Confirm password should be same'),
-      otherwise: (schema) => schema,
-    }),
+    confirmPassword: Yup.string()
+      .required('Confirm password is required')
+      .oneOf([Yup.ref('password')], 'Confirm password should be same'),
   });
 
-  const { errors, values, touched, handleBlur, handleChange, handleSubmit } = useFormik({
-    initialValues,
+  const formik = useFormik({
+    initialValues: { password: '', confirmPassword: '' },
     validationSchema,
-    onSubmit: (values) => {
-      setLoading(true);
+    onSubmit: async (values) => {
       setIsResponse(false);
-      resetPassword(values.confirmPassword);
+
+      const res = await changePwdMutation.mutateAsync({
+        authToken,
+        password: values.password,
+      });
+
+      setStatus(res.status === '200');
+      setIsResponse(true);
     },
   });
 
-  const resetPassword = (password) => {
-    const body = {
-      password: password,
-    };
-
-    apiService.post(body, `change-password/${auth_token}`).then((res: ApiStringResponse) => {
-      if (res.status === '200') {
-        toast.success('Successfully reset');
-        setStatus(true);
-      } else if (res.status === '400') {
-        toast.error(res.message);
-        setStatus(false);
-      } else {
-        toast.error('Error');
-        setStatus(false);
-      }
-      setLoading(false);
-      setIsResponse(true);
-    });
-  };
+  const loading = changePwdMutation.isPending;
 
   return (
     <>
-      <Typography variant="h6" sx={{ mb: 2 }}>
-        Change password
-      </Typography>
-      <Box
-        component="form"
-        noValidate
-        onSubmit={handleSubmit}
-        style={{
-          width: '100%',
-        }}
-      >
-        <TextField
-          label="password"
-          size="small"
-          type={showPassword ? 'text' : 'password'}
-          fullWidth
-          name="password"
-          onBlur={handleBlur}
-          onChange={handleChange}
-          value={values.password || ''}
-          error={Boolean(touched.password && errors.password)}
-          helperText={touched.password && errors.password}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={handleClickShowPassword}
-                  onMouseDown={handleMouseDownPassword}
-                >
-                  {showPassword ? <MdVisibility /> : <MdVisibilityOff />}
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-        />
-        <TextField
-          label="confirm password"
-          size="small"
-          type={showConfirmPassword ? 'text' : 'password'}
-          sx={{ mt: 2 }}
-          fullWidth
-          name="confirmPassword"
-          onBlur={handleBlur}
-          onChange={handleChange}
-          value={values.confirmPassword || ''}
-          error={Boolean(touched.confirmPassword && errors.confirmPassword)}
-          helperText={touched.confirmPassword && errors.confirmPassword}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={handleClickShowConfirmPassword}
-                  onMouseDown={handleMouseDownConfirmPassword}
-                >
-                  {showConfirmPassword ? <MdVisibility /> : <MdVisibilityOff />}
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-        />
-        {isResponse && (
-          <CustomTypoDisplay status={status}>
-            {status ? 'Password successfully changed' : 'Failed to reset password'}
-          </CustomTypoDisplay>
-        )}
-        <Button
-          variant="contained"
-          sx={{ display: 'block', mt: 2, mx: 'auto' }}
-          type="submit"
-          disabled={loading}
+      <h2 className="mb-2 text-lg font-semibold tracking-tight">Change password</h2>
+
+      {isResponse && (
+        <div
+          className={[
+            'rounded-md px-3 py-2 text-sm',
+            status ? 'bg-emerald-500/10 text-emerald-600' : 'bg-red-500/10 text-red-600',
+          ].join(' ')}
         >
+          {status ? 'Password successfully changed' : 'Failed to reset password'}
+        </div>
+      )}
+
+      <form noValidate onSubmit={formik.handleSubmit} className="w-full space-y-4">
+        {/* Password */}
+        <div className="space-y-1">
+          <CustomPwdField
+            label="Password"
+            field="password"
+            handleBlur={formik.handleBlur}
+            handleChange={formik.handleChange}
+            values={formik.values}
+            touched={formik.touched}
+            errors={formik.errors}
+          />
+          {formik.touched.password && formik.errors.password && (
+            <p className="text-xs text-destructive">{String(formik.errors.password)}</p>
+          )}
+        </div>
+
+        {/* Confirm Password */}
+        <div className="space-y-1">
+          <CustomPwdField
+            label="Confirm password"
+            field="confirmPassword"
+            handleBlur={formik.handleBlur}
+            handleChange={formik.handleChange}
+            values={formik.values}
+            touched={formik.touched}
+            errors={formik.errors}
+          />
+          {formik.touched.confirmPassword && formik.errors.confirmPassword && (
+            <p className="text-xs text-destructive">{String(formik.errors.confirmPassword)}</p>
+          )}
+        </div>
+
+        <Button type="submit" disabled={loading} className="w-full">
           {loading ? <CustomLoaderButton /> : 'Reset password'}
         </Button>
+
         {status && (
-          <>
-            <Typography align="center" variant="h6" component="p" sx={{ mt: 4 }}>
-              <Link to="/" style={{ color: 'deepskyblue' }}>
-                Login
-              </Link>
-            </Typography>
-          </>
+          <p className="pt-4 text-center text-sm text-muted-foreground">
+            <Link to="/" className="font-medium text-primary hover:underline">
+              Login
+            </Link>
+          </p>
         )}
-      </Box>
+      </form>
     </>
   );
 };
@@ -206,99 +128,82 @@ const SetPasswordForm = ({ auth_token }) => {
 const VerifyForm = () => {
   const navigate = useNavigate();
 
-  const [loading, setLoading] = useState(false);
-  const [isMailSent, setIsMailSent] = useState(false);
-  const [status, setStatus] = useState(false);
+  const [isMailSent, setIsMailSent] = useState<boolean>(false);
+  const [status, setStatus] = useState<boolean>(false);
 
-  const initialValues = {
-    email: '',
-    password: '',
-    submit: null,
-  }; // form field value validation schema
+  const sendLinkMutation = useSendResetLinkMutation();
 
   const validationSchema = Yup.object().shape({
     email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
   });
 
-  const { errors, values, touched, handleBlur, handleChange, handleSubmit } = useFormik({
-    initialValues,
+  const formik = useFormik({
+    initialValues: { email: '' },
     validationSchema,
-    onSubmit: (values) => {
-      setLoading(true);
+    onSubmit: async (values) => {
       setIsMailSent(false);
-      sendLink(values.email);
+
+      const res = await sendLinkMutation.mutateAsync({
+        email: values.email,
+        fEndUrl: `${window.location.protocol}//${window.location.host}`,
+      });
+
+      setStatus(res.status === '200');
+      setIsMailSent(true);
     },
   });
 
-  const sendLink = (email) => {
-    const body = {
-      email: email,
-      fEndUrl: location.protocol + '//' + location.host,
-    };
-
-    apiService.post(body, 'reset-password').then((res: ApiStringResponse) => {
-      if (res.status === '200') {
-        setStatus(true);
-        toast.success('Reset Password link sent');
-      } else if (res.status === '400') {
-        toast.error(res.message);
-        setStatus(false);
-      } else {
-        toast.error('Error');
-        setStatus(false);
-      }
-      setLoading(false);
-      setIsMailSent(true);
-    });
-  };
+  const loading = sendLinkMutation.isPending;
 
   return (
     <>
-      <Typography variant="h6" component="h1" sx={{ mb: 2 }}>
-        Reset password
-      </Typography>
-      <Box
-        component="form"
-        noValidate
-        onSubmit={handleSubmit}
-        style={{
-          width: '100%',
-        }}
-      >
-        <TextField
-          label="email"
-          size="small"
-          type="email"
-          fullWidth
-          name="email"
-          onBlur={handleBlur}
-          onChange={handleChange}
-          value={values.email || ''}
-          error={Boolean(touched.email && errors.email)}
-          helperText={touched.email && errors.email}
-        />
+      <h2 className="mb-2 text-lg font-semibold tracking-tight">Reset password</h2>
+
+      <form noValidate onSubmit={formik.handleSubmit} className="w-full space-y-4">
+        {/* Email */}
+        <div className="space-y-1">
+          <Label htmlFor="email" className="text-sm font-medium">
+            Email
+          </Label>
+
+          <Input
+            id="email"
+            type="email"
+            name="email"
+            value={formik.values.email}
+            onBlur={formik.handleBlur}
+            onChange={formik.handleChange}
+            placeholder="you@example.com"
+            className={
+              formik.touched.email && formik.errors.email ? 'border-destructive' : 'border-input'
+            }
+          />
+
+          {formik.touched.email && formik.errors.email && (
+            <p className="text-xs text-destructive">{String(formik.errors.email)}</p>
+          )}
+        </div>
+
+        {/* Mail sent message */}
         {isMailSent && (
-          <CustomTypoDisplay status={status}>
+          <div
+            className={[
+              'rounded-md px-3 py-2 text-sm',
+              status ? 'bg-emerald-500/10 text-emerald-600' : 'bg-red-500/10 text-red-600',
+            ].join(' ')}
+          >
             {status ? 'Verification link sent' : 'Failed to send verification link'}
-          </CustomTypoDisplay>
+          </div>
         )}
-        <Button
-          variant="contained"
-          sx={{ display: 'block', mt: 2, mx: 'auto' }}
-          type="submit"
-          disabled={loading}
-        >
+
+        <Button type="submit" disabled={loading} className="w-full">
           {loading ? <CustomLoaderButton /> : 'Verify'}
         </Button>
 
-        <Button
-          variant="outlined"
-          sx={{ display: 'block', mt: 2, mx: 'auto' }}
-          onClick={() => navigate('/')}
-        >
+        <Button type="button" variant="outline" onClick={() => navigate('/')} className="w-full">
           Go Back
         </Button>
-      </Box>
+      </form>
     </>
   );
 };

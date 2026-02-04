@@ -1,35 +1,43 @@
 import React from 'react';
-import { Box, Button, Typography, CardContent } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import Img from '../../assets/404.png';
 
-const Error404Page = () => {
+import { Button } from '@/components/ui/button';
+
+import { useNavigate } from 'react-router-dom';
+
+const Error404Page: React.FC = () => {
   const navigate = useNavigate();
+
   return (
-    <React.Fragment>
-      <CardContent>
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            flexDirection: 'column',
-            p: 5,
-          }}
-        >
-          <img src={Img} alt="404 error information" height={300} />
-          <Typography variant="h1" sx={{ mt: 2 }}>
-            404
-          </Typography>
-          <Typography variant="h6" sx={{ mt: 1 }}>
+    <div className="relative min-h-[100vh] overflow-hidden">
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute -top-24 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-indigo-500/20 blur-3xl" />
+        <div className="absolute -bottom-24 left-1/3 h-72 w-72 rounded-full bg-cyan-500/20 blur-3xl" />
+      </div>
+
+      <div className="relative mx-auto flex max-w-3xl flex-col items-center justify-center px-6 py-16 text-center">
+        <div className="rounded-2xl border bg-background/70 p-8 shadow-sm backdrop-blur">
+          <h1 className="mt-6 text-6xl font-bold tracking-tight">404</h1>
+
+          <p className="mt-3 text-base text-muted-foreground">
             The page you’re looking for doesn’t exist.
-          </Typography>
-          <Button variant="contained" sx={{ mt: 3 }} onClick={() => navigate('/')}>
-            Go Home
-          </Button>
-        </Box>
-      </CardContent>
-    </React.Fragment>
+          </p>
+
+          <div className="mt-8 flex items-center justify-center gap-3">
+            <Button type="button" onClick={() => navigate('/')} variant="secondary">
+              Go Home
+            </Button>
+
+            <Button type="button" onClick={() => navigate(-1)} variant="outline">
+              Go Back
+            </Button>
+          </div>
+        </div>
+
+        <p className="mt-6 text-xs text-muted-foreground">
+          If you think this is a bug, try refreshing or navigating from the dashboard.
+        </p>
+      </div>
+    </div>
   );
 };
 

@@ -1,66 +1,32 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { Box, Button, TextField, Typography } from '@mui/material';
-import { Link, useNavigate } from 'react-router-dom';
-import toast from 'react-hot-toast';
-import * as Yup from 'yup';
-import { useFormik } from 'formik';
+import React from 'react';
 
-import { apiAuth } from '../../services/models/authModel';
-import { apiProvider } from '../../services/utilities/provider';
-import { CustomLoaderButton } from '../../components/CustomButtons';
-import { CustomPwdField } from '../../components/CustomInputFields';
+import { CustomLoaderButton, CustomPwdField } from '@/components/common';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useVerifyToken } from '@/hooks/useVerifyToken';
+import { cn } from '@/lib/utils';
+import { useLoginMutation } from '@/services/auth/auth.queries';
+import { logout } from '@/utils';
+
+import { useFormik } from 'formik';
+import { Link, useNavigate } from 'react-router-dom';
+import * as Yup from 'yup';
 
 type LoginFormValues = {
   email: string;
   password: string;
 };
 
-type VerifyResponse = {
-  message: string;
-};
-
-type LoginSuccessMessage = {
-  emailVerified: boolean;
-  token: string;
-  userId: string;
-};
-
-type ApiResponse<T> = {
-  status: string;
-  message: T;
-};
-
 const Login = () => {
   const navigate = useNavigate();
+  const [hasToken, setHasToken] = useVerifyToken();
 
-  const [hasToken, setHasToken] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
-
-  // Verify existing token
-  useEffect(() => {
-    const ac = new AbortController();
-
-    const userToken = localStorage.getItem('MockAPI-Token');
-    if (!userToken) {
-      setHasToken(false);
-      return;
-    }
-
-    axios
-      .get<VerifyResponse>('https://mocker-backend.vercel.app/api/auth/verify', {
-        headers: { 'auth-token': userToken },
-        signal: ac.signal,
-      })
-      .then((res) => {
-        setHasToken(res.data?.message === 'ok');
-      })
-      .catch(() => {
-        setHasToken(false);
-      });
-
-    return () => ac.abort();
-  }, []);
+  const loginMutation = useLoginMutation({
+    onSuccess: ({ userId }) => {
+      navigate(`/dashboard/${userId}`);
+    },
+  });
 
   const validationSchema = Yup.object({
     email: Yup.string()
@@ -74,57 +40,13 @@ const Login = () => {
     initialValues: { email: '', password: '' },
     validationSchema,
     onSubmit: async (values) => {
-      setLoading(true);
-      await loginUser(values.email, values.password);
+      await loginMutation.mutateAsync(values);
     },
   });
 
-  const loginUser = async (email: string, password: string) => {
-    const body = { email, password };
-
-    try {
-      const res = (await apiAuth.post(body, 'signin')) as ApiResponse<LoginSuccessMessage | string>;
-
-      if (res.status === '200') {
-        // message is an object on success
-        const msg = res.message as LoginSuccessMessage;
-
-        if (!msg.emailVerified) {
-          toast.error('Email not verified yet!. Please check your inbox for verification');
-          return;
-        }
-
-        localStorage.setItem('MockAPI-Token', msg.token);
-        apiProvider.updateToken();
-
-        toast.success('Login successful');
-        navigate(`/dashboard/${msg.userId}`);
-        return;
-      }
-
-      if (res.status === '400') {
-        toast.error(typeof res.message === 'string' ? res.message : 'Bad request');
-        return;
-      }
-
-      toast.error('Error');
-    } catch (err) {
-      console.error(err);
-      toast.error('Error');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const logout = () => {
-    localStorage.clear();
-    setHasToken(false);
-    navigate('/');
-  };
-
   if (hasToken) {
     return (
-      <Button variant="contained" onClick={logout} sx={{ mt: 4 }}>
+      <Button variant="outline" onClick={() => logout(setHasToken, navigate)} className="mt-4">
         Logout
       </Button>
     );
@@ -132,55 +54,75 @@ const Login = () => {
 
   return (
     <>
-      <Typography variant="h4" component="h1" sx={{ mb: 2 }}>
-        Login
-      </Typography>
+      <div className="mb-6 space-y-2">
+        <h1 className="text-2xl font-semibold tracking-tight">Welcome back</h1>
+        <p className="text-sm text-muted-foreground">
+          Log in to create projects and generate mock endpoints.
+        </p>
+      </div>
 
-      <Box component="form" noValidate onSubmit={formik.handleSubmit} sx={{ width: '100%' }}>
-        <TextField
-          label="email"
-          size="small"
-          type="email"
-          sx={{ mb: 2 }}
-          fullWidth
-          name="email"
-          onBlur={formik.handleBlur}
-          onChange={formik.handleChange}
-          value={formik.values.email}
-          error={Boolean(formik.touched.email && formik.errors.email)}
-          helperText={formik.touched.email && formik.errors.email}
-        />
+      <form onSubmit={formik.handleSubmit} className="space-y-4">
+        {/* Email */}
+        <div className="space-y-2">
+          <Label htmlFor="email" className="text-sm font-medium">
+            Email
+          </Label>
 
-        <CustomPwdField
-          handleBlur={formik.handleBlur}
-          handleChange={formik.handleChange}
-          values={formik.values}
-          touched={formik.touched}
-          errors={formik.errors}
-        />
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            placeholder="you@domain.com"
+            autoComplete="email"
+            value={formik.values.email}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            className={cn(
+              'h-10 w-full rounded-md border bg-background px-3 py-2 text-sm outline-none',
+              'focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+              formik.touched.email && formik.errors.email ? 'border-destructive' : 'border-input',
+            )}
+          />
 
-        <Button
-          variant="contained"
-          sx={{ display: 'block', mt: 2, mx: 'auto' }}
-          type="submit"
-          disabled={loading}
-        >
-          {loading ? <CustomLoaderButton /> : 'Login'}
+          {formik.touched.email && formik.errors.email ? (
+            <p className="text-xs text-destructive">{formik.errors.email}</p>
+          ) : null}
+        </div>
+
+        {/* Password */}
+        <div className="space-y-2">
+          <CustomPwdField<LoginFormValues>
+            handleBlur={formik.handleBlur}
+            handleChange={formik.handleChange}
+            values={formik.values}
+            touched={formik.touched}
+            errors={formik.errors}
+          />
+
+          <div className="flex items-center justify-between">
+            <Link
+              to="/reset-password"
+              className="text-xs text-muted-foreground underline-offset-4 hover:underline"
+            >
+              Forgot password?
+            </Link>
+          </div>
+        </div>
+
+        <Button type="submit" disabled={loginMutation.isPending} className="h-10 w-full">
+          {loginMutation.isPending ? <CustomLoaderButton /> : 'Log in'}
         </Button>
 
-        <Typography variant="h6" component="p" sx={{ mt: 2, mb: 1 }}>
-          Don&apos;t have an account ? Then{' '}
-          <Link to="/signup" style={{ color: 'deepskyblue' }}>
-            Signup
+        <p className="text-sm text-muted-foreground">
+          Don&apos;t have an account?{' '}
+          <Link
+            to="/signup"
+            className="font-medium text-foreground underline-offset-4 hover:underline"
+          >
+            Sign up
           </Link>
-        </Typography>
-
-        <Typography variant="h6" component="p">
-          <Link to="/reset-password" style={{ color: 'deepskyblue' }}>
-            Forgot password ?
-          </Link>
-        </Typography>
-      </Box>
+        </p>
+      </form>
     </>
   );
 };

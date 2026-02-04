@@ -1,13 +1,13 @@
 import React, { lazy, Suspense } from 'react';
-import { Outlet } from 'react-router-dom';
-import Loading from './components/CustomLoading';
 
+import { Outlet } from 'react-router-dom';
+
+import Loading from './components/common/CustomLoading';
+import AuthGuard from './layout/AuthGuard';
 // Layouts
 import AuthLayout from './layout/AuthLayout';
 import DashboardLayout from './layout/DashboardLayout';
-import AuthGuard from './layout/AuthGuard';
 
-// eslint-disable-next-line react/display-name
 const Loadable = (Component) => (props) => (
   <Suspense fallback={<Loading />}>
     <Component {...props} />

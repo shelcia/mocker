@@ -1,20 +1,16 @@
 import React, { useContext, useState } from 'react';
-import { Box } from '@mui/material';
-import { grey } from '@mui/material/colors';
-import JSONPretty from 'react-json-pretty';
-import toast from 'react-hot-toast';
+
+import { CustomJSONTable, CustomModal, PartLoader } from '@/components/common';
+import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ThemeContext } from '@/context/ThemeContext';
+import type { ResultRow } from '@/types';
+import { copyTextToClipboard } from '@/utils';
+
 import jsonBeautify from 'json-beautify';
-
-import CustomModal from '../../../components/CustomModal';
-import { CopyButton } from '../../../components/CustomButtons';
-import { PartLoader } from '../../../components/CustomLoading';
-import { CustomTabs, CustomTabPanel } from '../../../components/CustomTabPanel';
-import { CustomJSONTable } from '../../../components/CustomTable';
-import { ThemeContext } from '../../../context/ThemeContext';
-import { secondary } from '../../../themes/themeColors';
-import { copyTextToClipboard } from '../../../utils/utils';
-
-type ResultRow = Record<string, unknown>;
+import toast from 'react-hot-toast';
+import JSONPretty from 'react-json-pretty';
 
 interface ResultModalProps {
   open: boolean;
@@ -32,12 +28,12 @@ const ResultModal = ({ open, setOpen, result = [], loading }: ResultModalProps) 
   const copyJsonBeautify = async () => {
     try {
       const beautifiedJson = jsonBeautify(result, null, 1, 1);
+
       await copyTextToClipboard(beautifiedJson);
       setIsBeautifyCopied(true);
       toast.success('Copied!');
       setTimeout(() => setIsBeautifyCopied(false), 5000);
-    } catch (error) {
-      console.error(error);
+    } catch {
       toast.error("Couldn't copy!");
     }
   };
@@ -48,37 +44,64 @@ const ResultModal = ({ open, setOpen, result = [], loading }: ResultModalProps) 
 
   return (
     <CustomModal open={open} setOpen={setOpen} width={600} title="Result">
-      <CustomTabs value={value} handleChange={handleChange} items={['JSON View', 'Table View']} />
+      <Tabs
+        value={String(value)}
+        onValueChange={(v) => handleChange(null, Number(v))}
+        className="w-full"
+      >
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="0">JSON View</TabsTrigger>
+          <TabsTrigger value="1">Table View</TabsTrigger>
+        </TabsList>
 
-      <CustomTabPanel value={value} index={0}>
-        <Box
-          sx={{
-            bgcolor: darkTheme ? secondary[900] : grey[100],
-            p: 2,
-            overflowX: 'auto',
-          }}
-        >
-          <CopyButton
-            onClick={copyJsonBeautify}
-            sx={{ marginLeft: '90%' }}
-            disabled={isBeautifyCopied}
+        {/* --- JSON View --- */}
+        <TabsContent value="0" className="mt-3 w-full">
+          <div
+            className={[
+              'relative rounded-lg border p-4',
+              'overflow-hidden',
+              'bg-muted/60',
+              darkTheme ? 'bg-zinc-950/40' : '',
+            ].join(' ')}
           >
-            {isBeautifyCopied ? 'Done' : 'Copy'}
-          </CopyButton>
+            <div className="absolute right-3 top-3 z-10">
+              <Button
+                type="button"
+                size="sm"
+                variant="secondary"
+                onClick={copyJsonBeautify}
+                disabled={isBeautifyCopied}
+              >
+                {isBeautifyCopied ? 'Done' : 'Copy'}
+              </Button>
+            </div>
 
-          {loading ? (
-            <PartLoader />
-          ) : (
-            <Box className={darkTheme ? 'lang-dark' : 'lang-light'}>
-              <JSONPretty id="json-pretty" data={result} />
-            </Box>
-          )}
-        </Box>
-      </CustomTabPanel>
+            {loading ? (
+              <PartLoader />
+            ) : (
+              <ScrollArea className="h-[420px] w-full">
+                <div
+                  className={[
+                    darkTheme ? 'lang-dark' : 'lang-light',
+                    '[&_pre]:whitespace-pre-wrap',
+                    '[&_pre]:break-words',
+                    '[&_pre]:overflow-hidden',
+                  ].join(' ')}
+                >
+                  <JSONPretty id="json-pretty" data={result} />
+                </div>
+              </ScrollArea>
+            )}
+          </div>
+        </TabsContent>
 
-      <CustomTabPanel value={value} index={1}>
-        <CustomJSONTable keys={result[0] ? Object.keys(result[0]) : []} data={result} />
-      </CustomTabPanel>
+        {/* --- Table View --- */}
+        <TabsContent value="1" className="mt-3 w-full">
+          <ScrollArea className="h-[420px] w-full">
+            <CustomJSONTable keys={result?.[0] ? Object.keys(result[0]) : []} data={result} />
+          </ScrollArea>
+        </TabsContent>
+      </Tabs>
     </CustomModal>
   );
 };

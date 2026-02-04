@@ -1,16 +1,13 @@
 import React, { useState } from 'react';
-import { Stack, Typography } from '@mui/material';
-import LinearProgress from '@mui/material/LinearProgress';
-import { useParams } from 'react-router-dom';
+
+import { CustomLoadingModalBlock } from '@/components/common';
+import { apiResource } from '@/services/models/resourceModal';
+import type { Resource, RouteParams, SchemaItem } from '@/types';
+
 import toast from 'react-hot-toast';
+import { useParams } from 'react-router-dom';
 
-import { apiResource } from '../../../services/models/resourceModal';
-import CommonResourceModal, { InputsState, SchemaItem } from './CommonResourceModal';
-
-type RouteParams = {
-  userId?: string;
-  projectId?: string;
-};
+import CommonResourceModal from './CommonResourceModal';
 
 interface ResourceModalProps {
   open: boolean;
@@ -29,7 +26,7 @@ const ResourceModal = ({
 }: ResourceModalProps) => {
   const { userId, projectId } = useParams<RouteParams>();
 
-  const [inputs, setInputs] = useState<InputsState>({
+  const [inputs, setInputs] = useState<Resource>({
     name: '',
     number: 1,
     userId,
@@ -41,6 +38,7 @@ const ResourceModal = ({
   const createProject = async () => {
     if (!userId || !projectId) {
       toast.error('Invalid route parameters');
+
       return;
     }
 
@@ -92,14 +90,7 @@ const ResourceModal = ({
       setSchema={setSchema}
       func={createProject}
     >
-      {loading && (
-        <Stack direction="column" spacing={3} mt={4}>
-          <LinearProgress sx={{ mb: -2 }} />
-          <Typography component="p" color="primary" align="center">
-            Generating Data...
-          </Typography>
-        </Stack>
-      )}
+      {loading && <CustomLoadingModalBlock text="Creating resource..." />}
     </CommonResourceModal>
   );
 };

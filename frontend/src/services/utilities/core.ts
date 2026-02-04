@@ -1,7 +1,7 @@
+/* eslint-disable no-unused-vars */
 import { apiProvider } from './provider';
 
 export type ApiCoreOptions = {
-  /** This is your "resource" segment (your old code calls it url). Example: "projects" */
   url: string;
 
   getAll?: boolean;
@@ -21,8 +21,7 @@ export type ApiCoreOptions = {
 export type Params = Record<string, string | number | boolean | null | undefined>;
 export type AdditionalParam = string;
 
-export class ApiCore {
-  // declare optional methods so TS knows they exist
+type ApiCoreMethods = {
   getAll?: (
     signal?: AbortSignal,
     additionalParam?: AdditionalParam,
@@ -99,10 +98,27 @@ export class ApiCore {
     additionalParams?: AdditionalParam,
     isAuthorized?: boolean,
   ) => Promise<unknown>;
+};
+
+export class ApiCore implements ApiCoreMethods {
+  // just declare the properties (no param names here, so eslint is happy)
+  getAll?: ApiCoreMethods['getAll'];
+  getSingle?: ApiCoreMethods['getSingle'];
+  getByParams?: ApiCoreMethods['getByParams'];
+  post?: ApiCoreMethods['post'];
+  postFormData?: ApiCoreMethods['postFormData'];
+  put?: ApiCoreMethods['put'];
+  putById?: ApiCoreMethods['putById'];
+  putFormData?: ApiCoreMethods['putFormData'];
+  patch?: ApiCoreMethods['patch'];
+  patchByParams?: ApiCoreMethods['patchByParams'];
+  remove?: ApiCoreMethods['remove'];
+  removeAll?: ApiCoreMethods['removeAll'];
 
   constructor(options: ApiCoreOptions) {
     if (options.getAll) {
-      this.getAll = (signal, additionalParam = '', isAuthorized = false) => {
+      this.getAll = (signal, _additionalParam = '', isAuthorized = false) => {
+        // if your provider.getAll doesn't use additionalParam, keep underscore to avoid eslint
         return apiProvider.getAll(options.url, signal, isAuthorized);
       };
     }
@@ -138,10 +154,8 @@ export class ApiCore {
     }
 
     if (options.putById) {
-      this.putById = (id, model, signal, additionalParam = '', isAuthorized = false) => {
-        // NOTE: your provider.js putById only accepts (resource, id, model, signal)
-        // If you extended provider.putById to accept additionalParam/isAuthorized, keep as-is.
-        // Otherwise, remove additionalParam/isAuthorized here.
+      this.putById = (id, model, signal) => {
+        // If provider.putById supports extra args, pass them. Otherwise keep underscore params.
         return apiProvider.putById(options.url, id, model, signal);
       };
     }
@@ -153,10 +167,7 @@ export class ApiCore {
     }
 
     if (options.patch) {
-      this.patch = (model, signal, additionalParam = '', isAuthorized = false) => {
-        // NOTE: your provider.js patch only accepts (resource, model, signal)
-        // If you extended provider.patch to accept additionalParam/isAuthorized, keep as-is.
-        // Otherwise, remove additionalParam/isAuthorized here.
+      this.patch = (model, signal) => {
         return apiProvider.patch(options.url, model, signal);
       };
     }

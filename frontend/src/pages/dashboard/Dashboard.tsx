@@ -1,71 +1,122 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import {
-  Avatar,
-  Box,
-  Button,
-  CardContent,
-  List,
-  ListItem,
-  ListItemAvatar,
-  Stack,
-  TextField,
-  Typography,
-} from '@mui/material';
-import { blue } from '@mui/material/colors';
-import * as Yup from 'yup';
+import { useMemo, useState } from 'react';
+
+import { CustomAvatarDisplayname, CustomTooltip } from '@/components/common';
+import { Button } from '@/components/ui/button';
+import { CardContent } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Separator } from '@/components/ui/separator';
+import { Skeleton } from '@/components/ui/skeleton';
+import { apiProject } from '@/services/models/projectModel';
+import type { ApiResponse, Project } from '@/types';
+import { queryKeys } from '@/utils';
+
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useFormik } from 'formik';
-import { FaPlus } from 'react-icons/fa';
-import { FiEdit2, FiTrash } from 'react-icons/fi';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Pencil, Plus, Trash } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useNavigate, useParams } from 'react-router-dom';
+import * as Yup from 'yup';
 
-import CustomModal from '../../components/CustomModal';
 import ConfirmDeleteModal from './components/ConfirmDelProjectModal';
-import { PartLoader } from '../../components/CustomLoading';
-import CustomCheckbox from '../../components/CustomCheckbox';
-import { CustomTooltip } from '../../components/CustomTooltip';
-
-import { apiProject } from '../../services/models/projectModel';
-import { RenameModal } from './components/RenameModal';
-
-type RouteParams = {
-  userId?: string;
-};
-
-export type Project = {
-  _id: string;
-  name: string;
-};
-
-type ApiResult<T = unknown> = {
-  status: string;
-  message: T;
-};
+import CreateProject from './components/CreateProject';
+import RenameModal from './components/RenameModal';
 
 const Dashboard = () => {
-  const { userId } = useParams<RouteParams>();
+  const { userId } = useParams<{ userId: string }>();
+  const qc = useQueryClient();
   const navigate = useNavigate();
 
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [open, setOpen] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [open, setOpen] = useState(false);
 
-  const [confirmDeleteModal, setConfirmDeleteModal] = useState<boolean>(false);
+  // selection + modals
+  const [checkedList, setCheckedList] = useState<string[]>([]);
+  const [confirmDeleteModal, setConfirmDeleteModal] = useState(false);
+  const [isMultipleDelete, setIsMultipleDelete] = useState(false);
   const [toBeDeleted, setToBeDeleted] = useState<Project | null>(null);
 
-  const [renameModalOpen, setRenameModalOpen] = useState<boolean>(false);
+  const [renameModalOpen, setRenameModalOpen] = useState(false);
   const [projectToBeRename, setProjectToBeRename] = useState<Project | null>(null);
 
-  const [checkedList, setCheckedList] = useState<string[]>([]);
-  const [isMultipleDelete, setIsMultipleDelete] = useState<boolean>(false);
+  // -----------------------
+  // Query: Projects
+  // -----------------------
+  const projectsQuery = useQuery({
+    queryKey: userId ? queryKeys.projects(userId) : ['projects', 'missing-userId'],
+    enabled: Boolean(userId),
+    queryFn: async ({ signal }) => {
+      const res = (await apiProject.getSingle(userId!, signal)) as ApiResponse<Project[]>;
 
+      if (res.status !== '200') throw new Error(String(res.message ?? 'Failed to load projects'));
+
+      return Array.isArray(res.message) ? res.message : [];
+    },
+  });
+
+  // -----------------------
+  // Mutations
+  // -----------------------
+  const addProjectMutation = useMutation({
+    mutationFn: async (name: string) => {
+      if (!userId) throw new Error('Missing userId');
+
+      const res = (await apiProject.post({ name, userId })) as ApiResponse<string>;
+
+      return res;
+    },
+    onSuccess: async (res) => {
+      if (res.status === '200') {
+        toast.success(String(res.message));
+        setOpen(false);
+        await qc.invalidateQueries({ queryKey: queryKeys.projects(userId!) });
+      } else {
+        toast.error(String(res.message));
+      }
+    },
+    onError: () => toast.error('Error'),
+  });
+
+  const deleteProjectMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const res = (await apiProject.remove(id)) as ApiResponse<string>;
+
+      return res;
+    },
+    onSuccess: async (res) => {
+      if (res.status === '200') {
+        toast.success('Deleted');
+        await qc.invalidateQueries({ queryKey: queryKeys.projects(userId!) });
+      } else {
+        toast.error(String(res.message));
+      }
+    },
+    onError: () => toast.error('Delete failed'),
+  });
+
+  const deleteSelectedMutation = useMutation({
+    mutationFn: async (ids: string[]) => {
+      const res = (await apiProject.removeAll({ projects: ids })) as ApiResponse<string>;
+
+      return res;
+    },
+    onSuccess: async (res) => {
+      if (res.status === '200') {
+        toast.success(String(res.message));
+        setCheckedList([]);
+        await qc.invalidateQueries({ queryKey: queryKeys.projects(userId!) });
+      } else {
+        toast.error(String(res.message));
+      }
+    },
+    onError: () => toast.error('Delete failed'),
+  });
+
+  // -----------------------
+  // Formik: Create
+  // -----------------------
   const validationSchema = useMemo(
     () =>
       Yup.object().shape({
-        name: Yup.string()
-          .min(3, 'Project should be of minimum 3 characters length')
-          .max(25)
-          .required('Project Name is required'),
+        name: Yup.string().min(3).max(25).required('Project Name is required'),
       }),
     [],
   );
@@ -73,248 +124,190 @@ const Dashboard = () => {
   const formik = useFormik<{ name: string }>({
     initialValues: { name: '' },
     validationSchema,
-    onSubmit: (values, helpers) => {
-      addProject(values.name, helpers);
+    onSubmit: async (values, helpers) => {
+      await addProjectMutation.mutateAsync(values.name);
+      helpers.resetForm();
     },
   });
 
-  const addProject = async (name: string, helpers: { resetForm: () => void }) => {
-    if (!userId) {
-      toast.error('Missing userId in route');
-      return;
-    }
-
-    const body = { name, userId };
-
-    const res = (await apiProject.post(body)) as ApiResult<string>;
-    if (res.status === '200') {
-      toast.success(res.message);
-      setOpen(false);
-      helpers.resetForm();
-      fetchProjects();
-    } else {
-      toast.error(res.message);
-    }
+  // -----------------------
+  // Handlers
+  // -----------------------
+  const handleChecked = (checked: boolean, id: string) => {
+    setCheckedList((prev) => (checked ? [...prev, id] : prev.filter((x) => x !== id)));
   };
 
-  const fetchProjects = () => {
-    if (!userId) {
-      toast.error('Missing userId in route');
-      setLoading(false);
-      return;
-    }
+  const deleteProject = async (id?: string) => {
+    if (!id) return;
 
-    const ac = new AbortController();
-    const signal = ac.signal;
-
-    apiProject.getSingle(userId, signal).then((res: any) => {
-      if (res.status === '200') {
-        setLoading(false);
-        setProjects(Array.isArray(res.message) ? (res.message as Project[]) : []);
-      } else {
-        toast.error('Error !');
-        setLoading(false);
-      }
-    });
-
-    return () => ac.abort();
-  };
-
-  useEffect(() => {
-    const cleanup = fetchProjects();
-    return () => {
-      if (typeof cleanup === 'function') cleanup();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const delProject = (id: string) => {
-    toast('Deleting !');
-    apiProject.remove(id).then((res: any) => {
-      if (res.status === '200') {
-        fetchProjects();
-      }
-    });
     setConfirmDeleteModal(false);
+    toast.promise(deleteProjectMutation.mutateAsync(id), {
+      loading: 'Deleting...',
+      success: 'Deleted',
+      error: 'Delete failed',
+    });
   };
 
-  const handleChecked = (e: React.ChangeEvent<HTMLInputElement>, id: string) => {
-    setCheckedList((prev) => (e.target.checked ? [...prev, id] : prev.filter((_id) => _id !== id)));
+  const delSelected = async () => {
+    setConfirmDeleteModal(false);
+    toast.promise(deleteSelectedMutation.mutateAsync(checkedList), {
+      loading: 'Deleting...',
+      success: 'Deleted',
+      error: 'Delete failed',
+    });
   };
 
-  const delSelected = () => {
-    const body = { projects: checkedList };
-
-    toast.promise(
-      new Promise<string>((resolve, reject) => {
-        apiProject.removeAll(body).then((res: any) => {
-          if (res.status === '200') {
-            fetchProjects();
-            setCheckedList([]);
-            resolve(String(res.message));
-            return;
-          }
-          reject(String(res.message));
-        });
-        setConfirmDeleteModal(false);
-      }),
-      {
-        loading: 'Deleting',
-        success: (message) => message,
-        error: (err) => String(err),
-      },
-    );
-  };
+  const projects = projectsQuery.data ?? [];
 
   return (
     <>
-      <CardContent>
-        <Stack direction="row" spacing={2}>
-          <Typography variant="h5" component="h1" color="primary">
-            Projects
-          </Typography>
+      <CardContent className="p-0">
+        {/* Header */}
+        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <h1 className="text-2xl font-medium tracking-tight">Projects</h1>
 
-          <Button
-            color="primary"
-            variant="contained"
-            size="small"
-            sx={{ borderRadius: '50ex', py: 0.2, px: 1.2, minWidth: 0 }}
-            onClick={() => setOpen(true)}
-          >
-            <FaPlus size="0.8rem" />
-          </Button>
-        </Stack>
+          <div className="flex flex-wrap items-center gap-2">
+            <Button onClick={() => setOpen(true)} variant="outline">
+              <Plus className="size-4" />
+              New Project
+            </Button>
+          </div>
+        </div>
 
-        {loading ? (
-          <PartLoader />
+        <Separator className="my-4" />
+
+        {/* Body */}
+        {projectsQuery.isLoading ? (
+          <ProjectsSkeleton />
+        ) : projectsQuery.isError ? (
+          <div className="rounded-xl border bg-card/50 p-4 text-sm text-muted-foreground">
+            Failed to load projects.
+          </div>
         ) : (
-          <List>
+          <div className="space-y-2">
             {projects.map((project) => (
-              <ListItem sx={{ justifyContent: 'space-between' }} key={project._id}>
-                <Stack direction="row">
-                  <CustomCheckbox handleChecked={handleChecked} id={project._id} />
+              <div
+                key={project._id}
+                className="flex items-center justify-between rounded-xl border bg-card/50 px-4 py-3 transition hover:bg-card"
+              >
+                {/* Left side */}
+                <div className="flex items-center gap-3">
+                  <Checkbox
+                    checked={checkedList.includes(project._id)}
+                    onCheckedChange={(v) => handleChecked(Boolean(v), project._id)}
+                    aria-label={`Select ${project.name}`}
+                  />
 
-                  <Box
-                    sx={{ display: 'flex', cursor: 'pointer' }}
+                  <button
+                    type="button"
                     onClick={() => navigate(`/dashboard/${userId}/${project._id}`)}
+                    className="group flex items-center gap-3 text-left"
                   >
-                    <ListItemAvatar>
-                      <Avatar sx={{ bgcolor: blue[500], ':hover': { bgcolor: blue[800] } }}>
-                        {project.name?.charAt(0)}
-                      </Avatar>
-                    </ListItemAvatar>
+                    {/* Avatar */}
+                    <CustomAvatarDisplayname text={project.name} />
+                  </button>
+                </div>
 
-                    <Typography
-                      sx={{ display: 'inline', mt: 1, ':hover': { color: blue[800] } }}
-                      component="h1"
-                      variant="h6"
-                      color="text.primary"
-                    >
-                      {project.name}
-                    </Typography>
-                  </Box>
-                </Stack>
-
-                <Stack direction="row" spacing={2}>
-                  <CustomTooltip title="Edit Project" arrow>
-                    <Button
-                      color="primary"
-                      variant="contained"
-                      onClick={() => {
-                        setProjectToBeRename(project);
-                        setRenameModalOpen(true);
-                      }}
-                    >
-                      <FiEdit2 />
-                    </Button>
+                {/* Right side actions */}
+                <div className="flex items-center gap-2">
+                  <CustomTooltip
+                    onClickFn={() => {
+                      setProjectToBeRename(project);
+                      setRenameModalOpen(true);
+                    }}
+                    text="Edit project"
+                    variant="secondary"
+                  >
+                    <Pencil className="h-4 w-4" />
                   </CustomTooltip>
 
-                  <CustomTooltip title="Delete Project" arrow>
-                    <Button
-                      color="error"
-                      variant="contained"
-                      onClick={() => {
-                        setToBeDeleted(project);
-                        setConfirmDeleteModal(true);
-                      }}
-                    >
-                      <FiTrash color="#fff" />
-                    </Button>
+                  <CustomTooltip
+                    onClickFn={() => {
+                      setToBeDeleted(project);
+                      setIsMultipleDelete(false);
+                      setConfirmDeleteModal(true);
+                    }}
+                    text="Delete project"
+                    variant="destructive"
+                  >
+                    <Trash className="h-4 w-4" />
                   </CustomTooltip>
-                </Stack>
-              </ListItem>
+                </div>
+              </div>
             ))}
 
+            {/* Bulk delete */}
             {checkedList.length !== 0 && (
-              <Button
-                sx={{ mt: 2 }}
-                onClick={() => {
-                  setConfirmDeleteModal(true);
-                  setIsMultipleDelete(true);
-                }}
-                variant="contained"
-                color="error"
-              >
-                Delete selected
-              </Button>
+              <div className="pt-2">
+                <Button
+                  variant="destructive"
+                  onClick={() => {
+                    setToBeDeleted(null);
+                    setIsMultipleDelete(true);
+                    setConfirmDeleteModal(true);
+                  }}
+                >
+                  Delete selected ({checkedList.length})
+                </Button>
+              </div>
             )}
-          </List>
+          </div>
+        )}
+        {projects.length === 0 && (
+          <div className="rounded-xl border border-dashed p-6 text-center text-sm text-muted-foreground">
+            No projects yet. Create your first one.
+          </div>
         )}
       </CardContent>
 
-      {open && (
-        <CustomModal open={open} setOpen={setOpen} title="New Project">
-          <Box component="form" onSubmit={formik.handleSubmit}>
-            <TextField
-              label="Project name"
-              type="text"
-              name="name"
-              sx={{ mb: 3 }}
-              size="small"
-              fullWidth
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              value={formik.values.name || ''}
-              error={Boolean(formik.touched.name && formik.errors.name)}
-              helperText={formik.touched.name && formik.errors.name}
-            />
+      {/* Create */}
+      {open && <CreateProject setOpen={setOpen} formik={formik} open={open} />}
 
-            <Stack direction="row" spacing={3}>
-              <Button variant="contained" size="small" type="submit">
-                Create
-              </Button>
-
-              <Button
-                variant="contained"
-                color="secondary"
-                size="small"
-                onClick={() => setOpen(false)}
-              >
-                Cancel
-              </Button>
-            </Stack>
-          </Box>
-        </CustomModal>
-      )}
-
+      {/* Delete confirm */}
       <ConfirmDeleteModal
         confirmDeleteModal={confirmDeleteModal}
         setConfirmDeleteModal={setConfirmDeleteModal}
         project={toBeDeleted ?? ({} as Project)}
-        deleteProject={delProject}
+        deleteProject={(id: string) => void deleteProject(id)}
         isMultipleDelete={isMultipleDelete}
         setIsMultipleDelete={setIsMultipleDelete}
-        delSelected={delSelected}
+        delSelected={() => void delSelected()}
       />
 
       <RenameModal
-        fetchProjects={fetchProjects}
-        setRenameModalOpen={setRenameModalOpen}
+        userId={userId!}
         projectToBeRename={projectToBeRename}
         renameModalOpen={renameModalOpen}
+        setRenameModalOpen={setRenameModalOpen}
       />
     </>
   );
 };
 
 export default Dashboard;
+
+const ProjectsSkeleton = () => {
+  return (
+    <div className="space-y-3">
+      {Array.from({ length: 4 }).map((_, i) => (
+        <div
+          key={i}
+          className="flex items-center justify-between rounded-xl border bg-card/50 px-3 py-2"
+        >
+          <div className="flex items-center gap-3">
+            <Skeleton className="h-4 w-4 rounded" />
+            <Skeleton className="h-9 w-9 rounded-full" />
+            <div className="space-y-1">
+              <Skeleton className="h-4 w-40" />
+              <Skeleton className="h-3 w-24" />
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <Skeleton className="h-9 w-9 rounded-md" />
+            <Skeleton className="h-9 w-9 rounded-md" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};

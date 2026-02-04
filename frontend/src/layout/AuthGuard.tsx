@@ -1,18 +1,16 @@
-import React, { Fragment, useEffect, useMemo, useState, type ReactNode } from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import React, { Fragment, type ReactNode, useEffect, useMemo, useState } from 'react';
 
-import { apiService } from '../services/models/serviceModel';
 import Login from '../pages/auth/Login';
+import { apiService } from '../services/models/serviceModel';
+import type { ApiStringResponse } from '../types';
+
 import AuthLayout from './AuthLayout';
-import { ApiStringResponse } from '../types';
 
 interface AuthGuardProps {
   children: ReactNode;
 }
 
 const AuthGuard = ({ children }: AuthGuardProps) => {
-  const location = useLocation();
-
   const [isExpired, setIsExpired] = useState<boolean | null>(null);
 
   // -------------------------
@@ -24,6 +22,7 @@ const AuthGuard = ({ children }: AuthGuardProps) => {
 
     if (!token) {
       setIsExpired(true);
+
       return;
     }
 
@@ -44,6 +43,7 @@ const AuthGuard = ({ children }: AuthGuardProps) => {
   // -------------------------
   const isAuthenticated = useMemo(() => {
     const tokenExists = Boolean(localStorage.getItem('MockAPI-Token'));
+
     return tokenExists && isExpired === false;
   }, [isExpired]);
 

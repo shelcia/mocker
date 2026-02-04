@@ -1,10 +1,10 @@
-import React, { useContext } from 'react';
-import { CssBaseline, StyledEngineProvider, ThemeProvider } from '@mui/material';
-import { useRoutes } from 'react-router-dom';
-import routes from './routes';
-import { customTheme } from './themes';
+import React from 'react';
+
 import { Toaster } from 'react-hot-toast';
-import { ThemeContext } from './context/ThemeContext';
+import { useRoutes } from 'react-router-dom';
+
+import routes from './routes';
+
 import './styles/style.css';
 
 const App = () => {
@@ -17,23 +17,11 @@ const App = () => {
     },
   };
 
-  const [darkTheme] = useContext(ThemeContext);
-
-  const appTheme = customTheme({
-    theme: darkTheme ? 'dark' : 'light',
-    direction: 'ltr',
-  });
-
   return (
-    <React.Fragment>
-      <StyledEngineProvider injectFirst>
-        <ThemeProvider theme={appTheme}>
-          <CssBaseline />
-          <Toaster toastOptions={toasterOptions} />
-          {allPages}
-        </ThemeProvider>
-      </StyledEngineProvider>
-    </React.Fragment>
+    <div className="min-h-screen bg-background font-['DM Sans Variable'] text-foreground">
+      <Toaster toastOptions={toasterOptions} />
+      {allPages}
+    </div>
   );
 };
 

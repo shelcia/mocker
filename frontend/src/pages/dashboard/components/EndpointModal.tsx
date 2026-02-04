@@ -1,49 +1,40 @@
 import React, { useContext, useState } from 'react';
-import { Box, Table, TableBody, TableCell, TableRow } from '@mui/material';
-import CustomModal from '../../../components/CustomModal';
-import { green, grey } from '@mui/material/colors';
-import { ThemeContext } from '../../../context/ThemeContext';
-import { secondary } from '../../../themes/themeColors';
-import { CopyButton } from '../../../components/CustomButtons';
+
+import { CustomModal } from '@/components/common';
+import { Button } from '@/components/ui/button';
+import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
+import { ThemeContext } from '@/context/ThemeContext';
+import { ENDPOINTS } from '@/data/constants';
+import { cn } from '@/lib/utils';
+import { BACKEND_URL } from '@/services/api';
+import { copyTextToClipboard } from '@/utils';
+
 import { toast } from 'react-hot-toast';
-import { copyTextToClipboard } from '../../../utils/utils';
-import { BACKEND_URL } from '../../../services/api';
 
-const EndpointModal = ({ open, setOpen, result }) => {
+interface EndpointModalProps {
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+
+  /**
+   * Resource / project id used to generate endpoints
+   */
+  result: string;
+}
+
+const EndpointModal = ({ open, setOpen, result }: EndpointModalProps) => {
   const [darkTheme] = useContext(ThemeContext);
-  const [isCopied, setIsCopied] = useState(false);
+  const [isCopied, setIsCopied] = useState<boolean>(false);
+  const [selectedId, setSelectedId] = useState<number>(-1);
 
-  const points = [
-    {
-      method: 'GET',
-      endpoint: '',
-    },
-    {
-      method: 'GET',
-      endpoint: '/:id',
-    },
-    {
-      method: 'POST',
-      endpoint: '',
-    },
-    {
-      method: 'PUT',
-      endpoint: '/:id',
-    },
-    {
-      method: 'DELETE',
-      endpoint: '/:id',
-    },
-  ];
-
-  // onClick handler function for the copy button
   const handleCopyClick = (data, idx) => {
     copyTextToClipboard(data)
       .then(() => {
         setIsCopied(true);
+        setSelectedId(idx);
         toast.success('Copied !');
         setTimeout(() => {
           setIsCopied(false);
+          setSelectedId(-1);
         }, 5000);
       })
       .catch((err) => {
@@ -54,37 +45,42 @@ const EndpointModal = ({ open, setOpen, result }) => {
 
   return (
     <CustomModal open={open} setOpen={setOpen} width={600} title="Endpoints">
-      <Box
-        sx={{
-          bgcolor: darkTheme ? secondary[900] : grey[100],
-          p: 2,
-          overflowX: 'auto',
-        }}
+      <div
+        className={cn(
+          'rounded-lg p-4 overflow-x-auto border',
+          darkTheme ? 'bg-slate-900 border-slate-800' : 'bg-slate-100 border-slate-200',
+        )}
       >
         <Table>
           <TableBody>
-            {points.map((point, idx) => (
-              <TableRow key={idx}>
-                <TableCell sx={{ color: green[500], fontWeight: 900 }}>{point.method}</TableCell>
-                <TableCell sx={{ fontFamily: 'monospace' }}>
+            {ENDPOINTS.map((point, idx) => (
+              <TableRow key={idx} className="hover:bg-muted/50">
+                <TableCell className="font-semibold text-emerald-600 w-24">
+                  {point.method}
+                </TableCell>
+
+                <TableCell className="font-mono text-sm">
                   /{result}
                   {point.endpoint}
                 </TableCell>
-                <TableCell>
-                  <CopyButton
+
+                <TableCell className="text-right">
+                  <Button
+                    size="sm"
+                    variant="outline"
                     onClick={() =>
                       handleCopyClick(`${BACKEND_URL}/user/${result}${point.endpoint}`, idx)
                     }
-                    disabled={isCopied}
+                    disabled={isCopied && selectedId === idx}
                   >
-                    {isCopied ? 'Done' : 'Copy'}
-                  </CopyButton>
+                    {isCopied && selectedId === idx ? 'Copied' : 'Copy'}
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
-      </Box>
+      </div>
     </CustomModal>
   );
 };
