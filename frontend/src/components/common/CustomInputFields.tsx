@@ -20,7 +20,7 @@ type CustomPwdFieldProps<T extends Record<string, any>> = {
   errors: FormikErrors<T>;
 };
 
-export function CustomPwdField<T extends Record<string, any>>({
+export const CustomPwdField = <T extends Record<string, any>>({
   field = 'password',
   label = 'password',
   handleBlur,
@@ -28,7 +28,7 @@ export function CustomPwdField<T extends Record<string, any>>({
   values,
   touched,
   errors,
-}: CustomPwdFieldProps<T>) {
+}: CustomPwdFieldProps<T>) => {
   const [showPassword, setShowPassword] = React.useState<boolean>(false);
 
   const hasError = Boolean(getIn(touched, field) && getIn(errors, field));
@@ -72,4 +72,4 @@ export function CustomPwdField<T extends Record<string, any>>({
       {hasError ? <p className="text-xs text-destructive">{errorText}</p> : null}
     </div>
   );
-}
+};

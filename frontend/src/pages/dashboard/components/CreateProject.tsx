@@ -35,12 +35,11 @@ const CreateProject = ({ setOpen, formik, open }: CreateProjectProps) => {
           {hasError && <p className="text-sm text-destructive">{String(formik.errors.name)}</p>}
         </div>
 
-        <div className="flex items-center gap-3">
-          <Button type="submit">Create</Button>
-
+        <div className="flex items-center gap-2 justify-end">
           <Button type="button" variant="secondary" onClick={() => setOpen(false)}>
             Cancel
           </Button>
+          <Button type="submit">Create</Button>
         </div>
       </form>
     </CustomModal>

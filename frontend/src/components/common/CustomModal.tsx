@@ -21,7 +21,7 @@ const CustomModal = ({ open, setOpen, title = '', width = 400, children }: Custo
         }}
       >
         {/* Header */}
-        {(title || true) && (
+        {title && (
           <DialogHeader className="flex flex-row items-center justify-between gap-4 w-full">
             <DialogTitle className="text-lg font-semibold text-primary">{title}</DialogTitle>
           </DialogHeader>

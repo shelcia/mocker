@@ -76,7 +76,6 @@ const ConfirmDeleteModal = ({
         </p>
 
         <div className="space-y-2">
-          <label className="text-sm font-medium text-foreground">Project name</label>
           <Input
             value={formData}
             onChange={(e) => {
@@ -87,7 +86,17 @@ const ConfirmDeleteModal = ({
           />
         </div>
 
-        <div className="flex gap-3">
+        <div className="flex gap-2 justify-end items-center">
+          <Button
+            variant="secondary"
+            onClick={() => {
+              setFormData('');
+              setDisabled(true);
+              setConfirmDeleteModal(false);
+            }}
+          >
+            Cancel
+          </Button>
           <Button
             variant="destructive"
             disabled={disabled}
@@ -98,17 +107,6 @@ const ConfirmDeleteModal = ({
             }}
           >
             Confirm Delete
-          </Button>
-
-          <Button
-            variant="secondary"
-            onClick={() => {
-              setFormData('');
-              setDisabled(true);
-              setConfirmDeleteModal(false);
-            }}
-          >
-            Cancel
           </Button>
         </div>
       </div>

@@ -102,7 +102,7 @@ const Field = ({ label, value, placeholder, onChange, inputMode, className }: Fi
   );
 };
 
-function ErrorBanner({ message }: { message?: string }) {
+export const ErrorBanner = ({ message }: { message?: string }) => {
   if (!message) return null;
 
   return (
@@ -110,9 +110,9 @@ function ErrorBanner({ message }: { message?: string }) {
       <AlertDescription>{message}</AlertDescription>
     </Alert>
   );
-}
+};
 
-function useMinMaxValidator() {
+const useMinMaxValidator = () => {
   const [message, setMessage] = React.useState('');
 
   const validate = React.useCallback((minStr?: string, maxStr?: string, custom?: string) => {
@@ -149,9 +149,18 @@ function useMinMaxValidator() {
   }, []);
 
   return { message, validate };
+};
+
+interface MinMaxProps extends OptionRendererProps {
+  minLabel?: string;
+  maxLabel?: string;
+  minPlaceholder?: string;
+  maxPlaceholder?: string;
+  // used by birthdate where message depends on mode
+  validateLabelMessage?: (mode: string) => { minMsg: string; maxMsg: string };
 }
 
-function MinMax({
+const MinMax = ({
   myOption,
   setMyOption,
   minLabel = 'min',
@@ -159,20 +168,12 @@ function MinMax({
   minPlaceholder,
   maxPlaceholder,
   validateLabelMessage,
-}: OptionRendererProps & {
-  minLabel?: string;
-  maxLabel?: string;
-  minPlaceholder?: string;
-  maxPlaceholder?: string;
-  // used by birthdate where message depends on mode
-  validateLabelMessage?: (mode: string) => { minMsg: string; maxMsg: string };
-}) {
+}: MinMaxProps) => {
   const { message, validate } = useMinMaxValidator();
 
   const min = myOption.min ?? '';
   const max = myOption.max ?? '';
 
-  // birthdate needs mode-based text; others keep default
   const mode = myOption.mode ?? 'age';
   const labels = validateLabelMessage?.(mode);
 
@@ -211,9 +212,13 @@ function MinMax({
       <ErrorBanner message={message} />
     </div>
   );
+};
+
+interface SimpleCountProps extends OptionRendererProps {
+  label: string;
 }
 
-function SimpleCount({ myOption, setMyOption, label }: OptionRendererProps & { label: string }) {
+const SimpleCount = ({ myOption, setMyOption, label }: SimpleCountProps) => {
   return (
     <Field
       label={label}
@@ -223,21 +228,23 @@ function SimpleCount({ myOption, setMyOption, label }: OptionRendererProps & { l
       onChange={(val) => setMyOption((prev: any) => ({ ...prev, count: val }))}
     />
   );
+};
+
+interface BooleanSelectProps extends OptionRendererProps {
+  field: string;
+  label: string;
+  trueLabel?: string;
+  falseLabel?: string;
 }
 
-function BooleanSelect({
+const BooleanSelect = ({
   myOption,
   setMyOption,
   field,
   label,
   trueLabel = 'true',
   falseLabel = 'false',
-}: OptionRendererProps & {
-  field: string;
-  label: string;
-  trueLabel?: string;
-  falseLabel?: string;
-}) {
+}: BooleanSelectProps) => {
   const value = (myOption?.[field] ?? 'false').toString();
 
   return (
@@ -257,19 +264,15 @@ function BooleanSelect({
       </Select>
     </div>
   );
-}
+};
 
-function EnumSelect({
-  myOption,
-  setMyOption,
-  field,
-  label,
-  items,
-}: OptionRendererProps & {
+interface EnumSelectProps extends OptionRendererProps {
   field: string;
   label: string;
   items: Array<{ value: string; label: string }>;
-}) {
+}
+
+const EnumSelect = ({ myOption, setMyOption, field, label, items }: EnumSelectProps) => {
   const value = (myOption?.[field] ?? items[0]?.value ?? '').toString();
 
   return (
@@ -292,16 +295,13 @@ function EnumSelect({
       </Select>
     </div>
   );
-}
+};
 
 /* -----------------------------
    Option renderers (all cases)
 ------------------------------ */
 
-function SexSelect({ myOption, setMyOption }: OptionRendererProps) {
-  // normalize to string (shadcn Select expects string)
-  const value = (myOption.sex ?? 'random').toString();
-
+const SexSelect = ({ myOption, setMyOption }: OptionRendererProps) => {
   return (
     <EnumSelect
       myOption={myOption}
@@ -315,9 +315,9 @@ function SexSelect({ myOption, setMyOption }: OptionRendererProps) {
       ]}
     />
   );
-}
+};
 
-function Price({ myOption, setMyOption }: OptionRendererProps) {
+const Price = ({ myOption, setMyOption }: OptionRendererProps) => {
   return (
     <MinMax
       myOption={myOption}
@@ -328,9 +328,9 @@ function Price({ myOption, setMyOption }: OptionRendererProps) {
       maxPlaceholder="Example: 1000"
     />
   );
-}
+};
 
-function Past({ myOption, setMyOption }: OptionRendererProps) {
+const Past = ({ myOption, setMyOption }: OptionRendererProps) => {
   return (
     <Field
       label="past years"
@@ -340,9 +340,9 @@ function Past({ myOption, setMyOption }: OptionRendererProps) {
       onChange={(val) => setMyOption((prev: any) => ({ ...prev, years: val }))}
     />
   );
-}
+};
 
-function Lines({ myOption, setMyOption }: OptionRendererProps) {
+const Lines = ({ myOption, setMyOption }: OptionRendererProps) => {
   return (
     <Field
       label="Line no"
@@ -352,9 +352,9 @@ function Lines({ myOption, setMyOption }: OptionRendererProps) {
       onChange={(val) => setMyOption((prev: any) => ({ ...prev, count: val }))}
     />
   );
-}
+};
 
-function ImageUrl({ myOption, setMyOption }: OptionRendererProps) {
+const ImageUrl = ({ myOption, setMyOption }: OptionRendererProps) => {
   return (
     <div className="space-y-4">
       <Field
@@ -381,9 +381,9 @@ function ImageUrl({ myOption, setMyOption }: OptionRendererProps) {
       />
     </div>
   );
-}
+};
 
-function Sentences({ myOption, setMyOption }: OptionRendererProps) {
+const Sentences = ({ myOption, setMyOption }: OptionRendererProps) => {
   return (
     <Field
       label="Sentence Count"
@@ -393,13 +393,13 @@ function Sentences({ myOption, setMyOption }: OptionRendererProps) {
       onChange={(val) => setMyOption((prev: any) => ({ ...prev, sentenceCount: val }))}
     />
   );
-}
+};
 
-function Alpha({ myOption, setMyOption }: OptionRendererProps) {
+const Alpha = ({ myOption, setMyOption }: OptionRendererProps) => {
   return <SimpleCount myOption={myOption} setMyOption={setMyOption} label="Number of character" />;
-}
+};
 
-function AlphaNumeric({ myOption, setMyOption }: OptionRendererProps) {
+const AlphaNumeric = ({ myOption, setMyOption }: OptionRendererProps) => {
   return (
     <SimpleCount
       myOption={myOption}
@@ -407,20 +407,24 @@ function AlphaNumeric({ myOption, setMyOption }: OptionRendererProps) {
       label="Number of alphaNumeric character"
     />
   );
-}
+};
 
-function Numeric({ myOption, setMyOption }: OptionRendererProps) {
+const Numeric = ({ myOption, setMyOption }: OptionRendererProps) => {
   return <SimpleCount myOption={myOption} setMyOption={setMyOption} label="Number of digit" />;
-}
+};
 
-function Words({ myOption, setMyOption }: OptionRendererProps) {
+const Words = ({ myOption, setMyOption }: OptionRendererProps) => {
   return <SimpleCount myOption={myOption} setMyOption={setMyOption} label="Number of word" />;
-}
+};
 
-function SpecialCharacter({ myOption, setMyOption }: OptionRendererProps) {
+const SpecialCharacter = ({ myOption, setMyOption }: OptionRendererProps) => {
   return (
     <div className="space-y-4">
-      <SimpleCount myOption={myOption} setMyOption={setMyOption} label="Number of word" />
+      <SimpleCount
+        myOption={myOption}
+        setMyOption={setMyOption}
+        label="Number of special character"
+      />
       <Field
         label="Whitelist"
         value={String(myOption.whitelist ?? '')}
@@ -429,9 +433,9 @@ function SpecialCharacter({ myOption, setMyOption }: OptionRendererProps) {
       />
     </div>
   );
-}
+};
 
-function ArrayOpt({ myOption, setMyOption }: OptionRendererProps) {
+const ArrayOpt = ({ myOption, setMyOption }: OptionRendererProps) => {
   return (
     <Field
       label="Size of the array"
@@ -441,9 +445,9 @@ function ArrayOpt({ myOption, setMyOption }: OptionRendererProps) {
       onChange={(val) => setMyOption((prev: any) => ({ ...prev, length: val }))}
     />
   );
-}
+};
 
-function BigInt({ myOption, setMyOption }: OptionRendererProps) {
+const BigInt = ({ myOption, setMyOption }: OptionRendererProps) => {
   return (
     <MinMax
       myOption={myOption}
@@ -454,9 +458,9 @@ function BigInt({ myOption, setMyOption }: OptionRendererProps) {
       maxPlaceholder="Example: 1000000"
     />
   );
-}
+};
 
-function DatetimeMinMax({ myOption, setMyOption }: OptionRendererProps) {
+const DatetimeMinMax = ({ myOption, setMyOption }: OptionRendererProps) => {
   return (
     <MinMax
       myOption={myOption}
@@ -467,9 +471,9 @@ function DatetimeMinMax({ myOption, setMyOption }: OptionRendererProps) {
       maxPlaceholder="Example: 4102444800000"
     />
   );
-}
+};
 
-function FloatOpt({ myOption, setMyOption }: OptionRendererProps) {
+const FloatOpt = ({ myOption, setMyOption }: OptionRendererProps) => {
   const { message, validate } = useMinMaxValidator();
   const min = String(myOption.min ?? '');
   const max = String(myOption.max ?? '');
@@ -509,9 +513,9 @@ function FloatOpt({ myOption, setMyOption }: OptionRendererProps) {
       />
     </div>
   );
-}
+};
 
-function Hexadecimal({ myOption, setMyOption }: OptionRendererProps) {
+const Hexadecimal = ({ myOption, setMyOption }: OptionRendererProps) => {
   return (
     <div className="space-y-4">
       <Field
@@ -542,9 +546,9 @@ function Hexadecimal({ myOption, setMyOption }: OptionRendererProps) {
       />
     </div>
   );
-}
+};
 
-function NumberOpt({ myOption, setMyOption }: OptionRendererProps) {
+const NumberOpt = ({ myOption, setMyOption }: OptionRendererProps) => {
   const { message, validate } = useMinMaxValidator();
   const min = String(myOption.min ?? '');
   const max = String(myOption.max ?? '');
@@ -586,9 +590,9 @@ function NumberOpt({ myOption, setMyOption }: OptionRendererProps) {
       />
     </div>
   );
-}
+};
 
-function StringOpt({ myOption, setMyOption }: OptionRendererProps) {
+const StringOpt = ({ myOption, setMyOption }: OptionRendererProps) => {
   return (
     <Field
       label="length"
@@ -598,9 +602,9 @@ function StringOpt({ myOption, setMyOption }: OptionRendererProps) {
       onChange={(val) => setMyOption((prev: any) => ({ ...prev, length: val }))}
     />
   );
-}
+};
 
-function Between({ myOption, setMyOption }: OptionRendererProps) {
+const Between = ({ myOption, setMyOption }: OptionRendererProps) => {
   const from = fromISO(myOption.from);
   const to = fromISO(myOption.to);
 
@@ -696,9 +700,9 @@ function Between({ myOption, setMyOption }: OptionRendererProps) {
       </div>
     </div>
   );
-}
+};
 
-function Betweens({ myOption, setMyOption }: OptionRendererProps) {
+const Betweens = ({ myOption, setMyOption }: OptionRendererProps) => {
   return (
     <div className="space-y-4">
       <Between myOption={myOption} setMyOption={setMyOption} />
@@ -711,11 +715,9 @@ function Betweens({ myOption, setMyOption }: OptionRendererProps) {
       />
     </div>
   );
-}
+};
 
-function Birthdate({ myOption, setMyOption }: OptionRendererProps) {
-  const mode = (myOption.mode ?? 'age').toString();
-
+const Birthdate = ({ myOption, setMyOption }: OptionRendererProps) => {
   return (
     <div className="space-y-4">
       <MinMax
@@ -741,9 +743,9 @@ function Birthdate({ myOption, setMyOption }: OptionRendererProps) {
       />
     </div>
   );
-}
+};
 
-function Future({ myOption, setMyOption }: OptionRendererProps) {
+const Future = ({ myOption, setMyOption }: OptionRendererProps) => {
   return (
     <Field
       label="years"
@@ -753,9 +755,9 @@ function Future({ myOption, setMyOption }: OptionRendererProps) {
       onChange={(val) => setMyOption((prev: any) => ({ ...prev, years: val }))}
     />
   );
-}
+};
 
-function Month({ myOption, setMyOption }: OptionRendererProps) {
+const Month = ({ myOption, setMyOption }: OptionRendererProps) => {
   return (
     <EnumSelect
       myOption={myOption}
@@ -768,9 +770,9 @@ function Month({ myOption, setMyOption }: OptionRendererProps) {
       ]}
     />
   );
-}
+};
 
-export function Recent({ myOption, setMyOption }: OptionRendererProps) {
+export const Recent = ({ myOption, setMyOption }: OptionRendererProps) => {
   const ref = fromISO(myOption.refDate);
 
   return (
@@ -835,23 +837,23 @@ export function Recent({ myOption, setMyOption }: OptionRendererProps) {
       </div>
     </div>
   );
-}
+};
 
-function Soon({ myOption, setMyOption }: OptionRendererProps) {
+const Soon = ({ myOption, setMyOption }: OptionRendererProps) => {
   return <Recent myOption={myOption} setMyOption={setMyOption} />;
-}
+};
 
-function Weekday({ myOption, setMyOption }: OptionRendererProps) {
+const Weekday = ({ myOption, setMyOption }: OptionRendererProps) => {
   return <Month myOption={myOption} setMyOption={setMyOption} />;
-}
+};
 
-function CardinalDirection({ myOption, setMyOption }: OptionRendererProps) {
+const CardinalDirection = ({ myOption, setMyOption }: OptionRendererProps) => {
   return (
     <BooleanSelect myOption={myOption} setMyOption={setMyOption} field="useAbbr" label="useAbbr" />
   );
-}
+};
 
-function CountryCode({ myOption, setMyOption }: OptionRendererProps) {
+const CountryCode = ({ myOption, setMyOption }: OptionRendererProps) => {
   return (
     <EnumSelect
       myOption={myOption}
@@ -864,30 +866,28 @@ function CountryCode({ myOption, setMyOption }: OptionRendererProps) {
       ]}
     />
   );
-}
+};
 
-function Direction({ myOption, setMyOption }: OptionRendererProps) {
+const Direction = ({ myOption, setMyOption }: OptionRendererProps) => {
   return (
     <BooleanSelect myOption={myOption} setMyOption={setMyOption} field="useAbbr" label="useAbbr" />
   );
-}
+};
 
-function Latitude({ myOption, setMyOption }: OptionRendererProps) {
+const Latitude = ({ myOption, setMyOption }: OptionRendererProps) => {
   // same as number min/max + precision
   return (
     <div className="space-y-4">
       <NumberOpt myOption={myOption} setMyOption={setMyOption} />
-      {/* but your label wants precision placeholder 5; keep it */}
-      {/* precision already included; if you want different placeholder, we can split a dedicated GPS component */}
     </div>
   );
-}
+};
 
-function Longitude({ myOption, setMyOption }: OptionRendererProps) {
+const Longitude = ({ myOption, setMyOption }: OptionRendererProps) => {
   return <Latitude myOption={myOption} setMyOption={setMyOption} />;
-}
+};
 
-function NearbyGPSCoordinate({ myOption, setMyOption }: OptionRendererProps) {
+const NearbyGPSCoordinate = ({ myOption, setMyOption }: OptionRendererProps) => {
   const metric = (myOption.metric ?? 'KM').toString();
 
   return (
@@ -926,15 +926,15 @@ function NearbyGPSCoordinate({ myOption, setMyOption }: OptionRendererProps) {
       />
     </div>
   );
-}
+};
 
-function OrdinalDirection({ myOption, setMyOption }: OptionRendererProps) {
+const OrdinalDirection = ({ myOption, setMyOption }: OptionRendererProps) => {
   return (
     <BooleanSelect myOption={myOption} setMyOption={setMyOption} field="useAbbr" label="useAbbr" />
   );
-}
+};
 
-function StreetAddress({ myOption, setMyOption }: OptionRendererProps) {
+const StreetAddress = ({ myOption, setMyOption }: OptionRendererProps) => {
   return (
     <BooleanSelect
       myOption={myOption}
@@ -943,9 +943,9 @@ function StreetAddress({ myOption, setMyOption }: OptionRendererProps) {
       label="useFullAddress"
     />
   );
-}
+};
 
-function ZipCode({ myOption, setMyOption }: OptionRendererProps) {
+const ZipCode = ({ myOption, setMyOption }: OptionRendererProps) => {
   return (
     <Field
       label="format"
@@ -954,9 +954,9 @@ function ZipCode({ myOption, setMyOption }: OptionRendererProps) {
       onChange={(val) => setMyOption((prev: any) => ({ ...prev, format: val }))}
     />
   );
-}
+};
 
-function ZipCodeByState({ myOption, setMyOption }: OptionRendererProps) {
+const ZipCodeByState = ({ myOption, setMyOption }: OptionRendererProps) => {
   return (
     <Field
       label="state"
@@ -965,9 +965,9 @@ function ZipCodeByState({ myOption, setMyOption }: OptionRendererProps) {
       onChange={(val) => setMyOption((prev: any) => ({ ...prev, state: val }))}
     />
   );
-}
+};
 
-function CommonFileName({ myOption, setMyOption }: OptionRendererProps) {
+const CommonFileName = ({ myOption, setMyOption }: OptionRendererProps) => {
   return (
     <Field
       label="ext"
@@ -976,9 +976,9 @@ function CommonFileName({ myOption, setMyOption }: OptionRendererProps) {
       onChange={(val) => setMyOption((prev: any) => ({ ...prev, ext: val }))}
     />
   );
-}
+};
 
-function FileName({ myOption, setMyOption }: OptionRendererProps) {
+const FileName = ({ myOption, setMyOption }: OptionRendererProps) => {
   return (
     <Field
       label="extensionCount"
@@ -988,9 +988,9 @@ function FileName({ myOption, setMyOption }: OptionRendererProps) {
       onChange={(val) => setMyOption((prev: any) => ({ ...prev, extensionCount: val }))}
     />
   );
-}
+};
 
-function NetworkInterface({ myOption, setMyOption }: OptionRendererProps) {
+const NetworkInterface = ({ myOption, setMyOption }: OptionRendererProps) => {
   const interfaceSchema = (myOption.interfaceSchema ?? 'slot').toString();
   const interfaceType = (myOption.interfaceType ?? 'en').toString();
 
@@ -1022,9 +1022,9 @@ function NetworkInterface({ myOption, setMyOption }: OptionRendererProps) {
       />
     </div>
   );
-}
+};
 
-function Email({ myOption, setMyOption }: OptionRendererProps) {
+const Email = ({ myOption, setMyOption }: OptionRendererProps) => {
   return (
     <div className="space-y-4">
       <Field
@@ -1047,7 +1047,7 @@ function Email({ myOption, setMyOption }: OptionRendererProps) {
       />
     </div>
   );
-}
+};
 
 /* -----------------------------
    Mapping table

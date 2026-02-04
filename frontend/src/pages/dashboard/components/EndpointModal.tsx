@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import React, { useContext, useState } from 'react';
 
 import { CustomModal } from '@/components/common';
 import { Button } from '@/components/ui/button';

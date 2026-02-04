@@ -156,10 +156,10 @@ const AuthLayout = ({ children }: AuthLayoutProps) => {
 
 export default AuthLayout;
 
-function FeatureChip({ children }: { children: ReactNode }) {
+const FeatureChip = ({ children }: { children: ReactNode }) => {
   return (
     <span className="inline-flex items-center gap-2 rounded-full bg-zinc-900/5 px-3 py-1 text-xs text-zinc-700 ring-1 ring-zinc-900/10 dark:bg-white/5 dark:text-zinc-200 dark:ring-white/10">
       {children}
     </span>
   );
-}
+};

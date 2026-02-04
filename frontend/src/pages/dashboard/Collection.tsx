@@ -164,7 +164,19 @@ const Collection = () => {
 
             {/* Endpoint alert */}
             <Alert className="border-border/60">
-              <AlertTitle className="font-semibold">API endpoint</AlertTitle>
+              <AlertTitle className="font-semibold">
+                API endpoint ({' '}
+                <a
+                  href="https://documenter.getpostman.com/view/21272376/2s8YmUMLP2#f02f8b5d-1988-4177-816a-6da7fcb47d88"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-2 text-sm font-medium text-primary underline-offset-4 hover:underline"
+                >
+                  Test Postman Documentation
+                  <ExternalLink className="h-4 w-4" />
+                </a>
+                )
+              </AlertTitle>
 
               <AlertDescription className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <code className="w-fit rounded-md bg-muted px-2 py-1 font-mono text-sm">
@@ -181,19 +193,6 @@ const Collection = () => {
                 </Button>
               </AlertDescription>
             </Alert>
-
-            {/* Docs link */}
-            <div className="mt-4">
-              <a
-                href="https://documenter.getpostman.com/view/21272376/2s8YmUMLP2#f02f8b5d-1988-4177-816a-6da7fcb47d88"
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-2 text-sm font-medium text-primary underline-offset-4 hover:underline"
-              >
-                Test Postman Documentation
-                <ExternalLink className="h-4 w-4" />
-              </a>
-            </div>
 
             {/* Resource list */}
             <div className="mt-6 space-y-2">

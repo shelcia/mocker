@@ -1,7 +1,5 @@
 import React, { Fragment, type ReactNode, useEffect, useMemo, useState } from 'react';
 
-import { useLocation } from 'react-router-dom';
-
 import Login from '../pages/auth/Login';
 import { apiService } from '../services/models/serviceModel';
 import type { ApiStringResponse } from '../types';
@@ -13,8 +11,6 @@ interface AuthGuardProps {
 }
 
 const AuthGuard = ({ children }: AuthGuardProps) => {
-  const location = useLocation();
-
   const [isExpired, setIsExpired] = useState<boolean | null>(null);
 
   // -------------------------
