@@ -314,15 +314,9 @@ const Resource = ({ resource, fetchResource, delResource }: ResourceProps) => {
           >
             <Trash />
           </CustomTooltip>
-
-          <CustomTooltip
-            onClickFn={() => setEndModal(true)}
-            text="View Endpoints"
-            variant="secondary"
-            icon={false}
-          >
+          <Button onClick={() => setEndModal(true)} variant="secondary">
             View Endpoints
-          </CustomTooltip>
+          </Button>
         </div>
       </div>
 

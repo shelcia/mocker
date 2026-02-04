@@ -21,7 +21,7 @@ const CustomTooltip = ({
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <div>
+        <div className="inline-flex">
           <Button
             size={icon ? 'icon' : 'default'}
             onClick={onClickFn}

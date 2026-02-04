@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 
 import { CustomJSONTable, CustomModal, PartLoader } from '@/components/common';
 import { Button } from '@/components/ui/button';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ThemeContext } from '@/context/ThemeContext';
 import type { ResultRow } from '@/types';
@@ -33,7 +33,7 @@ const ResultModal = ({ open, setOpen, result = [], loading }: ResultModalProps) 
       setIsBeautifyCopied(true);
       toast.success('Copied!');
       setTimeout(() => setIsBeautifyCopied(false), 5000);
-    } catch (error) {
+    } catch {
       toast.error("Couldn't copy!");
     }
   };
@@ -59,30 +59,37 @@ const ResultModal = ({ open, setOpen, result = [], loading }: ResultModalProps) 
           <div
             className={[
               'relative rounded-lg border p-4',
-              'overflow-hidden', // keeps padding clean
+              'overflow-hidden',
               'bg-muted/60',
               darkTheme ? 'bg-zinc-950/40' : '',
             ].join(' ')}
           >
-            <Button
-              type="button"
-              size="sm"
-              variant="secondary"
-              onClick={copyJsonBeautify}
-              disabled={isBeautifyCopied}
-              className="absolute right-3 top-3"
-            >
-              {isBeautifyCopied ? 'Done' : 'Copy'}
-            </Button>
+            <div className="absolute right-3 top-3 z-10">
+              <Button
+                type="button"
+                size="sm"
+                variant="secondary"
+                onClick={copyJsonBeautify}
+                disabled={isBeautifyCopied}
+              >
+                {isBeautifyCopied ? 'Done' : 'Copy'}
+              </Button>
+            </div>
 
             {loading ? (
               <PartLoader />
             ) : (
-              <ScrollArea className="max-h-[420px] w-full rounded-md">
-                <div className={darkTheme ? 'lang-dark' : 'lang-light'}>
+              <ScrollArea className="h-[420px] w-full">
+                <div
+                  className={[
+                    darkTheme ? 'lang-dark' : 'lang-light',
+                    '[&_pre]:whitespace-pre-wrap',
+                    '[&_pre]:break-words',
+                    '[&_pre]:overflow-hidden',
+                  ].join(' ')}
+                >
                   <JSONPretty id="json-pretty" data={result} />
                 </div>
-                <ScrollBar orientation="vertical" />
               </ScrollArea>
             )}
           </div>
@@ -90,9 +97,9 @@ const ResultModal = ({ open, setOpen, result = [], loading }: ResultModalProps) 
 
         {/* --- Table View --- */}
         <TabsContent value="1" className="mt-3 w-full">
-          <div className="rounded-lg border bg-muted/30 p-3 w-full">
+          <ScrollArea className="h-[420px] w-full">
             <CustomJSONTable keys={result?.[0] ? Object.keys(result[0]) : []} data={result} />
-          </div>
+          </ScrollArea>
         </TabsContent>
       </Tabs>
     </CustomModal>
