@@ -5,13 +5,12 @@ import { Button } from '@/components/ui/button';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ThemeContext } from '@/context/ThemeContext';
+import type { ResultRow } from '@/types';
 import { copyTextToClipboard } from '@/utils';
 
 import jsonBeautify from 'json-beautify';
 import toast from 'react-hot-toast';
 import JSONPretty from 'react-json-pretty';
-
-type ResultRow = Record<string, unknown>;
 
 interface ResultModalProps {
   open: boolean;

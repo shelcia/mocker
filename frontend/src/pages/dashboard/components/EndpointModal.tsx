@@ -11,7 +11,17 @@ import { copyTextToClipboard } from '@/utils';
 
 import { toast } from 'react-hot-toast';
 
-const EndpointModal = ({ open, setOpen, result }) => {
+interface EndpointModalProps {
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+
+  /**
+   * Resource / project id used to generate endpoints
+   */
+  result: string;
+}
+
+const EndpointModal = ({ open, setOpen, result }: EndpointModalProps) => {
   const [darkTheme] = useContext(ThemeContext);
   const [isCopied, setIsCopied] = useState<boolean>(false);
   const [selectedId, setSelectedId] = useState<number>(-1);

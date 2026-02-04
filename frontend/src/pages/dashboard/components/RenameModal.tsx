@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { apiProvider } from '@/services/utilities/provider';
+import type { Project } from '@/types';
 import { queryKeys } from '@/utils';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -12,17 +13,12 @@ import { useFormik } from 'formik';
 import toast from 'react-hot-toast';
 import * as Yup from 'yup';
 
-export type Project = {
-  _id: string;
-  name: string;
-};
-
-type RenameModalProps = {
+interface RenameModalProps {
   userId: string;
   projectToBeRename: Project | null;
   renameModalOpen: boolean;
   setRenameModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-};
+}
 
 const RenameModal = ({
   userId,

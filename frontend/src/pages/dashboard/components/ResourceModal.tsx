@@ -1,17 +1,12 @@
 import React, { useState } from 'react';
 
 import { apiResource } from '@/services/models/resourceModal';
+import type { Resource, RouteParams, SchemaItem } from '@/types';
 
 import toast from 'react-hot-toast';
 import { useParams } from 'react-router-dom';
 
-import type { InputsState, SchemaItem } from './CommonResourceModal';
 import CommonResourceModal from './CommonResourceModal';
-
-type RouteParams = {
-  userId?: string;
-  projectId?: string;
-};
 
 interface ResourceModalProps {
   open: boolean;
@@ -30,7 +25,7 @@ const ResourceModal = ({
 }: ResourceModalProps) => {
   const { userId, projectId } = useParams<RouteParams>();
 
-  const [inputs, setInputs] = useState<InputsState>({
+  const [inputs, setInputs] = useState<Resource>({
     name: '',
     number: 1,
     userId,

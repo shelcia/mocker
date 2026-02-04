@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { CHOICES, OPTION_EXIST_FOR, VALIDATION_ERROR } from '@/data/constants';
+import type { Resource, ResultRow, SchemaItem } from '@/types';
 
 import { Plus, Settings2, Trash } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -24,23 +25,6 @@ import SchemaOptionModal from './SchemaOptionModal';
 
 export type SchemaField = string;
 
-export type SchemaOption = Record<string, unknown>;
-
-export type SchemaItem = {
-  id: number;
-  label: string;
-  field: SchemaField;
-  option?: SchemaOption;
-};
-
-export type InputsState = {
-  name: string;
-  number: number; // keep as number
-  userId?: string;
-  projectId?: string;
-  id?: string;
-};
-
 type ValidationMapValue = { errCode: string };
 
 interface CommonResourceModalProps {
@@ -48,8 +32,8 @@ interface CommonResourceModalProps {
   setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
   title?: string;
 
-  inputs: InputsState;
-  setInputs: React.Dispatch<React.SetStateAction<InputsState>>;
+  inputs: Resource;
+  setInputs: React.Dispatch<React.SetStateAction<Resource>>;
 
   schema: SchemaItem[];
   setSchema: React.Dispatch<React.SetStateAction<SchemaItem[]>>;
@@ -72,12 +56,12 @@ const CommonResourceModal = ({
   children,
 }: CommonResourceModalProps) => {
   const [optionOpen, setOptionOpen] = useState<boolean>(false);
-  const [option, setOption] = useState<SchemaOption>({});
+  const [option, setOption] = useState<ResultRow>({});
   const [fieldInfo, setFieldInfo] = useState<{
     id?: number;
     label?: string;
     field?: string;
-    option?: SchemaOption;
+    option?: ResultRow;
   }>({});
 
   const [validationInfo, setValidationInfo] = useState<Map<number, ValidationMapValue>>(
@@ -107,7 +91,7 @@ const CommonResourceModal = ({
       return;
     }
 
-    setInputs((prev) => ({ ...prev, [name]: value }) as InputsState);
+    setInputs((prev) => ({ ...prev, [name]: value }) as Resource);
 
     if (name === 'name') {
       if (value.length === 0) setValidName(false);
@@ -394,9 +378,9 @@ const CommonResourceModal = ({
       </div>
 
       <div className="flex flex-col gap-4">
-        {/* Add Resource */}
+        {/* Add field row */}
         <Button size="sm" onClick={addSchema} className="w-fit mt-4" variant="outline">
-          Add Resource
+          Add Field Row
         </Button>
 
         <Separator />

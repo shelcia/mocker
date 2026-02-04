@@ -28,11 +28,11 @@ const SchemaOptionModal = ({ optionOpen, setOptionOpen, fieldInfo, setOption }) 
   }, [fieldInfo]);
 
   return (
-    <CustomModal open={optionOpen} setOpen={setOptionOpen} width={500}>
-      <div className="space-y-4">
+    <CustomModal open={optionOpen} setOpen={setOptionOpen} width={500} title="Options Config">
+      <div className="space-y-4 w-full">
         <Option fieldInfo={fieldInfo} myOption={myOption} setMyOption={setMyOption} />
 
-        <div className="pt-2">
+        <div className="pt-2 flex justify-end">
           <Button
             type="button"
             className="w-full sm:w-auto"

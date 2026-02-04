@@ -11,7 +11,7 @@ import { BACKEND_URL } from '@/services/api';
 import { apiProject } from '@/services/models/projectModel';
 import { apiResource } from '@/services/models/resourceModal';
 import { apiUser } from '@/services/models/userModal';
-import type { ApiStringResponse } from '@/types';
+import type { ApiResponse, ApiStringResponse, ResultRow } from '@/types';
 import { copyTextToClipboard } from '@/utils';
 
 import { ChevronLeft, Copy, ExternalLink, Eye, Pencil, Plus, Trash } from 'lucide-react';
@@ -33,13 +33,6 @@ type ResourceModel = {
   _id: string;
   name: string;
 };
-
-type ApiResponse<T> = {
-  status: string;
-  message: T;
-};
-
-type ResultRow = Record<string, unknown>;
 
 const Collection = () => {
   const endpoint = `${BACKEND_URL}/user/:endpoint`;

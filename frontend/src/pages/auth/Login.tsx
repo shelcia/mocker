@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React from 'react';
 
 import { CustomLoaderButton, CustomPwdField } from '@/components/common';
 import { Button } from '@/components/ui/button';
@@ -6,12 +6,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useVerifyToken } from '@/hooks/useVerifyToken';
 import { cn } from '@/lib/utils';
-import { apiAuth } from '@/services/models/authModel';
-import { apiProvider } from '@/services/utilities/provider';
+import { useLoginMutation } from '@/services/auth/auth.queries';
 import { logout } from '@/utils';
 
 import { useFormik } from 'formik';
-import toast from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 
@@ -20,22 +18,15 @@ type LoginFormValues = {
   password: string;
 };
 
-type LoginSuccessMessage = {
-  emailVerified: boolean;
-  token: string;
-  userId: string;
-};
-
-type ApiResponse<T> = {
-  status: string;
-  message: T;
-};
-
 const Login = () => {
   const navigate = useNavigate();
-
   const [hasToken, setHasToken] = useVerifyToken();
-  const [loading, setLoading] = useState<boolean>(false);
+
+  const loginMutation = useLoginMutation({
+    onSuccess: ({ userId }) => {
+      navigate(`/dashboard/${userId}`);
+    },
+  });
 
   const validationSchema = Yup.object({
     email: Yup.string()
@@ -49,49 +40,9 @@ const Login = () => {
     initialValues: { email: '', password: '' },
     validationSchema,
     onSubmit: async (values) => {
-      setLoading(true);
-      await loginUser(values.email, values.password);
+      await loginMutation.mutateAsync(values);
     },
   });
-
-  const loginUser = async (email: string, password: string) => {
-    const body = { email, password };
-
-    try {
-      const res = (await apiAuth.post(body, 'signin')) as ApiResponse<LoginSuccessMessage | string>;
-
-      if (res.status === '200') {
-        // message is an object on success
-        const msg = res.message as LoginSuccessMessage;
-
-        if (!msg.emailVerified) {
-          toast.error('Email not verified yet!. Please check your inbox for verification');
-
-          return;
-        }
-
-        localStorage.setItem('MockAPI-Token', msg.token);
-        apiProvider.updateToken();
-
-        navigate(`/dashboard/${msg.userId}`);
-
-        return;
-      }
-
-      if (res.status === '400') {
-        toast.error(typeof res.message === 'string' ? res.message : 'Bad request');
-
-        return;
-      }
-
-      toast.error('Error');
-    } catch (err) {
-      console.error(err);
-      toast.error('Error');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   if (hasToken) {
     return (
@@ -116,6 +67,7 @@ const Login = () => {
           <Label htmlFor="email" className="text-sm font-medium">
             Email
           </Label>
+
           <Input
             id="email"
             name="email"
@@ -131,6 +83,7 @@ const Login = () => {
               formik.touched.email && formik.errors.email ? 'border-destructive' : 'border-input',
             )}
           />
+
           {formik.touched.email && formik.errors.email ? (
             <p className="text-xs text-destructive">{formik.errors.email}</p>
           ) : null}
@@ -138,13 +91,14 @@ const Login = () => {
 
         {/* Password */}
         <div className="space-y-2">
-          <CustomPwdField
+          <CustomPwdField<LoginFormValues>
             handleBlur={formik.handleBlur}
             handleChange={formik.handleChange}
             values={formik.values}
             touched={formik.touched}
             errors={formik.errors}
           />
+
           <div className="flex items-center justify-between">
             <Link
               to="/reset-password"
@@ -155,16 +109,8 @@ const Login = () => {
           </div>
         </div>
 
-        <Button
-          type="submit"
-          disabled={loading}
-          className={[
-            'inline-flex h-10 w-full items-center justify-center rounded-md px-4 text-sm font-medium',
-            'bg-primary text-primary-foreground shadow hover:bg-primary/90',
-            'disabled:pointer-events-none disabled:opacity-50',
-          ].join(' ')}
-        >
-          {loading ? <CustomLoaderButton /> : 'Log in'}
+        <Button type="submit" disabled={loginMutation.isPending} className="h-10 w-full">
+          {loginMutation.isPending ? <CustomLoaderButton /> : 'Log in'}
         </Button>
 
         <p className="text-sm text-muted-foreground">

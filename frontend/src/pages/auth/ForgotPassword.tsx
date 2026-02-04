@@ -5,20 +5,17 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useVerifyToken } from '@/hooks/useVerifyToken';
-import { apiService } from '@/services/models/serviceModel';
-import type { ApiStringResponse } from '@/types';
+import { useChangePasswordMutation, useSendResetLinkMutation } from '@/services/auth/auth.queries';
 import { logout } from '@/utils';
 
 import { useFormik } from 'formik';
-import { toast } from 'react-hot-toast';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import * as Yup from 'yup';
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
   const [hasToken, setHasToken] = useVerifyToken();
-
-  const { id } = useParams();
+  const { id } = useParams<{ id?: string }>();
 
   if (hasToken) {
     return (
@@ -28,119 +25,94 @@ const ForgotPassword = () => {
     );
   }
 
-  return (
-    <React.Fragment>{id ? <SetPasswordForm auth_token={id} /> : <VerifyForm />}</React.Fragment>
-  );
+  return <>{id ? <SetPasswordForm authToken={id} /> : <VerifyForm />}</>;
 };
 
-const SetPasswordForm = ({ auth_token }) => {
-  const [loading, setLoading] = useState(false);
+type SetPasswordFormProps = { authToken: string };
+
+const SetPasswordForm = ({ authToken }: SetPasswordFormProps) => {
   const [isResponse, setIsResponse] = useState(false);
   const [status, setStatus] = useState(false);
 
-  const initialValues = {
-    password: '',
-    confirmPassword: '',
-    submit: null,
-  }; // form field value validation schema
+  const changePwdMutation = useChangePasswordMutation();
 
   const validationSchema = Yup.object().shape({
     password: Yup.string().min(6, 'Minimum 6 characters required').required('Password is required'),
-    confirmPassword: Yup.string().when('password', {
-      is: (password: string | undefined) => !!password,
-      then: (schema) => schema.oneOf([Yup.ref('password')], 'Confirm password should be same'),
-      otherwise: (schema) => schema,
-    }),
+    confirmPassword: Yup.string()
+      .required('Confirm password is required')
+      .oneOf([Yup.ref('password')], 'Confirm password should be same'),
   });
 
-  const { errors, values, touched, handleBlur, handleChange, handleSubmit } = useFormik({
-    initialValues,
+  const formik = useFormik({
+    initialValues: { password: '', confirmPassword: '' },
     validationSchema,
-    onSubmit: (values) => {
-      setLoading(true);
+    onSubmit: async (values) => {
       setIsResponse(false);
-      resetPassword(values.confirmPassword);
+
+      const res = await changePwdMutation.mutateAsync({
+        authToken,
+        password: values.password,
+      });
+
+      setStatus(res.status === '200');
+      setIsResponse(true);
     },
   });
 
-  const resetPassword = (password) => {
-    const body = {
-      password: password,
-    };
-
-    apiService.post(body, `change-password/${auth_token}`).then((res: ApiStringResponse) => {
-      if (res.status === '200') {
-        toast.success('Successfully reset');
-        setStatus(true);
-      } else if (res.status === '400') {
-        toast.error(res.message);
-        setStatus(false);
-      } else {
-        toast.error('Error');
-        setStatus(false);
-      }
-
-      setLoading(false);
-      setIsResponse(true);
-    });
-  };
+  const loading = changePwdMutation.isPending;
 
   return (
     <>
       <h2 className="mb-2 text-lg font-semibold tracking-tight">Change password</h2>
 
-      {/* Response message */}
       {isResponse && (
         <div
-          className={`rounded-md px-3 py-2 text-sm ${
-            status ? 'bg-emerald-500/10 text-emerald-600' : 'bg-red-500/10 text-red-600'
-          }`}
+          className={[
+            'rounded-md px-3 py-2 text-sm',
+            status ? 'bg-emerald-500/10 text-emerald-600' : 'bg-red-500/10 text-red-600',
+          ].join(' ')}
         >
           {status ? 'Password successfully changed' : 'Failed to reset password'}
         </div>
       )}
 
-      <form noValidate onSubmit={handleSubmit} className="w-full space-y-4">
+      <form noValidate onSubmit={formik.handleSubmit} className="w-full space-y-4">
         {/* Password */}
         <div className="space-y-1">
           <CustomPwdField
-            handleBlur={handleBlur}
-            handleChange={handleChange}
-            values={values}
-            touched={touched}
-            errors={errors}
+            label="Password"
+            field="password"
+            handleBlur={formik.handleBlur}
+            handleChange={formik.handleChange}
+            values={formik.values}
+            touched={formik.touched}
+            errors={formik.errors}
           />
-
-          {touched.password && errors.password && (
-            <p className="text-xs text-destructive">{errors.password}</p>
+          {formik.touched.password && formik.errors.password && (
+            <p className="text-xs text-destructive">{String(formik.errors.password)}</p>
           )}
         </div>
 
         {/* Confirm Password */}
         <div className="space-y-1">
           <CustomPwdField
-            handleBlur={handleBlur}
-            handleChange={handleChange}
-            values={values}
-            touched={touched}
-            errors={errors}
+            label="Confirm password"
+            field="confirmPassword"
+            handleBlur={formik.handleBlur}
+            handleChange={formik.handleChange}
+            values={formik.values}
+            touched={formik.touched}
+            errors={formik.errors}
           />
-
-          {touched.confirmPassword && errors.confirmPassword && (
-            <p className="text-xs text-destructive">{errors.confirmPassword}</p>
+          {formik.touched.confirmPassword && formik.errors.confirmPassword && (
+            <p className="text-xs text-destructive">{String(formik.errors.confirmPassword)}</p>
           )}
         </div>
 
-        {/* Submit */}
-        <Button
-          type="submit"
-          disabled={loading}
-          className="inline-flex h-10 w-full items-center justify-center rounded-md bg-primary text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-60"
-        >
+        <Button type="submit" disabled={loading} className="w-full">
           {loading ? <CustomLoaderButton /> : 'Reset password'}
         </Button>
 
-        {/* Back to login */}
         {status && (
           <p className="pt-4 text-center text-sm text-muted-foreground">
             <Link to="/" className="font-medium text-primary hover:underline">
@@ -156,107 +128,79 @@ const SetPasswordForm = ({ auth_token }) => {
 const VerifyForm = () => {
   const navigate = useNavigate();
 
-  const [loading, setLoading] = useState(false);
-  const [isMailSent, setIsMailSent] = useState(false);
-  const [status, setStatus] = useState(false);
+  const [isMailSent, setIsMailSent] = useState<boolean>(false);
+  const [status, setStatus] = useState<boolean>(false);
 
-  const initialValues = {
-    email: '',
-    password: '',
-    submit: null,
-  }; // form field value validation schema
+  const sendLinkMutation = useSendResetLinkMutation();
 
   const validationSchema = Yup.object().shape({
     email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
   });
 
-  const { errors, values, touched, handleBlur, handleChange, handleSubmit } = useFormik({
-    initialValues,
+  const formik = useFormik({
+    initialValues: { email: '' },
     validationSchema,
-    onSubmit: (values) => {
-      setLoading(true);
+    onSubmit: async (values) => {
       setIsMailSent(false);
-      sendLink(values.email);
+
+      const res = await sendLinkMutation.mutateAsync({
+        email: values.email,
+        fEndUrl: `${window.location.protocol}//${window.location.host}`,
+      });
+
+      setStatus(res.status === '200');
+      setIsMailSent(true);
     },
   });
 
-  const sendLink = (email) => {
-    const body = {
-      email: email,
-      fEndUrl: location.protocol + '//' + location.host,
-    };
-
-    apiService.post(body, 'reset-password').then((res: ApiStringResponse) => {
-      if (res.status === '200') {
-        setStatus(true);
-        toast.success('Reset Password link sent');
-      } else if (res.status === '400') {
-        toast.error(res.message);
-        setStatus(false);
-      } else {
-        toast.error('Error');
-        setStatus(false);
-      }
-
-      setLoading(false);
-      setIsMailSent(true);
-    });
-  };
+  const loading = sendLinkMutation.isPending;
 
   return (
     <>
       <h2 className="mb-2 text-lg font-semibold tracking-tight">Reset password</h2>
 
-      <form noValidate onSubmit={handleSubmit} className="w-full space-y-4">
+      <form noValidate onSubmit={formik.handleSubmit} className="w-full space-y-4">
         {/* Email */}
         <div className="space-y-1">
-          <Label className="text-sm font-medium">Email</Label>
+          <Label htmlFor="email" className="text-sm font-medium">
+            Email
+          </Label>
 
           <Input
+            id="email"
             type="email"
             name="email"
-            value={values.email || ''}
-            onBlur={handleBlur}
-            onChange={handleChange}
+            value={formik.values.email}
+            onBlur={formik.handleBlur}
+            onChange={formik.handleChange}
             placeholder="you@example.com"
-            className={`h-10 w-full rounded-md border px-3 text-sm outline-none transition
-          ${
-            touched.email && errors.email
-              ? 'border-destructive focus:ring-destructive'
-              : 'border-input focus:ring-primary'
-          }`}
+            className={
+              formik.touched.email && formik.errors.email ? 'border-destructive' : 'border-input'
+            }
           />
 
-          {touched.email && errors.email && (
-            <p className="text-xs text-destructive">{errors.email}</p>
+          {formik.touched.email && formik.errors.email && (
+            <p className="text-xs text-destructive">{String(formik.errors.email)}</p>
           )}
         </div>
 
         {/* Mail sent message */}
         {isMailSent && (
           <div
-            className={`rounded-md px-3 py-2 text-sm ${
-              status ? 'bg-emerald-500/10 text-emerald-600' : 'bg-red-500/10 text-red-600'
-            }`}
+            className={[
+              'rounded-md px-3 py-2 text-sm',
+              status ? 'bg-emerald-500/10 text-emerald-600' : 'bg-red-500/10 text-red-600',
+            ].join(' ')}
           >
             {status ? 'Verification link sent' : 'Failed to send verification link'}
           </div>
         )}
 
-        {/* Verify button */}
-        <Button
-          type="submit"
-          disabled={loading}
-          className="inline-flex h-10 w-full items-center justify-center rounded-md bg-primary text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-60"
-        >
+        <Button type="submit" disabled={loading} className="w-full">
           {loading ? <CustomLoaderButton /> : 'Verify'}
         </Button>
 
-        {/* Go back */}
-        <Button
-          onClick={() => navigate('/')}
-          className="inline-flex h-10 w-full items-center justify-center rounded-md border border-input bg-background text-sm font-medium transition hover:bg-accent text-foreground"
-        >
+        <Button type="button" variant="outline" onClick={() => navigate('/')} className="w-full">
           Go Back
         </Button>
       </form>

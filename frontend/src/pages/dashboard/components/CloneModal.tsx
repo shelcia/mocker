@@ -1,33 +1,12 @@
 import React, { useEffect, useState } from 'react';
 
 import { apiResource } from '@/services/models/resourceModal';
+import type { Resource, RouteParams, SchemaItem } from '@/types';
 
 import toast from 'react-hot-toast';
 import { useParams } from 'react-router-dom';
 
 import CommonResourceModal from './CommonResourceModal';
-
-type RouteParams = {
-  userId?: string;
-  projectId?: string;
-};
-
-export type SchemaOption = Record<string, unknown>;
-
-export type SchemaItem = {
-  id: number;
-  label: string;
-  field: string;
-  option?: SchemaOption;
-};
-
-type InputsState = {
-  name: string;
-  number: number;
-  userId?: string;
-  projectId?: string;
-  id?: string;
-};
 
 type CloneModalProps = {
   open: boolean;
@@ -41,7 +20,7 @@ const CloneModal = ({ open, setOpen, result, fetchResources }: CloneModalProps) 
   const { userId, projectId } = useParams<RouteParams>();
   const [loading, setLoading] = useState<boolean>(false);
 
-  const [inputs, setInputs] = useState<InputsState>({
+  const [inputs, setInputs] = useState<Resource>({
     name: '',
     number: 1,
     userId,

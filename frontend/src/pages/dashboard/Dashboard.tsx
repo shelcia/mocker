@@ -7,6 +7,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 import { apiProject } from '@/services/models/projectModel';
+import type { ApiResponse, Project } from '@/types';
 import { queryKeys } from '@/utils';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -19,16 +20,6 @@ import * as Yup from 'yup';
 import ConfirmDeleteModal from './components/ConfirmDelProjectModal';
 import CreateProject from './components/CreateProject';
 import RenameModal from './components/RenameModal';
-
-export type Project = {
-  _id: string;
-  name: string;
-};
-
-type ApiResult<T = unknown> = {
-  status: string;
-  message: T;
-};
 
 const Dashboard = () => {
   const { userId } = useParams<{ userId: string }>();
@@ -53,7 +44,7 @@ const Dashboard = () => {
     queryKey: userId ? queryKeys.projects(userId) : ['projects', 'missing-userId'],
     enabled: Boolean(userId),
     queryFn: async ({ signal }) => {
-      const res = (await apiProject.getSingle(userId!, signal)) as ApiResult<Project[]>;
+      const res = (await apiProject.getSingle(userId!, signal)) as ApiResponse<Project[]>;
 
       if (res.status !== '200') throw new Error(String(res.message ?? 'Failed to load projects'));
 
@@ -68,7 +59,7 @@ const Dashboard = () => {
     mutationFn: async (name: string) => {
       if (!userId) throw new Error('Missing userId');
 
-      const res = (await apiProject.post({ name, userId })) as ApiResult<string>;
+      const res = (await apiProject.post({ name, userId })) as ApiResponse<string>;
 
       return res;
     },
@@ -86,7 +77,7 @@ const Dashboard = () => {
 
   const deleteProjectMutation = useMutation({
     mutationFn: async (id: string) => {
-      const res = (await apiProject.remove(id)) as ApiResult<string>;
+      const res = (await apiProject.remove(id)) as ApiResponse<string>;
 
       return res;
     },
@@ -103,7 +94,7 @@ const Dashboard = () => {
 
   const deleteSelectedMutation = useMutation({
     mutationFn: async (ids: string[]) => {
-      const res = (await apiProject.removeAll({ projects: ids })) as ApiResult<string>;
+      const res = (await apiProject.removeAll({ projects: ids })) as ApiResponse<string>;
 
       return res;
     },
@@ -260,6 +251,11 @@ const Dashboard = () => {
                 </Button>
               </div>
             )}
+          </div>
+        )}
+        {projects.length === 0 && (
+          <div className="rounded-xl border border-dashed p-6 text-center text-sm text-muted-foreground">
+            No projects yet. Create your first one.
           </div>
         )}
       </CardContent>

@@ -3,6 +3,21 @@ import React, { useEffect, useState } from 'react';
 import { CustomModal } from '@/components/common';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import type { Project } from '@/types';
+
+interface ConfirmDeleteModalProps {
+  confirmDeleteModal: boolean;
+  setConfirmDeleteModal: React.Dispatch<React.SetStateAction<boolean>>;
+
+  project: Project;
+
+  deleteProject: (id: string) => void | Promise<void>;
+
+  isMultipleDelete?: boolean;
+  setIsMultipleDelete?: React.Dispatch<React.SetStateAction<boolean>>;
+
+  delSelected?: () => void | Promise<void>;
+}
 
 const ConfirmDeleteModal = ({
   confirmDeleteModal,
@@ -12,7 +27,7 @@ const ConfirmDeleteModal = ({
   isMultipleDelete = false,
   setIsMultipleDelete,
   delSelected = () => {},
-}) => {
+}: ConfirmDeleteModalProps) => {
   const [formData, setFormData] = useState<string>('');
   const [disabled, setDisabled] = useState<boolean>(true);
 

@@ -17,7 +17,7 @@ const CustomToggle = () => {
         localStorage.setItem('mockapi-theme', !darkTheme ? 'true' : 'false');
       }}
     >
-      {darkTheme ? <Moon size="1.2rem" /> : <Sun size="1.2rem" color="rgb(255,214,0)" />}
+      {darkTheme ? <Moon size="1.2rem" /> : <Sun size="1.2rem" color="rgb(239, 176, 0)" />}
     </Button>
   );
 };

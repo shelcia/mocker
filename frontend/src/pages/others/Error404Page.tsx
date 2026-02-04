@@ -4,8 +4,6 @@ import { Button } from '@/components/ui/button';
 
 import { useNavigate } from 'react-router-dom';
 
-import Img from '../../assets/404.png';
-
 const Error404Page: React.FC = () => {
   const navigate = useNavigate();
 
@@ -18,13 +16,6 @@ const Error404Page: React.FC = () => {
 
       <div className="relative mx-auto flex max-w-3xl flex-col items-center justify-center px-6 py-16 text-center">
         <div className="rounded-2xl border bg-background/70 p-8 shadow-sm backdrop-blur">
-          <img
-            src={Img}
-            alt="404 error information"
-            className="mx-auto h-[260px] w-auto select-none"
-            draggable={false}
-          />
-
           <h1 className="mt-6 text-6xl font-bold tracking-tight">404</h1>
 
           <p className="mt-3 text-base text-muted-foreground">
@@ -32,18 +23,11 @@ const Error404Page: React.FC = () => {
           </p>
 
           <div className="mt-8 flex items-center justify-center gap-3">
-            <Button
-              type="button"
-              onClick={() => navigate('/')}
-              className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground shadow-sm transition hover:opacity-90"
-            >
+            <Button type="button" onClick={() => navigate('/')} variant="secondary">
               Go Home
             </Button>
 
-            <Button
-              onClick={() => navigate(-1)}
-              className="inline-flex h-10 items-center justify-center rounded-md border px-4 text-sm font-medium transition hover:bg-accent"
-            >
+            <Button type="button" onClick={() => navigate(-1)} variant="outline">
               Go Back
             </Button>
           </div>
