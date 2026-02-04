@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
+
+import { apiAuth } from '@/services/models/authModel';
+import type { ApiStringResponse } from '@/types';
+
 import { useNavigate, useParams } from 'react-router-dom';
-import { apiAuth } from '../../services/models/authModel';
-import { ApiStringResponse } from '../../types';
 
 const EmailVerify = () => {
   const { id } = useParams();

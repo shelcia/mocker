@@ -1,7 +1,10 @@
 import React from 'react';
-import { useRoutes } from 'react-router-dom';
-import routes from './routes';
+
 import { Toaster } from 'react-hot-toast';
+import { useRoutes } from 'react-router-dom';
+
+import routes from './routes';
+
 import './styles/style.css';
 
 const App = () => {

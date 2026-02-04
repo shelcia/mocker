@@ -1,9 +1,10 @@
-/* eslint-disable indent */
 // provider.js
 
 import axios from 'axios';
-import { handleResponse, handleError } from './response';
+
 import { BACKEND_URL } from '../api';
+
+import { handleError, handleResponse } from './response';
 // import { LOCALHOST_URL } from "../api";
 
 // Define your api url from any source.
@@ -17,8 +18,6 @@ let token = localStorage.getItem('MockAPI-Token');
 type Params = Record<string, string | number | boolean | null | undefined>;
 type AdditionalParam = string; // keeping your current design: "" or "something"
 
-type ApiResult<T = unknown> = Promise<T>;
-
 /** @param {string} resource */
 const getAll = async (resource: string, signal: AbortSignal, isAuthorized: boolean = false) => {
   const headers = isAuthorized ? { 'auth-token': token } : {};
@@ -28,6 +27,7 @@ const getAll = async (resource: string, signal: AbortSignal, isAuthorized: boole
       signal: signal,
       headers: headers,
     });
+
     return handleResponse(response);
   } catch (error) {
     return handleError(error);
@@ -48,6 +48,7 @@ const getSingle = async (
 
   try {
     let response;
+
     if (additionalParam === '') {
       response = await axios.get(`${BASE_URL}/${resource}/${id}`, {
         signal: signal,
@@ -60,6 +61,7 @@ const getSingle = async (
         headers: headers,
       });
     }
+
     return handleResponse(response);
   } catch (error) {
     return handleError(error);
@@ -79,6 +81,7 @@ const getByParams = async (
 
   try {
     let response;
+
     if (additionalParam === '') {
       response = await axios.get(`${BASE_URL}/${resource}`, {
         signal: signal,
@@ -92,6 +95,7 @@ const getByParams = async (
         params: params,
       });
     }
+
     return handleResponse(response);
   } catch (error) {
     return handleError(error);
@@ -112,6 +116,7 @@ const post = async (
 
   try {
     let response;
+
     if (additionalParam === '') {
       response = await axios.post(`${BASE_URL}/${resource}`, model, {
         headers: headers,
@@ -122,6 +127,7 @@ const post = async (
         headers: headers,
       });
     }
+
     return handleResponse(response);
   } catch (error) {
     return handleError(error);
@@ -147,6 +153,7 @@ const postFormData = async (
 
   try {
     let response;
+
     if (additionalParam === '') {
       response = await axios.post(`${BASE_URL}/${resource}`, model, {
         headers: headers,
@@ -156,6 +163,7 @@ const postFormData = async (
         headers: headers,
       });
     }
+
     // console.log(await response);
     return handleResponse(response);
   } catch (error) {
@@ -175,6 +183,7 @@ const put = async (
 
   try {
     let response;
+
     if (additionalParams === '') {
       response = await axios.put(`${BASE_URL}/${resource}`, model, {
         headers: headers,
@@ -203,6 +212,7 @@ const putById = async (
     const response = await axios.put(`${BASE_URL}/${resource}/${id}`, model, {
       signal: signal,
     });
+
     return handleResponse(response);
   } catch (error) {
     return handleError(error);
@@ -228,6 +238,7 @@ const putFormData = async (
 
   try {
     let response;
+
     if (additionalParam === '') {
       response = await axios.put(`${BASE_URL}/${resource}`, model, {
         headers: headers,
@@ -237,6 +248,7 @@ const putFormData = async (
         headers: headers,
       });
     }
+
     // console.log(await response);
     return handleResponse(response);
   } catch (error) {
@@ -254,6 +266,7 @@ const patch = async (resource: string, model: unknown, signal?: AbortSignal) => 
         'auth-token': token,
       },
     });
+
     return handleResponse(response);
   } catch (error) {
     return handleError(error);
@@ -277,6 +290,7 @@ const patchByParams = async (
       headers: headers,
     });
     const response = await request.patch(null);
+
     return handleResponse(response);
   } catch (error) {
     return handleError(error);
@@ -296,6 +310,7 @@ const remove = async (
   // console.log(`${BASE_URL}/${resource}/${id}`);
   try {
     let response;
+
     if (additionalParams === '') {
       response = await axios.delete(`${BASE_URL}/${resource}/${id}`, {
         headers: headers,
@@ -305,6 +320,7 @@ const remove = async (
         headers: headers,
       });
     }
+
     return handleResponse(response);
   } catch (error) {
     return handleError(error);
@@ -323,6 +339,7 @@ const removeAll = async (
 
   try {
     let response;
+
     if (additionalParams === '') {
       response = await axios.delete(`${BASE_URL}/${resource}`, {
         headers: headers,
@@ -334,6 +351,7 @@ const removeAll = async (
         data: model,
       });
     }
+
     return handleResponse(response);
   } catch (error) {
     return handleError(error);

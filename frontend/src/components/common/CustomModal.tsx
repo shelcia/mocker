@@ -1,6 +1,6 @@
 import React, { type ReactNode } from 'react';
+
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 export interface CustomModalProps {
@@ -24,16 +24,6 @@ const CustomModal = ({ open, setOpen, title = '', width = 400, children }: Custo
         {(title || true) && (
           <DialogHeader className="flex flex-row items-center justify-between gap-4">
             <DialogTitle className="text-lg font-semibold text-primary">{title}</DialogTitle>
-
-            {/* <Button
-              variant="destructive"
-              size="icon"
-              onClick={() => setOpen(false)}
-              className="h-8 w-8 rounded-full"
-              aria-label="Close modal"
-            >
-              <MdClose className="h-4 w-4" />
-            </Button> */}
           </DialogHeader>
         )}
 

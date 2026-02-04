@@ -1,17 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Link, useNavigate } from 'react-router-dom';
-import { apiAuth } from '../../services/models/authModel';
-import { toast } from 'react-hot-toast';
-import * as Yup from 'yup';
-import { useFormik } from 'formik';
-import { CustomLoaderButton } from '../../components/CustomButtons';
-import { CustomPwdField } from '../../components/CustomInputFields';
-import { ApiStringResponse } from '../../types';
+import React, { useState } from 'react';
+
+import { CustomLoaderButton } from '@/components/common';
+import { CustomPwdField } from '@/components/CustomInputFields';
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { useVerifyToken } from '@/hooks/useVerifyToken';
+import type { ApiStringResponse } from '@/types';
+
+import { useFormik } from 'formik';
+import { toast } from 'react-hot-toast';
+import { Link, useNavigate } from 'react-router-dom';
+import * as Yup from 'yup';
+
+import { apiAuth } from '../../services/models/authModel';
+import { logout } from '@/utils';
 
 const Signup = () => {
   const [hasToken, setHasToken] = useVerifyToken();
@@ -54,21 +57,19 @@ const Signup = () => {
       } else {
         toast.error('Error');
       }
+
       setLoading(false);
     });
   };
-  const logout = () => {
-    localStorage.clear();
-    setHasToken(false);
-    navigate('/');
-  };
+
   if (hasToken) {
     return (
-      <Button variant="default" onClick={logout} className="mt-4">
+      <Button variant="default" onClick={() => logout(setHasToken, navigate)} className="mt-4">
         Logout
       </Button>
     );
   }
+
   return (
     <React.Fragment>
       <div className="mb-6 space-y-2">

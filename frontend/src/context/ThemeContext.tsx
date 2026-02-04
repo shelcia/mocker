@@ -1,10 +1,10 @@
 import React, {
   createContext,
+  type Dispatch,
+  type ReactNode,
+  type SetStateAction,
   useEffect,
   useState,
-  type ReactNode,
-  type Dispatch,
-  type SetStateAction,
 } from 'react';
 
 export type ThemeContextValue = [boolean, Dispatch<SetStateAction<boolean>>];
@@ -20,6 +20,7 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
 
   useEffect(() => {
     const darkThemeLocal = localStorage.getItem('mockapi-theme');
+
     if (darkThemeLocal === 'true') {
       setDarkTheme(true);
     }
@@ -27,6 +28,7 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
 
   useEffect(() => {
     const root = document.documentElement;
+
     root.classList.toggle('dark', darkTheme);
   }, [darkTheme]);
 

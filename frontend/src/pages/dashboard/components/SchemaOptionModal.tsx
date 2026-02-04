@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import CustomModal from '../../../components/CustomModal';
-import dayjs from 'dayjs';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
-import { Input } from '@/components/ui/input';
+
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import {
   Select,
   SelectContent,
@@ -13,10 +13,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Separator } from '@/components/ui/separator';
 import { fromISO, toISO } from '@/utils';
+
+import dayjs from 'dayjs';
 import { Calendar as CalendarIcon } from 'lucide-react';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Calendar } from '@/components/ui/calendar';
+
+import CustomModal from '../../../components/common/CustomModal';
 
 const SchemaOptionModal = ({ optionOpen, setOptionOpen, fieldInfo, setOption }) => {
   const [myOption, setMyOption] = useState({});
@@ -63,6 +66,7 @@ export const Option: React.FC<OptionProps> = ({ fieldInfo, myOption, setMyOption
   if (!fieldInfo?.field) return null;
 
   const Component = OPTION_RENDERERS[fieldInfo.field] ?? null;
+
   if (!Component) return null;
 
   return (
@@ -76,21 +80,16 @@ export const Option: React.FC<OptionProps> = ({ fieldInfo, myOption, setMyOption
    Shared helpers 
 ------------------------------ */
 
-function Field({
-  label,
-  value,
-  placeholder,
-  onChange,
-  inputMode,
-  className,
-}: {
+interface FieldProps {
   label: string;
   value: string;
   placeholder?: string;
   onChange: (val: string) => void;
   inputMode?: React.HTMLAttributes<HTMLInputElement>['inputMode'];
   className?: string;
-}) {
+}
+
+const Field = ({ label, value, placeholder, onChange, inputMode, className }: FieldProps) => {
   return (
     <div className={['space-y-2', className].filter(Boolean).join(' ')}>
       <Label>{label}</Label>
@@ -102,10 +101,11 @@ function Field({
       />
     </div>
   );
-}
+};
 
 function ErrorBanner({ message }: { message?: string }) {
   if (!message) return null;
+
   return (
     <Alert variant="destructive">
       <AlertDescription>{message}</AlertDescription>
@@ -119,11 +119,13 @@ function useMinMaxValidator() {
   const validate = React.useCallback((minStr?: string, maxStr?: string, custom?: string) => {
     if (custom) {
       setMessage(custom);
+
       return false;
     }
 
     if (!minStr || !maxStr) {
       setMessage('');
+
       return true;
     }
 
@@ -132,15 +134,18 @@ function useMinMaxValidator() {
 
     if (Number.isNaN(min) || Number.isNaN(max)) {
       setMessage('min and max must be numbers');
+
       return false;
     }
 
     if (max < min) {
       setMessage('max must be greater than min');
+
       return false;
     }
 
     setMessage('');
+
     return true;
   }, []);
 
@@ -183,6 +188,7 @@ function MinMax({
           setMyOption((prev: any) => ({ ...prev, min: val }));
           // validate against current max
           const ok = validate(val, String(myOption.max ?? ''));
+
           // if birthdate mode: override message when invalid
           if (!ok && validateLabelMessage) {
             // keep generic min/max ordering error text
@@ -598,6 +604,7 @@ function StringOpt({ myOption, setMyOption }: OptionRendererProps) {
 function Between({ myOption, setMyOption }: OptionRendererProps) {
   const from = fromISO(myOption.from);
   const to = fromISO(myOption.to);
+
   return (
     <div className="space-y-6">
       {/* FROM */}
@@ -619,7 +626,9 @@ function Between({ myOption, setMyOption }: OptionRendererProps) {
                 selected={from.date}
                 onSelect={(date) => {
                   const iso = toISO(date, from.time);
+
                   if (!iso) return;
+
                   setMyOption((prev: any) => ({ ...prev, from: iso }));
                 }}
               />
@@ -633,7 +642,9 @@ function Between({ myOption, setMyOption }: OptionRendererProps) {
             value={from.time}
             onChange={(e) => {
               const iso = toISO(from.date, e.target.value);
+
               if (!iso) return;
+
               setMyOption((prev: any) => ({ ...prev, from: iso }));
             }}
           />
@@ -659,7 +670,9 @@ function Between({ myOption, setMyOption }: OptionRendererProps) {
                 selected={to.date}
                 onSelect={(date) => {
                   const iso = toISO(date, to.time);
+
                   if (!iso) return;
+
                   setMyOption((prev: any) => ({ ...prev, to: iso }));
                 }}
                 initialFocus
@@ -674,7 +687,9 @@ function Between({ myOption, setMyOption }: OptionRendererProps) {
             value={to.time}
             onChange={(e) => {
               const iso = toISO(to.date, e.target.value);
+
               if (!iso) return;
+
               setMyOption((prev: any) => ({ ...prev, to: iso }));
             }}
           />
@@ -788,7 +803,9 @@ export function Recent({ myOption, setMyOption }: OptionRendererProps) {
                 selected={ref.date}
                 onSelect={(date) => {
                   const iso = toISO(date, ref.time);
+
                   if (!iso) return;
+
                   setMyOption((prev: any) => ({ ...prev, refDate: iso }));
                 }}
                 initialFocus
@@ -803,7 +820,9 @@ export function Recent({ myOption, setMyOption }: OptionRendererProps) {
             value={ref.time}
             onChange={(e) => {
               const iso = toISO(ref.date, e.target.value);
+
               if (!iso) return;
+
               setMyOption((prev: any) => ({ ...prev, refDate: iso }));
             }}
           />

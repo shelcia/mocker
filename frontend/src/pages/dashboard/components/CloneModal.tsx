@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import toast from 'react-hot-toast';
 
-import { apiResource } from '../../../services/models/resourceModal';
+import { apiResource } from '@/services/models/resourceModal';
+
+import toast from 'react-hot-toast';
+import { useParams } from 'react-router-dom';
+
 import CommonResourceModal from './CommonResourceModal';
 
 type RouteParams = {
@@ -66,7 +68,9 @@ const CloneModal = ({ open, setOpen, result, fetchResources }: CloneModalProps) 
 
   useEffect(() => {
     const ac = new AbortController();
+
     fetchResource(ac.signal);
+
     return () => ac.abort();
   }, []);
 

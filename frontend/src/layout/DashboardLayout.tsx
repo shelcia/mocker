@@ -1,21 +1,22 @@
-import React, { ReactNode } from 'react';
-import { useNavigate } from 'react-router-dom';
-import CustomToggle from '../components/CustomToggle';
-import Logo from '../assets/images/logo.png';
+import React from 'react';
+
+import { CustomToggle } from '@/components/common';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+
+import { Component } from 'lucide-react';
+import type { ReactNode } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { logout } from '@/utils';
+import { useVerifyToken } from '@/hooks/useVerifyToken';
 
 interface DashboardLayoutProps {
   children: ReactNode;
 }
 
 const DashboardLayout = ({ children }: DashboardLayoutProps) => {
+  const [, setHasToken] = useVerifyToken();
   const navigate = useNavigate();
-
-  const logout = () => {
-    localStorage.clear();
-    navigate('/');
-  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -24,14 +25,14 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         <div className="mx-auto flex h-14 max-w-7xl items-center px-4">
           {/* brand */}
           <div className="flex items-center gap-2">
-            <img src={Logo} alt="logo" className="h-4 w-4" />
+            <Component className="size-4" />
             <span className="text-sm font-extrabold uppercase">Mocker</span>
           </div>
 
           {/* actions */}
           <div className="ml-auto flex items-center gap-4">
             <CustomToggle />
-            <Button onClick={logout} variant="ghost">
+            <Button onClick={() => logout(setHasToken, navigate)} variant="ghost">
               Logout
             </Button>
           </div>

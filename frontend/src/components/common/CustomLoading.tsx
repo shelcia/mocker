@@ -1,5 +1,6 @@
 import React from 'react';
-import { Rings } from 'react-loader-spinner';
+
+import { ColorRing, Rings } from 'react-loader-spinner';
 
 const Loading = ({ children }: { children?: React.ReactNode }) => {
   return (
@@ -34,3 +35,7 @@ export const PartLoader = ({ children }: { children?: React.ReactNode }) => (
     {children}
   </div>
 );
+
+export const CustomLoaderButton = () => {
+  return <ColorRing visible={true} height="30" width="30" />;
+};

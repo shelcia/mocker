@@ -1,14 +1,7 @@
-import React, { useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
-import CustomModal from '../../../components/CustomModal';
-import toast from 'react-hot-toast';
-import * as Yup from 'yup';
+import React, { type ReactNode, useEffect, useMemo, useState } from 'react';
 
-import { ThemeContext } from '../../../context/ThemeContext';
-import SchemaOptionModal from './SchemaOptionModal';
-import { CHOICES, OPTION_EXIST_FOR, VALIDATION_ERROR } from '../../../data/constants';
-import { Plus, Settings2 } from 'lucide-react';
+import { CustomModal, CustomTooltip } from '@/components/common';
 import { Button } from '@/components/ui/button';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -21,6 +14,13 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
+import { CHOICES, OPTION_EXIST_FOR, VALIDATION_ERROR } from '@/data/constants';
+
+import { Plus, Settings2, Trash } from 'lucide-react';
+import toast from 'react-hot-toast';
+import * as Yup from 'yup';
+
+import SchemaOptionModal from './SchemaOptionModal';
 
 export type SchemaField = string;
 
@@ -71,8 +71,6 @@ const CommonResourceModal = ({
   func,
   children,
 }: CommonResourceModalProps) => {
-  const [darkTheme] = useContext(ThemeContext);
-
   const [optionOpen, setOptionOpen] = useState<boolean>(false);
   const [option, setOption] = useState<SchemaOption>({});
   const [fieldInfo, setFieldInfo] = useState<{
@@ -97,6 +95,7 @@ const CommonResourceModal = ({
 
     if (name === 'number') {
       const num = Number(value);
+
       setInputs((prev) => ({ ...prev, number: num }));
 
       if (!value.length || Number.isNaN(num)) {
@@ -104,6 +103,7 @@ const CommonResourceModal = ({
       } else if (!validNumber) {
         setValidNumber(true);
       }
+
       return;
     }
 
@@ -124,6 +124,7 @@ const CommonResourceModal = ({
 
   useEffect(() => {
     if (!fieldInfo.id) return;
+
     // When SchemaOptionModal updates `option`, apply it to the selected schema row
     updateSchemaItem(fieldInfo.id, { option: { ...option } });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -140,7 +141,9 @@ const CommonResourceModal = ({
   const handleAdd = (idx: number) => {
     setSchema((prev) => {
       const next = [...prev];
+
       next.splice(idx + 1, 0, { id: Date.now(), label: '', field: '' });
+
       return next;
     });
   };
@@ -164,18 +167,23 @@ const CommonResourceModal = ({
     schema.forEach((val, idx) => {
       if (labelMap.has(val.label)) {
         errs.set(idx, { errCode: VALIDATION_ERROR.LABEL_NAME });
+
         return;
       }
+
       labelMap.set(val.label, idx);
     });
 
     setValidationInfo(errs);
+
     if (errs.size) {
       setIsLabelSame(true);
+
       return false;
     }
 
     setIsLabelSame(false);
+
     return true;
   };
 
@@ -186,16 +194,19 @@ const CommonResourceModal = ({
 
     if (schema.length === 0) {
       toast.error('Atleast one resource is required');
+
       return false;
     }
 
     if (!inputs.name || inputs.name.length === 0) {
       setValidName(false);
+
       return false;
     }
 
     if (Number.isNaN(inputs.number) || inputs.number <= 0) {
       setValidNumber(false);
+
       return false;
     }
 
@@ -206,11 +217,13 @@ const CommonResourceModal = ({
         ValidationSchema.validateSync(val);
       } catch (e) {
         const yupErr = e as Yup.ValidationError;
+
         errs.set(idx, { errCode: yupErr.message });
       }
     });
 
     setValidationInfo(errs);
+
     return errs.size === 0;
   };
 
@@ -275,7 +288,10 @@ const CommonResourceModal = ({
           const fieldErr = validationInfo.get(idx)?.errCode === VALIDATION_ERROR.FIELD_NAME;
 
           return (
-            <div key={item.id} className="grid grid-cols-12 gap-2 items-start">
+            <div
+              key={item.id}
+              className="grid grid-cols-12 gap-2 items-start border p-2 rounded-md"
+            >
               {/* Label column (xs=3) */}
               <div className="col-span-12 sm:col-span-3 space-y-2">
                 <Label htmlFor={`schema-label-${item.id}`}>Label</Label>
@@ -295,23 +311,26 @@ const CommonResourceModal = ({
 
               {/* Field + actions column (xs=9) */}
               <div className="col-span-12 sm:col-span-9">
-                <div className="flex flex-wrap gap-2 items-start">
+                <div className="flex flex-wrap gap-2 items-end">
                   {/* Field select */}
-                  <div className="flex-1 min-w-[220px] space-y-2">
+                  <div className="flex-1 min-w-[220px] space-y-2 w-full">
                     <Label htmlFor={`schema-field-${item.id}`}>Field</Label>
 
-                    {/* shadcn Select is controlled via value + onValueChange */}
                     <Select
                       value={item.field ?? ''}
                       onValueChange={(val) => updateSchemaItem(item.id, { field: val })}
                     >
-                      <SelectTrigger id={`schema-field-${item.id}`} aria-invalid={fieldErr}>
+                      <SelectTrigger
+                        id={`schema-field-${item.id}`}
+                        aria-invalid={fieldErr}
+                        className="w-full"
+                      >
                         <SelectValue placeholder="Select a field" />
                       </SelectTrigger>
 
-                      <SelectContent>
+                      <SelectContent className="w-full">
                         {CHOICES.map((group) => (
-                          <SelectGroup key={group.category}>
+                          <SelectGroup key={group.category} className="w-full">
                             <SelectLabel className="text-muted-foreground">
                               {group.category}
                             </SelectLabel>
@@ -330,42 +349,31 @@ const CommonResourceModal = ({
 
                   {/* Options button */}
                   {OPTION_EXIST_FOR.includes(item.field) && (
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button
-                            type="button"
-                            size="icon"
-                            variant="secondary"
-                            className="mt-7"
-                            onClick={() => {
-                              setFieldInfo({
-                                id: item.id,
-                                label: item.label,
-                                field: item.field,
-                                option: item.option,
-                              });
-                              setOptionOpen(true);
-                            }}
-                          >
-                            <Settings2 className="h-4 w-4" />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>More options for {item.field}</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
+                    <CustomTooltip
+                      onClickFn={() => {
+                        setFieldInfo({
+                          id: item.id,
+                          label: item.label,
+                          field: item.field,
+                          option: item.option,
+                        });
+                        setOptionOpen(true);
+                      }}
+                      text={`More options for ${item.field}`}
+                      variant="secondary"
+                    >
+                      <Settings2 className="h-4 w-4" />
+                    </CustomTooltip>
                   )}
 
                   {/* Delete */}
                   <Button
                     type="button"
                     variant="destructive"
-                    className="mt-7"
                     onClick={() => deleteSchema(item.id)}
+                    size="icon"
                   >
-                    Delete
+                    <Trash className="h-4 w-4" />
                   </Button>
 
                   {/* Add row (+) */}
@@ -373,7 +381,6 @@ const CommonResourceModal = ({
                     type="button"
                     size="icon"
                     variant="outline"
-                    className="mt-7"
                     onClick={() => handleAdd(idx)}
                     aria-label="Add schema row"
                   >
@@ -388,7 +395,7 @@ const CommonResourceModal = ({
 
       <div className="flex flex-col gap-4">
         {/* Add Resource */}
-        <Button size="sm" onClick={addSchema} className="w-fit" variant="outline">
+        <Button size="sm" onClick={addSchema} className="w-fit mt-4" variant="outline">
           Add Resource
         </Button>
 

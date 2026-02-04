@@ -1,9 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { apiResource } from '../../../services/models/resourceModal';
-import CommonResourceModal from './CommonResourceModal';
-import { useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+
+import { apiResource } from '@/services/models/resourceModal';
+import type { ApiStringResponse } from '@/types';
+
 import { toast } from 'react-hot-toast';
-import { ApiStringResponse } from '../../../types';
+import { useParams } from 'react-router-dom';
+
+import CommonResourceModal from './CommonResourceModal';
 
 export interface Resource {
   name: string;
@@ -46,7 +49,9 @@ const EditResourceModal = ({ open, setOpen, result, fetchResult }) => {
 
   useEffect(() => {
     const ac = new AbortController();
+
     fetchResource(ac.signal);
+
     return () => ac.abort();
   }, []);
 

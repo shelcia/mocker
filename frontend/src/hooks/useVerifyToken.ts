@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+
 import axios from 'axios';
 
 type VerifyResponse = {
@@ -16,6 +17,7 @@ export const useVerifyToken = () => {
 
     if (!userToken) {
       setHasToken(false);
+
       return () => ac.abort();
     }
 

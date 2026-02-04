@@ -1,9 +1,12 @@
 import React from 'react';
+
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
-import { ThemeProvider } from './context/ThemeContext';
+
 import App from './App';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { TooltipProvider } from './components/ui/tooltip';
+import { ThemeProvider } from './context/ThemeContext';
 
 import '@fontsource/jetbrains-mono';
 import '@fontsource-variable/dm-sans';
@@ -21,11 +24,13 @@ const queryClient = new QueryClient({
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </ThemeProvider>
+      <TooltipProvider>
+        <ThemeProvider>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </ThemeProvider>
+      </TooltipProvider>
     </QueryClientProvider>
   </React.StrictMode>,
 );

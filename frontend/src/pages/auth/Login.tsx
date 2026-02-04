@@ -1,27 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { Link, useNavigate } from 'react-router-dom';
-import toast from 'react-hot-toast';
-import * as Yup from 'yup';
-import { useFormik } from 'formik';
+import { useState } from 'react';
 
-import { apiAuth } from '../../services/models/authModel';
-import { apiProvider } from '../../services/utilities/provider';
-import { CustomLoaderButton } from '../../components/CustomButtons';
-import { CustomPwdField } from '../../components/CustomInputFields';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
+import { CustomLoaderButton } from '@/components/common';
+import { CustomPwdField } from '@/components/CustomInputFields';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { useVerifyToken } from '@/hooks/useVerifyToken';
+import { cn } from '@/lib/utils';
+import { apiAuth } from '@/services/models/authModel';
+import { apiProvider } from '@/services/utilities/provider';
+
+import { useFormik } from 'formik';
+import toast from 'react-hot-toast';
+import { Link, useNavigate } from 'react-router-dom';
+import * as Yup from 'yup';
+import { logout } from '@/utils';
 
 type LoginFormValues = {
   email: string;
   password: string;
-};
-
-type VerifyResponse = {
-  message: string;
 };
 
 type LoginSuccessMessage = {
@@ -70,19 +67,21 @@ const Login = () => {
 
         if (!msg.emailVerified) {
           toast.error('Email not verified yet!. Please check your inbox for verification');
+
           return;
         }
 
         localStorage.setItem('MockAPI-Token', msg.token);
         apiProvider.updateToken();
 
-        toast.success('Login successful');
         navigate(`/dashboard/${msg.userId}`);
+
         return;
       }
 
       if (res.status === '400') {
         toast.error(typeof res.message === 'string' ? res.message : 'Bad request');
+
         return;
       }
 
@@ -95,15 +94,9 @@ const Login = () => {
     }
   };
 
-  const logout = () => {
-    localStorage.clear();
-    setHasToken(false);
-    navigate('/');
-  };
-
   if (hasToken) {
     return (
-      <Button variant="outline" onClick={logout} className="mt-4">
+      <Button variant="outline" onClick={() => logout(setHasToken, navigate)} className="mt-4">
         Logout
       </Button>
     );
@@ -146,18 +139,6 @@ const Login = () => {
 
         {/* Password */}
         <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <Label htmlFor="password" className="text-sm font-medium">
-              Password
-            </Label>
-
-            <Link
-              to="/reset-password"
-              className="text-xs text-muted-foreground underline-offset-4 hover:underline"
-            >
-              Forgot password?
-            </Link>
-          </div>
           <CustomPwdField
             handleBlur={formik.handleBlur}
             handleChange={formik.handleChange}
@@ -165,6 +146,14 @@ const Login = () => {
             touched={formik.touched}
             errors={formik.errors}
           />
+          <div className="flex items-center justify-between">
+            <Link
+              to="/reset-password"
+              className="text-xs text-muted-foreground underline-offset-4 hover:underline"
+            >
+              Forgot password?
+            </Link>
+          </div>
         </div>
 
         <Button

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import CustomModal from '../../../components/CustomModal';
+
+import CustomModal from '@/components/common/CustomModal';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
@@ -12,8 +13,8 @@ const ConfirmDeleteModal = ({
   setIsMultipleDelete,
   delSelected = () => {},
 }) => {
-  const [formData, setFormData] = useState('');
-  const [disabled, setDisabled] = useState(true);
+  const [formData, setFormData] = useState<string>('');
+  const [disabled, setDisabled] = useState<boolean>(true);
 
   const checkProjectName = () => {
     if (isMultipleDelete) {
@@ -22,8 +23,10 @@ const ConfirmDeleteModal = ({
       } else {
         setDisabled(true);
       }
+
       return;
     }
+
     if (project.name === formData) {
       setDisabled(false);
     } else {

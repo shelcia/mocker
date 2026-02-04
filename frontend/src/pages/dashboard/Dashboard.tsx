@@ -1,25 +1,24 @@
-import React, { useMemo, useState } from "react";
-import * as Yup from "yup";
-import { useFormik } from "formik";
-import { useNavigate, useParams } from "react-router-dom";
-import toast from "react-hot-toast";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMemo, useState } from 'react';
 
-import ConfirmDeleteModal from "./components/ConfirmDelProjectModal";
-import { RenameModal } from "./components/RenameModal";
-import CreateProject from "./components/CreateProject";
+import CustomTooltip from '@/components/common/CustomTooltip';
+import { Button } from '@/components/ui/button';
+import { CardContent } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Separator } from '@/components/ui/separator';
+import { Skeleton } from '@/components/ui/skeleton';
+import { apiProject } from '@/services/models/projectModel';
+import { queryKeys } from '@/utils';
 
-import { apiProject } from "../../services/models/projectModel";
-import { queryKeys } from "@/utils";
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useFormik } from 'formik';
+import { Pencil, Plus, Trash } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { useNavigate, useParams } from 'react-router-dom';
+import * as Yup from 'yup';
 
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { CardContent } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Skeleton } from "@/components/ui/skeleton";
-
-import { Pencil, Plus, Trash } from "lucide-react";
+import ConfirmDeleteModal from './components/ConfirmDelProjectModal';
+import CreateProject from './components/CreateProject';
+import RenameModal from './components/RenameModal';
 
 export type Project = {
   _id: string;
@@ -51,11 +50,13 @@ const Dashboard = () => {
   // Query: Projects
   // -----------------------
   const projectsQuery = useQuery({
-    queryKey: userId ? queryKeys.projects(userId) : ["projects", "missing-userId"],
+    queryKey: userId ? queryKeys.projects(userId) : ['projects', 'missing-userId'],
     enabled: Boolean(userId),
     queryFn: async ({ signal }) => {
       const res = (await apiProject.getSingle(userId!, signal)) as ApiResult<Project[]>;
-      if (res.status !== "200") throw new Error(String(res.message ?? "Failed to load projects"));
+
+      if (res.status !== '200') throw new Error(String(res.message ?? 'Failed to load projects'));
+
       return Array.isArray(res.message) ? res.message : [];
     },
   });
@@ -65,12 +66,14 @@ const Dashboard = () => {
   // -----------------------
   const addProjectMutation = useMutation({
     mutationFn: async (name: string) => {
-      if (!userId) throw new Error("Missing userId");
+      if (!userId) throw new Error('Missing userId');
+
       const res = (await apiProject.post({ name, userId })) as ApiResult<string>;
+
       return res;
     },
     onSuccess: async (res) => {
-      if (res.status === "200") {
+      if (res.status === '200') {
         toast.success(String(res.message));
         setOpen(false);
         await qc.invalidateQueries({ queryKey: queryKeys.projects(userId!) });
@@ -78,32 +81,34 @@ const Dashboard = () => {
         toast.error(String(res.message));
       }
     },
-    onError: () => toast.error("Error"),
+    onError: () => toast.error('Error'),
   });
 
   const deleteProjectMutation = useMutation({
     mutationFn: async (id: string) => {
       const res = (await apiProject.remove(id)) as ApiResult<string>;
+
       return res;
     },
     onSuccess: async (res) => {
-      if (res.status === "200") {
-        toast.success("Deleted");
+      if (res.status === '200') {
+        toast.success('Deleted');
         await qc.invalidateQueries({ queryKey: queryKeys.projects(userId!) });
       } else {
         toast.error(String(res.message));
       }
     },
-    onError: () => toast.error("Delete failed"),
+    onError: () => toast.error('Delete failed'),
   });
 
   const deleteSelectedMutation = useMutation({
     mutationFn: async (ids: string[]) => {
       const res = (await apiProject.removeAll({ projects: ids })) as ApiResult<string>;
+
       return res;
     },
     onSuccess: async (res) => {
-      if (res.status === "200") {
+      if (res.status === '200') {
         toast.success(String(res.message));
         setCheckedList([]);
         await qc.invalidateQueries({ queryKey: queryKeys.projects(userId!) });
@@ -111,7 +116,7 @@ const Dashboard = () => {
         toast.error(String(res.message));
       }
     },
-    onError: () => toast.error("Delete failed"),
+    onError: () => toast.error('Delete failed'),
   });
 
   // -----------------------
@@ -120,13 +125,13 @@ const Dashboard = () => {
   const validationSchema = useMemo(
     () =>
       Yup.object().shape({
-        name: Yup.string().min(3).max(25).required("Project Name is required"),
+        name: Yup.string().min(3).max(25).required('Project Name is required'),
       }),
-    []
+    [],
   );
 
   const formik = useFormik<{ name: string }>({
-    initialValues: { name: "" },
+    initialValues: { name: '' },
     validationSchema,
     onSubmit: async (values, helpers) => {
       await addProjectMutation.mutateAsync(values.name);
@@ -141,24 +146,23 @@ const Dashboard = () => {
     setCheckedList((prev) => (checked ? [...prev, id] : prev.filter((x) => x !== id)));
   };
 
-  // used by ConfirmDeleteModal (single)
   const deleteProject = async (id?: string) => {
     if (!id) return;
+
     setConfirmDeleteModal(false);
     toast.promise(deleteProjectMutation.mutateAsync(id), {
-      loading: "Deleting...",
-      success: "Deleted",
-      error: "Delete failed",
+      loading: 'Deleting...',
+      success: 'Deleted',
+      error: 'Delete failed',
     });
   };
 
-  // used by ConfirmDeleteModal (bulk)
   const delSelected = async () => {
     setConfirmDeleteModal(false);
     toast.promise(deleteSelectedMutation.mutateAsync(checkedList), {
-      loading: "Deleting...",
-      success: "Deleted",
-      error: "Delete failed",
+      loading: 'Deleting...',
+      success: 'Deleted',
+      error: 'Delete failed',
     });
   };
 
@@ -212,7 +216,7 @@ const Dashboard = () => {
                   >
                     {/* Avatar */}
                     <div className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white transition group-hover:bg-blue-800">
-                      {(project.name?.charAt(0) ?? "?").toUpperCase()}
+                      {(project.name?.charAt(0) ?? '?').toUpperCase()}
                     </div>
 
                     <div className="leading-tight">
@@ -226,44 +230,28 @@ const Dashboard = () => {
 
                 {/* Right side actions */}
                 <div className="flex items-center gap-2">
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button
-                          variant="secondary"
-                          size="icon"
-                          className="h-9 w-9"
-                          onClick={() => {
-                            setProjectToBeRename(project);
-                            setRenameModalOpen(true);
-                          }}
-                          aria-label="Edit project"
-                        >
-                          <Pencil className="h-4 w-4" />
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>Edit Project</TooltipContent>
-                    </Tooltip>
+                  <CustomTooltip
+                    onClickFn={() => {
+                      setProjectToBeRename(project);
+                      setRenameModalOpen(true);
+                    }}
+                    text="Edit project"
+                    variant="secondary"
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </CustomTooltip>
 
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button
-                          variant="destructive"
-                          size="icon"
-                          className="h-9 w-9"
-                          onClick={() => {
-                            setToBeDeleted(project);
-                            setIsMultipleDelete(false);
-                            setConfirmDeleteModal(true);
-                          }}
-                          aria-label="Delete project"
-                        >
-                          <Trash className="h-4 w-4" />
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>Delete Project</TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                  <CustomTooltip
+                    onClickFn={() => {
+                      setToBeDeleted(project);
+                      setIsMultipleDelete(false);
+                      setConfirmDeleteModal(true);
+                    }}
+                    text="Delete project"
+                    variant="destructive"
+                  >
+                    <Trash className="h-4 w-4" />
+                  </CustomTooltip>
                 </div>
               </div>
             ))}
@@ -313,7 +301,7 @@ const Dashboard = () => {
 
 export default Dashboard;
 
-function ProjectsSkeleton() {
+const ProjectsSkeleton = () => {
   return (
     <div className="space-y-3">
       {Array.from({ length: 4 }).map((_, i) => (
@@ -337,4 +325,4 @@ function ProjectsSkeleton() {
       ))}
     </div>
   );
-}
+};

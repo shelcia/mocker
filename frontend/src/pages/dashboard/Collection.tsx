@@ -1,29 +1,30 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import toast from 'react-hot-toast';
+import { useEffect, useState } from 'react';
 
-import ResourceModal from './components/ResourceModal';
-import EndpointModal from './components/EndpointModal';
-import EditResourceModal from './components/EditResourceModal';
-import ResultModal from './components/ResultModal';
-import CloneModal from './components/CloneModal';
-import DeleteResourceModal from './components/DeleteResourceModal';
-
-import { ChevronLeft, Copy, ExternalLink, Eye, Pencil, Trash } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import CustomTooltip from '@/components/common/CustomTooltip';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
-import { copyTextToClipboard } from '@/utils';
-import { ApiStringResponse } from '@/types';
+import { Separator } from '@/components/ui/separator';
 import { BACKEND_URL } from '@/services/api';
-import { apiResource } from '@/services/models/resourceModal';
 import { apiProject } from '@/services/models/projectModel';
+import { apiResource } from '@/services/models/resourceModal';
 import { apiUser } from '@/services/models/userModal';
+import type { ApiStringResponse } from '@/types';
+import { copyTextToClipboard } from '@/utils';
+
+import { ChevronLeft, Copy, ExternalLink, Eye, Pencil, Trash } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { useNavigate, useParams } from 'react-router-dom';
+
+import CloneModal from './components/CloneModal';
+import DeleteResourceModal from './components/DeleteResourceModal';
+import EditResourceModal from './components/EditResourceModal';
+import EndpointModal from './components/EndpointModal';
+import ResourceModal from './components/ResourceModal';
+import ResultModal from './components/ResultModal';
 
 type RouteParams = {
   projectId?: string;
@@ -74,7 +75,9 @@ const Collection = () => {
 
   useEffect(() => {
     const ac = new AbortController();
+
     fetchResource(ac.signal);
+
     return () => ac.abort();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -106,8 +109,10 @@ const Collection = () => {
             fetchResource();
             setCheckedList([]);
             resolve(String(res.message));
+
             return;
           }
+
           reject(String(res.message));
         });
       }),
@@ -280,7 +285,9 @@ const Resource = ({ resource, fetchResource, delResource }: ResourceProps) => {
 
   useEffect(() => {
     const ac = new AbortController();
+
     fetchResult(ac.signal);
+
     return () => ac.abort();
   }, []);
 
@@ -301,69 +308,41 @@ const Resource = ({ resource, fetchResource, delResource }: ResourceProps) => {
         </div>
 
         {/* Right: actions */}
-        <TooltipProvider>
-          <div className="flex flex-wrap gap-2 md:justify-end">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  size="icon"
-                  onClick={() => setOpenModal(true)}
-                  aria-label="View JSON"
-                  variant="outline"
-                >
-                  <Eye />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>View generated JSON data</TooltipContent>
-            </Tooltip>
+        <div className="flex flex-wrap gap-2 md:justify-end">
+          <CustomTooltip
+            onClickFn={() => setOpenModal(true)}
+            text="View generated JSON data"
+            variant="outline"
+          >
+            <Eye />
+          </CustomTooltip>
+          <CustomTooltip
+            onClickFn={() => setEditModal(true)}
+            text="Edit Resource"
+            variant="secondary"
+          >
+            <Pencil />
+          </CustomTooltip>
+          <CustomTooltip onClickFn={() => setCloneModal(true)} text="Clone Resource">
+            <Copy />
+          </CustomTooltip>
+          <CustomTooltip
+            onClickFn={() => setDelResourceModal(true)}
+            text="Delete Resource"
+            variant="destructive"
+          >
+            <Trash />
+          </CustomTooltip>
 
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  size="icon"
-                  variant="secondary"
-                  onClick={() => setEditModal(true)}
-                  aria-label="Edit Resource"
-                >
-                  <Pencil />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Edit Resource</TooltipContent>
-            </Tooltip>
-
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button size="icon" onClick={() => setCloneModal(true)} aria-label="Clone Resource">
-                  <Copy />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Clone Resource</TooltipContent>
-            </Tooltip>
-
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  size="icon"
-                  variant="destructive"
-                  onClick={() => setDelResourceModal(true)}
-                  aria-label="Delete Resource"
-                >
-                  <Trash />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Delete Resource</TooltipContent>
-            </Tooltip>
-
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button onClick={() => setEndModal(true)} className="px-3" variant="secondary">
-                  View Endpoints
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>View generated API endpoints</TooltipContent>
-            </Tooltip>
-          </div>
-        </TooltipProvider>
+          <CustomTooltip
+            onClickFn={() => setEndModal(true)}
+            text="View Endpoints"
+            variant="secondary"
+            icon={false}
+          >
+            View Endpoints
+          </CustomTooltip>
+        </div>
       </div>
 
       <ResultModal open={openModal} setOpen={setOpenModal} result={result} loading={loading} />

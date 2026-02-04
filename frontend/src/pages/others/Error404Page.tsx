@@ -1,7 +1,10 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import Img from '../../assets/404.png';
+
 import { Button } from '@/components/ui/button';
+
+import { useNavigate } from 'react-router-dom';
+
+import Img from '../../assets/404.png';
 
 const Error404Page: React.FC = () => {
   const navigate = useNavigate();

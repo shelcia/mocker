@@ -1,16 +1,17 @@
 import React, { useContext, useState } from 'react';
-import JSONPretty from 'react-json-pretty';
-import toast from 'react-hot-toast';
-import jsonBeautify from 'json-beautify';
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { PartLoader } from '@/components/common/CustomLoading';
+import CustomModal from '@/components/common/CustomModal';
+import { CustomJSONTable } from '@/components/common/CustomTable';
 import { Button } from '@/components/ui/button';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import { PartLoader } from '@/components/CustomLoading';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ThemeContext } from '@/context/ThemeContext';
 import { copyTextToClipboard } from '@/utils';
-import { CustomJSONTable } from '@/components/CustomTable';
-import CustomModal from '@/components/CustomModal';
+
+import jsonBeautify from 'json-beautify';
+import toast from 'react-hot-toast';
+import JSONPretty from 'react-json-pretty';
 
 type ResultRow = Record<string, unknown>;
 
@@ -30,12 +31,12 @@ const ResultModal = ({ open, setOpen, result = [], loading }: ResultModalProps) 
   const copyJsonBeautify = async () => {
     try {
       const beautifiedJson = jsonBeautify(result, null, 1, 1);
+
       await copyTextToClipboard(beautifiedJson);
       setIsBeautifyCopied(true);
       toast.success('Copied!');
       setTimeout(() => setIsBeautifyCopied(false), 5000);
     } catch (error) {
-      console.error(error);
       toast.error("Couldn't copy!");
     }
   };
@@ -57,7 +58,7 @@ const ResultModal = ({ open, setOpen, result = [], loading }: ResultModalProps) 
         </TabsList>
 
         {/* --- JSON View --- */}
-        <TabsContent value="0" className="mt-3">
+        <TabsContent value="0" className="mt-3 w-full">
           <div
             className={[
               'relative rounded-lg border p-4',

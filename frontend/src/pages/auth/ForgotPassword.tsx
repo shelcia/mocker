@@ -1,35 +1,34 @@
 import React, { useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import { apiService } from '../../services/models/serviceModel';
-import { toast } from 'react-hot-toast';
-import * as Yup from 'yup';
-import { useFormik } from 'formik';
-import { CustomLoaderButton } from '../../components/CustomButtons';
-import { ApiStringResponse } from '../../types';
+
+import { CustomLoaderButton } from '@/components/common';
+import { CustomPwdField } from '@/components/CustomInputFields';
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { useVerifyToken } from '@/hooks/useVerifyToken';
-import { Eye, EyeOff } from 'lucide-react';
+import { apiService } from '@/services/models/serviceModel';
+import type { ApiStringResponse } from '@/types';
+
+import { useFormik } from 'formik';
+import { toast } from 'react-hot-toast';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import * as Yup from 'yup';
+import { logout } from '@/utils';
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
   const [hasToken, setHasToken] = useVerifyToken();
 
   const { id } = useParams();
-  const logout = () => {
-    localStorage.clear();
-    setHasToken(false);
-    navigate('/');
-  };
 
   if (hasToken) {
     return (
-      <Button onClick={logout} className="mt-4">
+      <Button onClick={() => logout(setHasToken, navigate)} className="mt-4">
         Logout
       </Button>
     );
   }
+
   return (
     <React.Fragment>{id ? <SetPasswordForm auth_token={id} /> : <VerifyForm />}</React.Fragment>
   );
@@ -39,14 +38,6 @@ const SetPasswordForm = ({ auth_token }) => {
   const [loading, setLoading] = useState(false);
   const [isResponse, setIsResponse] = useState(false);
   const [status, setStatus] = useState(false);
-
-  const [showPassword, setShowPassword] = useState(false);
-  const handleClickShowPassword = () => setShowPassword(!showPassword);
-  const handleMouseDownPassword = () => setShowPassword(!showPassword);
-
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const handleClickShowConfirmPassword = () => setShowConfirmPassword(!showConfirmPassword);
-  const handleMouseDownConfirmPassword = () => setShowConfirmPassword(!showConfirmPassword);
 
   const initialValues = {
     password: '',
@@ -89,6 +80,7 @@ const SetPasswordForm = ({ auth_token }) => {
         toast.error('Error');
         setStatus(false);
       }
+
       setLoading(false);
       setIsResponse(true);
     });
@@ -98,33 +90,27 @@ const SetPasswordForm = ({ auth_token }) => {
     <>
       <h2 className="mb-2 text-lg font-semibold tracking-tight">Change password</h2>
 
+      {/* Response message */}
+      {isResponse && (
+        <div
+          className={`rounded-md px-3 py-2 text-sm ${
+            status ? 'bg-emerald-500/10 text-emerald-600' : 'bg-red-500/10 text-red-600'
+          }`}
+        >
+          {status ? 'Password successfully changed' : 'Failed to reset password'}
+        </div>
+      )}
+
       <form noValidate onSubmit={handleSubmit} className="w-full space-y-4">
         {/* Password */}
         <div className="space-y-1">
-          <label className="text-sm font-medium">Password</label>
-          <div className="relative">
-            <input
-              type={showPassword ? 'text' : 'password'}
-              name="password"
-              value={values.password || ''}
-              onBlur={handleBlur}
-              onChange={handleChange}
-              className={`h-10 w-full rounded-md border px-3 pr-10 text-sm outline-none transition
-            ${
-              touched.password && errors.password
-                ? 'border-destructive focus:ring-destructive'
-                : 'border-input focus:ring-primary'
-            }
-          `}
-            />
-
-            <Button
-              onClick={handleClickShowPassword}
-              className="absolute inset-y-0 right-2 flex items-center text-muted-foreground hover:text-foreground"
-            >
-              {showPassword ? <Eye /> : <EyeOff />}
-            </Button>
-          </div>
+          <CustomPwdField
+            handleBlur={handleBlur}
+            handleChange={handleChange}
+            values={values}
+            touched={touched}
+            errors={errors}
+          />
 
           {touched.password && errors.password && (
             <p className="text-xs text-destructive">{errors.password}</p>
@@ -133,47 +119,18 @@ const SetPasswordForm = ({ auth_token }) => {
 
         {/* Confirm Password */}
         <div className="space-y-1">
-          <Label className="text-sm font-medium">Confirm password</Label>
-          <div className="relative">
-            <Input
-              type={showConfirmPassword ? 'text' : 'password'}
-              name="confirmPassword"
-              value={values.confirmPassword || ''}
-              onBlur={handleBlur}
-              onChange={handleChange}
-              className={`h-10 w-full rounded-md border px-3 pr-10 text-sm outline-none transition
-            ${
-              touched.confirmPassword && errors.confirmPassword
-                ? 'border-destructive focus:ring-destructive'
-                : 'border-input focus:ring-primary'
-            }
-          `}
-            />
-
-            <Button
-              type="button"
-              onClick={handleClickShowConfirmPassword}
-              className="absolute inset-y-0 right-2 flex items-center text-muted-foreground hover:text-foreground"
-            >
-              {showConfirmPassword ? <Eye /> : <EyeOff />}
-            </Button>
-          </div>
+          <CustomPwdField
+            handleBlur={handleBlur}
+            handleChange={handleChange}
+            values={values}
+            touched={touched}
+            errors={errors}
+          />
 
           {touched.confirmPassword && errors.confirmPassword && (
             <p className="text-xs text-destructive">{errors.confirmPassword}</p>
           )}
         </div>
-
-        {/* Response message */}
-        {isResponse && (
-          <div
-            className={`rounded-md px-3 py-2 text-sm ${
-              status ? 'bg-emerald-500/10 text-emerald-600' : 'bg-red-500/10 text-red-600'
-            }`}
-          >
-            {status ? 'Password successfully changed' : 'Failed to reset password'}
-          </div>
-        )}
 
         {/* Submit */}
         <Button
@@ -241,6 +198,7 @@ const VerifyForm = () => {
         toast.error('Error');
         setStatus(false);
       }
+
       setLoading(false);
       setIsMailSent(true);
     });
@@ -298,7 +256,7 @@ const VerifyForm = () => {
         {/* Go back */}
         <Button
           onClick={() => navigate('/')}
-          className="inline-flex h-10 w-full items-center justify-center rounded-md border border-input bg-background text-sm font-medium transition hover:bg-accent"
+          className="inline-flex h-10 w-full items-center justify-center rounded-md border border-input bg-background text-sm font-medium transition hover:bg-accent text-foreground"
         >
           Go Back
         </Button>

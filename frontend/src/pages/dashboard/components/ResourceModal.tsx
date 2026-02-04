@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
-import toast from 'react-hot-toast';
 
-import { apiResource } from '../../../services/models/resourceModal';
-import CommonResourceModal, { InputsState, SchemaItem } from './CommonResourceModal';
+import { apiResource } from '@/services/models/resourceModal';
+
+import toast from 'react-hot-toast';
+import { useParams } from 'react-router-dom';
+
+import type { InputsState, SchemaItem } from './CommonResourceModal';
+import CommonResourceModal from './CommonResourceModal';
 
 type RouteParams = {
   userId?: string;
@@ -39,6 +42,7 @@ const ResourceModal = ({
   const createProject = async () => {
     if (!userId || !projectId) {
       toast.error('Invalid route parameters');
+
       return;
     }
 

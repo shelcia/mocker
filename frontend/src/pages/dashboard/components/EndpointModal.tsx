@@ -1,13 +1,15 @@
-import React, { useContext, useState } from 'react';
-import CustomModal from '../../../components/CustomModal';
-import { ThemeContext } from '../../../context/ThemeContext';
-import { toast } from 'react-hot-toast';
-import { BACKEND_URL } from '../../../services/api';
-import { ENDPOINTS } from '@/data/constants';
-import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
+import { useContext, useState } from 'react';
+
+import CustomModal from '@/components/common/CustomModal';
 import { Button } from '@/components/ui/button';
+import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
+import { ThemeContext } from '@/context/ThemeContext';
+import { ENDPOINTS } from '@/data/constants';
 import { cn } from '@/lib/utils';
+import { BACKEND_URL } from '@/services/api';
 import { copyTextToClipboard } from '@/utils';
+
+import { toast } from 'react-hot-toast';
 
 const EndpointModal = ({ open, setOpen, result }) => {
   const [darkTheme] = useContext(ThemeContext);

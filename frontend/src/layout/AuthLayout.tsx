@@ -1,10 +1,14 @@
-import React, { ReactNode } from 'react';
-import CustomToggle from '../components/CustomToggle';
-import { Button } from '@/components/ui/button';
+import React from 'react';
+
 import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Github } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
+
+import { Component, Github } from 'lucide-react';
+import type { ReactNode } from 'react';
+
+import { CustomToggle } from '../components/common';
 
 interface AuthLayoutProps {
   children: ReactNode;
@@ -17,11 +21,11 @@ const AuthLayout = ({ children }: AuthLayoutProps) => {
         <header className="sticky top-0 z-20">
           <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
             <div className="flex items-center gap-2">
-              <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-sky-400 to-fuchsia-500" />
-              <span className="text-sm font-semibold tracking-wide">Mocker</span>
+              <Component className="size-4" />
+              <span className="text-md font-semibold tracking-wide">Mocker</span>
               <Badge
                 variant="secondary"
-                className="ml-2 bg-zinc-900/10 text-zinc-700 dark:bg-white/10 dark:text-zinc-100"
+                className="ml-1 bg-zinc-900/10 text-zinc-700 dark:bg-white/10 dark:text-zinc-100"
               >
                 beta
               </Badge>
@@ -69,7 +73,7 @@ const AuthLayout = ({ children }: AuthLayoutProps) => {
           </div>
         </header>
 
-        <main className="mx-auto flex max-w-6xl items-center px-4 py-10">
+        <main className="mx-auto flex max-w-6xl items-center px-4 py-10 mb-8">
           <div className="grid w-full grid-cols-1 gap-8 lg:grid-cols-12">
             <section className="lg:col-span-7">
               <div className="space-y-6">
@@ -134,7 +138,7 @@ const AuthLayout = ({ children }: AuthLayoutProps) => {
         </main>
 
         {/* Footer */}
-        <footer className="mx-auto flex h-16 max-w-6xl items-center justify-center px-4 text-xs text-muted-foreground">
+        <footer className="flex h-16 items-center justify-center px-4 text-xs text-muted-foreground fixed bottom-0 w-full bg-background">
           <span>Built by</span>
           <a
             href="https://shelcia-dev.me/"

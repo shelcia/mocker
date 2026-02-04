@@ -1,16 +1,16 @@
-import React, { useEffect, useMemo } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import toast from "react-hot-toast";
+import React, { useEffect, useMemo } from 'react';
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import CustomModal from '@/components/common/CustomModal';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { apiProvider } from '@/services/utilities/provider';
+import { queryKeys } from '@/utils';
 
-import CustomModal from "../../../components/CustomModal";
-import { apiProvider } from "../../../services/utilities/provider";
-import { queryKeys } from "@/utils";
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useFormik } from 'formik';
+import toast from 'react-hot-toast';
+import * as Yup from 'yup';
 
 export type Project = {
   _id: string;
@@ -24,7 +24,7 @@ type RenameModalProps = {
   setRenameModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export const RenameModal = ({
+const RenameModal = ({
   userId,
   projectToBeRename,
   renameModalOpen,
@@ -36,31 +36,29 @@ export const RenameModal = ({
     () =>
       Yup.object().shape({
         name: Yup.string()
-          .min(3, "Project should be of minimum 3 characters length")
+          .min(3, 'Project should be of minimum 3 characters length')
           .max(25)
-          .required("Project Name is required"),
+          .required('Project Name is required'),
       }),
-    []
+    [],
   );
 
   const renameMutation = useMutation({
     mutationFn: async (payload: { id: string; name: string }) => {
-      const res = await apiProvider.putById("project/single", payload.id, { name: payload.name });
+      const res = await apiProvider.putById('project/single', payload.id, { name: payload.name });
+
       return res as { status: string; message: string };
     },
     onSuccess: async (res) => {
-      if (res.status === "200") {
-        toast.success(res.message);
+      if (res.status === '200') {
         await qc.invalidateQueries({ queryKey: queryKeys.projects(userId) });
-      } else {
-        toast.error(res.message || "Rename failed");
       }
     },
-    onError: () => toast.error("Rename failed"),
+    onError: () => toast.error('Rename failed'),
   });
 
   const formik = useFormik<{ name: string }>({
-    initialValues: { name: "" },
+    initialValues: { name: '' },
     validationSchema,
     enableReinitialize: true,
     onSubmit: async (values, helpers) => {
@@ -68,24 +66,20 @@ export const RenameModal = ({
 
       setRenameModalOpen(false);
 
-      toast.promise(
-        renameMutation.mutateAsync({ id: projectToBeRename._id, name: values.name }),
-        {
-          loading: "Renaming...",
-          success: "Renamed",
-          error: "Rename failed",
-        }
-      );
+      toast.promise(renameMutation.mutateAsync({ id: projectToBeRename._id, name: values.name }), {
+        loading: 'Renaming...',
+        success: 'Renamed',
+        error: 'Rename failed',
+      });
 
       helpers.resetForm();
     },
   });
 
-  // Prefill when project changes
   useEffect(() => {
     if (!projectToBeRename) return;
+
     formik.setValues({ name: projectToBeRename.name });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectToBeRename]);
 
   return (
@@ -102,8 +96,8 @@ export const RenameModal = ({
                 placeholder="Enter project name"
                 onBlur={formik.handleBlur}
                 onChange={formik.handleChange}
-                value={formik.values.name || ""}
-                className={formik.touched.name && formik.errors.name ? "border-destructive" : ""}
+                value={formik.values.name || ''}
+                className={formik.touched.name && formik.errors.name ? 'border-destructive' : ''}
               />
               {formik.touched.name && formik.errors.name && (
                 <p className="text-sm text-destructive">{formik.errors.name}</p>
@@ -125,3 +119,5 @@ export const RenameModal = ({
     </>
   );
 };
+
+export default RenameModal;
