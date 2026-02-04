@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { CustomAvatarDisplayname,CustomTooltip } from '@/components/common';
+import { CustomAvatarDisplayname, CustomTooltip } from '@/components/common';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -14,7 +14,7 @@ import { apiUser } from '@/services/models/userModal';
 import type { ApiStringResponse } from '@/types';
 import { copyTextToClipboard } from '@/utils';
 
-import { ChevronLeft, Copy, ExternalLink, Eye, Pencil, Trash } from 'lucide-react';
+import { ChevronLeft, Copy, ExternalLink, Eye, Pencil, Plus, Trash } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -153,7 +153,7 @@ const Collection = () => {
 
               <div className="flex flex-wrap items-center gap-2">
                 <Button onClick={() => setOpen(true)} variant="outline">
-                  New Resource
+                  <Plus className="size-4" /> New Resource
                 </Button>
 
                 {checkedList.length !== 0 && (
@@ -294,7 +294,7 @@ const Resource = ({ resource, fetchResource, delResource }: ResourceProps) => {
     <>
       <div className="flex w-full flex-col gap-3 md:flex-row md:items-center md:justify-between">
         {/* Left: Avatar + name */}
-        <CustomAvatarDisplayname text={resource.name} />
+        <CustomAvatarDisplayname text={resource.name} open={false} />
 
         {/* Right: actions */}
         <div className="flex flex-wrap gap-2 md:justify-end">

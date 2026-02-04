@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 
-import { CustomJSONTable,CustomModal, PartLoader } from '@/components/common';
+import { CustomJSONTable, CustomModal, PartLoader } from '@/components/common';
 import { Button } from '@/components/ui/button';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -83,15 +83,15 @@ const ResultModal = ({ open, setOpen, result = [], loading }: ResultModalProps) 
                 <div className={darkTheme ? 'lang-dark' : 'lang-light'}>
                   <JSONPretty id="json-pretty" data={result} />
                 </div>
-                <ScrollBar orientation="horizontal" />
+                <ScrollBar orientation="vertical" />
               </ScrollArea>
             )}
           </div>
         </TabsContent>
 
         {/* --- Table View --- */}
-        <TabsContent value="1" className="mt-3">
-          <div className="rounded-lg border bg-muted/30 p-3">
+        <TabsContent value="1" className="mt-3 w-full">
+          <div className="rounded-lg border bg-muted/30 p-3 w-full">
             <CustomJSONTable keys={result?.[0] ? Object.keys(result[0]) : []} data={result} />
           </div>
         </TabsContent>

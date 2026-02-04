@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 
-import { CustomAvatarDisplayname,CustomTooltip } from '@/components/common';
+import { CustomAvatarDisplayname, CustomTooltip } from '@/components/common';
 import { Button } from '@/components/ui/button';
 import { CardContent } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -172,17 +172,15 @@ const Dashboard = () => {
     <>
       <CardContent className="p-0">
         {/* Header */}
-        <div className="flex items-center gap-3">
-          <h1 className="text-lg font-semibold tracking-tight">Projects</h1>
+        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <h1 className="text-2xl font-medium tracking-tight">Projects</h1>
 
-          <Button
-            size="icon"
-            className="h-8 w-8 rounded-full"
-            onClick={() => setOpen(true)}
-            aria-label="Create project"
-          >
-            <Plus className="h-4 w-4" />
-          </Button>
+          <div className="flex flex-wrap items-center gap-2">
+            <Button onClick={() => setOpen(true)} variant="outline">
+              <Plus className="size-4" />
+              New Project
+            </Button>
+          </div>
         </div>
 
         <Separator className="my-4" />
