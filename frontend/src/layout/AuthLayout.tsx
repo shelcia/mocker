@@ -91,8 +91,8 @@ const AuthLayout = ({ children }: AuthLayoutProps) => {
                 </h1>
 
                 <p className="max-w-xl text-base text-muted-foreground">
-                  Define a schema, get unlimited resources & projects, and generate usable endpoints for testing,
-                  powered by{' '}
+                  Define a schema, get unlimited resources & projects, and generate usable endpoints
+                  for testing, powered by{' '}
                   <a
                     href="https://fakerjs.dev/"
                     target="_blank"

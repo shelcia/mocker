@@ -4,13 +4,14 @@ import CustomModal from './CustomModal';
 import { CustomJSONTable } from './CustomTable';
 import CustomToggle from './CustomToggle';
 import CustomTooltip from './CustomTooltip';
-import { CustomAvatarDisplayname } from './CustomUIBlock';
+import { CustomAvatarDisplayname, CustomLoadingModalBlock } from './CustomUIBlock';
 
 export {
   CustomAvatarDisplayname,
   CustomJSONTable,
   CustomLoaderButton,
   CustomLoading,
+  CustomLoadingModalBlock,
   CustomModal,
   CustomPwdField,
   CustomToggle,

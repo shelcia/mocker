@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
+import { CustomLoadingModalBlock } from '@/components/common';
 import { apiResource } from '@/services/models/resourceModal';
 import type { Resource, RouteParams, SchemaItem } from '@/types';
 
@@ -95,15 +96,7 @@ const CloneModal = ({ open, setOpen, result, fetchResources }: CloneModalProps) 
       buttonTxt="Clone"
       func={cloneResource}
     >
-      {loading && (
-        <div className="mt-6 flex flex-col items-center gap-3">
-          <div className="relative h-2 w-full overflow-hidden rounded-full bg-muted">
-            <div className="absolute inset-y-0 left-0 w-1/3 animate-progress rounded-full bg-primary" />
-          </div>
-
-          <p className="text-sm font-medium text-primary">Cloning data…</p>
-        </div>
-      )}
+      {loading && <CustomLoadingModalBlock text="Cloning resource..." />}
     </CommonResourceModal>
   );
 };
