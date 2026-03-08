@@ -18,16 +18,13 @@
 <img src="https://img.shields.io/github/issues-pr-closed-raw/shelcia/mocker?style=for-the-badge" >
 </p>
 
-
-![Mocker Generator](https://github.com/shelcia/mocker/blob/master/mocker.svg)
-
 ## 📌 Introduction
 
 A Web app which lets you generate data with API endpoints
 
 # Demo
 
-https://user-images.githubusercontent.com/31156685/204107605-ab2c71b3-a2dd-4542-acd3-b09fd5d180ea.mov
+https://github.com/shelcia/mocker/raw/master/mocker-demo.mp4
 
 ## ⭐ How to get started?
 
@@ -124,7 +121,6 @@ We want to facilitate a healthy and constructive community behavior by adopting 
   <p align="center">
   <a href="https://github.com/shelcia"><img src="https://avatars.githubusercontent.com/shelcia" width="20%" /></a>
 
-
 <h1 align=center> Our Amazing Contributors 👨‍👨‍👦‍👦❤️</h1>
 
 Thanks to all the contributors who worked for this project to stay alive! 😊😎
@@ -136,12 +132,10 @@ Thanks to all the contributors who worked for this project to stay alive! 😊�
 <br>
 
 ---
+
 <div align="center">
     <h3><b>Take a moment to star ⭐ the project if you like it</b></h3>
     <h3>Do checkout the other repos 💫</h3> 
 </div>
-
-
-
 
 <!-- Please adhere toward our [Code-of-Conduct](code-of-conduct.md). -->

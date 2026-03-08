@@ -4,9 +4,10 @@ import { CustomModal } from '@/components/common';
 import { Button } from '@/components/ui/button';
 
 interface DeleteResourceModalProps {
-  open?: boolean;
-  setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
-  result?: string;
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  result: string;
+  // eslint-disable-next-line no-unused-vars
   delResource: (id: string) => void;
 }
 

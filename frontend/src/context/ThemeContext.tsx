@@ -3,6 +3,7 @@ import React, {
   type Dispatch,
   type ReactNode,
   type SetStateAction,
+  useContext,
   useEffect,
   useState,
 } from 'react';
@@ -36,3 +37,11 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
     <ThemeContext.Provider value={[darkTheme, setDarkTheme]}>{children}</ThemeContext.Provider>
   );
 };
+
+export function useTheme(): ThemeContextValue {
+  const ctx = useContext(ThemeContext);
+
+  if (!ctx) throw new Error('useTheme must be used within ThemeProvider');
+
+  return ctx;
+}

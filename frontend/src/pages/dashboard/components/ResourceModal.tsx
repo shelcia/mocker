@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { CustomLoadingModalBlock } from '@/components/common';
 import { apiResource } from '@/services/models/resourceModal';
 import type { Resource, RouteParams, SchemaItem } from '@/types';
+import { isApiResponse } from '@/types';
 
 import toast from 'react-hot-toast';
 import { useParams } from 'react-router-dom';
@@ -12,6 +13,7 @@ import CommonResourceModal from './CommonResourceModal';
 interface ResourceModalProps {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  // eslint-disable-next-line no-unused-vars
   fetchResource: (signal?: AbortSignal) => void;
   loading: boolean;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
@@ -54,9 +56,16 @@ const ResourceModal = ({
     };
 
     try {
-      const res: any = await apiResource.post(body);
+      const res = await apiResource.post(body);
 
-      if (res?.status === '200') {
+      if (!isApiResponse(res)) {
+        toast.error('Error');
+        setOpen(false);
+
+        return;
+      }
+
+      if (res.status === '200') {
         toast.success('Added Successfully');
         fetchResource();
         setSchema([]);

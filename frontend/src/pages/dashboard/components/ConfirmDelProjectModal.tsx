@@ -11,6 +11,7 @@ interface ConfirmDeleteModalProps {
 
   project: Project;
 
+  // eslint-disable-next-line no-unused-vars
   deleteProject: (id: string) => void | Promise<void>;
 
   isMultipleDelete?: boolean;
@@ -55,7 +56,7 @@ const ConfirmDeleteModal = ({
 
   useEffect(() => {
     //Set multiple delete to false on closing
-    confirmDeleteModal || setIsMultipleDelete(false);
+    confirmDeleteModal || setIsMultipleDelete?.(false);
   }, [confirmDeleteModal]);
 
   return (

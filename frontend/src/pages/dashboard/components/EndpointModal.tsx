@@ -1,9 +1,9 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 
 import { CustomModal } from '@/components/common';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
-import { ThemeContext } from '@/context/ThemeContext';
+import { useTheme } from '@/context/ThemeContext';
 import { ENDPOINTS } from '@/data/constants';
 import { cn } from '@/lib/utils';
 import { BACKEND_URL } from '@/services/api';
@@ -22,11 +22,11 @@ interface EndpointModalProps {
 }
 
 const EndpointModal = ({ open, setOpen, result }: EndpointModalProps) => {
-  const [darkTheme] = useContext(ThemeContext);
+  const [darkTheme] = useTheme();
   const [isCopied, setIsCopied] = useState<boolean>(false);
   const [selectedId, setSelectedId] = useState<number>(-1);
 
-  const handleCopyClick = (data, idx) => {
+  const handleCopyClick = (data: string, idx: number) => {
     copyTextToClipboard(data)
       .then(() => {
         setIsCopied(true);

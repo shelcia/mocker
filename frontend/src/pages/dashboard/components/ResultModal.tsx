@@ -1,10 +1,10 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 
 import { CustomJSONTable, CustomModal, PartLoader } from '@/components/common';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ThemeContext } from '@/context/ThemeContext';
+import { useTheme } from '@/context/ThemeContext';
 import type { ResultRow } from '@/types';
 import { copyTextToClipboard } from '@/utils';
 
@@ -20,14 +20,14 @@ interface ResultModalProps {
 }
 
 const ResultModal = ({ open, setOpen, result = [], loading }: ResultModalProps) => {
-  const [darkTheme] = useContext(ThemeContext);
+  const [darkTheme] = useTheme();
 
   const [isBeautifyCopied, setIsBeautifyCopied] = useState<boolean>(false);
   const [value, setValue] = useState<number>(0);
 
   const copyJsonBeautify = async () => {
     try {
-      const beautifiedJson = jsonBeautify(result, null, 1, 1);
+      const beautifiedJson = jsonBeautify(result, [], 1, 1);
 
       await copyTextToClipboard(beautifiedJson);
       setIsBeautifyCopied(true);
@@ -38,7 +38,7 @@ const ResultModal = ({ open, setOpen, result = [], loading }: ResultModalProps) 
     }
   };
 
-  const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
+  const handleChange = (newValue: number) => {
     setValue(newValue);
   };
 
@@ -46,7 +46,7 @@ const ResultModal = ({ open, setOpen, result = [], loading }: ResultModalProps) 
     <CustomModal open={open} setOpen={setOpen} width={600} title="Result">
       <Tabs
         value={String(value)}
-        onValueChange={(v) => handleChange(null, Number(v))}
+        onValueChange={(v) => handleChange(Number(v))}
         className="w-full"
       >
         <TabsList className="grid w-full grid-cols-2">

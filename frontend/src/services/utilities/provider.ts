@@ -19,7 +19,7 @@ type Params = Record<string, string | number | boolean | null | undefined>;
 type AdditionalParam = string; // keeping your current design: "" or "something"
 
 /** @param {string} resource */
-const getAll = async (resource: string, signal: AbortSignal, isAuthorized: boolean = false) => {
+const getAll = async (resource: string, signal: AbortSignal | undefined, isAuthorized: boolean = false) => {
   const headers = isAuthorized ? { 'auth-token': token } : {};
 
   try {
@@ -289,7 +289,7 @@ const patchByParams = async (
       baseURL: `${BASE_URL}/${resource}/${additionalParams}?${queryParams}`,
       headers: headers,
     });
-    const response = await request.patch(null);
+    const response = await request.patch('');
 
     return handleResponse(response);
   } catch (error) {

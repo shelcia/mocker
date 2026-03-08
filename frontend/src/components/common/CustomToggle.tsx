@@ -1,12 +1,10 @@
-import React, { useContext } from 'react';
-
 import { Moon, Sun } from 'lucide-react';
 
-import { ThemeContext } from '../../context/ThemeContext';
+import { useTheme } from '../../context/ThemeContext';
 import { Button } from '../ui/button';
 
 const CustomToggle = () => {
-  const [darkTheme, setDarkTheme] = useContext(ThemeContext);
+  const [darkTheme, setDarkTheme] = useTheme();
 
   return (
     <Button

@@ -1,50 +1,50 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { CustomLoadingModalBlock } from '@/components/common';
 import { apiResource } from '@/services/models/resourceModal';
-import type { ApiStringResponse } from '@/types';
+import type { Resource, RouteParams, SchemaItem } from '@/types';
+import { isApiResponse } from '@/types';
 
 import { toast } from 'react-hot-toast';
 import { useParams } from 'react-router-dom';
 
 import CommonResourceModal from './CommonResourceModal';
 
-export interface Resource {
-  name: string;
-  number: number;
-  userId: string;
-  projectId: string;
-  id?: string;
-  schema?: any[];
-  _id?: string;
+interface EditResourceModalProps {
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  /** resource id to edit */
+  result: string;
+  fetchResult: () => void;
 }
 
-const EditResourceModal = ({ open, setOpen, result, fetchResult }) => {
-  const { userId, projectId } = useParams();
+const EditResourceModal = ({ open, setOpen, result, fetchResult }: EditResourceModalProps) => {
+  const { userId, projectId } = useParams<RouteParams>();
   const [loading, setLoading] = useState(false);
 
   const [inputs, setInputs] = useState<Resource>({
     name: '',
     number: 1,
-    userId: userId,
-    projectId: projectId,
+    userId: userId ?? '',
+    projectId: projectId ?? '',
   });
 
-  const [schema, setSchema] = useState([]);
+  const [schema, setSchema] = useState<SchemaItem[]>([]);
 
-  const fetchResource = (signal) => {
-    apiResource.getSingle(result, signal).then((res: { status: string; message?: Resource }) => {
-      // console.log(res.data);
-      if (res.status === '200') {
-        setInputs({
-          name: res.message?.name,
-          number: res.message?.number,
-          userId: userId,
-          projectId: projectId,
-          id: res.message._id,
-        });
-        setSchema(res.message?.schema);
-      }
+  const fetchResource = (signal: AbortSignal) => {
+    apiResource.getSingle(result, signal).then((res) => {
+      if (!isApiResponse(res) || res.status !== '200') return;
+
+      const msg = res.message as Resource | undefined;
+
+      setInputs({
+        name: msg?.name ?? '',
+        number: msg?.number ?? 1,
+        userId: userId ?? '',
+        projectId: projectId ?? '',
+        id: msg?._id,
+      });
+      setSchema((msg?.schema ?? []) as SchemaItem[]);
     });
   };
 
@@ -61,18 +61,24 @@ const EditResourceModal = ({ open, setOpen, result, fetchResult }) => {
     const body = {
       name: inputs.name,
       number: inputs.number,
-      userId: userId,
-      projectId: projectId,
+      userId: userId ?? '',
+      projectId: projectId ?? '',
       schema: schema,
     };
 
     apiResource
       .putById(result, body)
-      .then((res: ApiStringResponse) => {
+      .then((res) => {
+        if (!isApiResponse(res)) {
+          toast.error('Error');
+          setOpen(false);
+
+          return;
+        }
+
         if (res.status === '200') {
           toast.success('Edited Successfully');
           setOpen(false);
-          // fetchResource();
           fetchResult();
         } else {
           toast.error('Error');

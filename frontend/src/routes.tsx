@@ -8,11 +8,14 @@ import AuthGuard from './layout/AuthGuard';
 import AuthLayout from './layout/AuthLayout';
 import DashboardLayout from './layout/DashboardLayout';
 
-const Loadable = (Component) => (props) => (
-  <Suspense fallback={<Loading />}>
-    <Component {...props} />
-  </Suspense>
-);
+const Loadable =
+  <P extends object>(Component: React.ComponentType<P>) =>
+  (props: P) =>
+    (
+      <Suspense fallback={<Loading />}>
+        <Component {...props} />
+      </Suspense>
+    );
 
 const LoginPage = Loadable(lazy(() => import('./pages/auth/Login')));
 const SignupPage = Loadable(lazy(() => import('./pages/auth/Signup')));

@@ -2,7 +2,7 @@ import React, { Fragment, type ReactNode, useEffect, useMemo, useState } from 'r
 
 import Login from '../pages/auth/Login';
 import { apiService } from '../services/models/serviceModel';
-import type { ApiStringResponse } from '../types';
+import { isApiResponse } from '../types';
 
 import AuthLayout from './AuthLayout';
 
@@ -28,8 +28,8 @@ const AuthGuard = ({ children }: AuthGuardProps) => {
 
     apiService
       .getSingle(`auth-token/${token}`, ac.signal)
-      .then((res: ApiStringResponse) => {
-        setIsExpired(res.status !== '200');
+      .then((res) => {
+        setIsExpired(isApiResponse(res) ? res.status !== '200' : true);
       })
       .catch(() => {
         setIsExpired(true);

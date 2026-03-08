@@ -11,7 +11,8 @@ import { BACKEND_URL } from '@/services/api';
 import { apiProject } from '@/services/models/projectModel';
 import { apiResource } from '@/services/models/resourceModal';
 import { apiUser } from '@/services/models/userModal';
-import type { ApiResponse, ApiStringResponse, ResultRow } from '@/types';
+import type { ResultRow } from '@/types';
+import { isApiResponse } from '@/types';
 import { copyTextToClipboard } from '@/utils';
 
 import { ChevronLeft, Copy, ExternalLink, Eye, Pencil, Plus, Trash } from 'lucide-react';
@@ -52,15 +53,17 @@ const Collection = () => {
   const fetchResource = (signal?: AbortSignal) => {
     if (!projectId) return;
 
-    apiResource.getSingle(`project/${projectId}`, signal).then((res: any) => {
-      if (res.status === '200') {
+    apiResource.getSingle(`project/${projectId}`, signal).then((res) => {
+      if (isApiResponse(res) && res.status === '200') {
         setResources(Array.isArray(res.message) ? (res.message as ResourceModel[]) : []);
       }
     });
 
-    apiProject.getSingle(`single/${projectId}`, signal).then((res: any) => {
-      if (res.status === '200') {
-        setProjectName(String(res.message?.name ?? ''));
+    apiProject.getSingle(`single/${projectId}`, signal).then((res) => {
+      if (isApiResponse(res) && res.status === '200') {
+        const msg = res.message as { name?: string } | null;
+
+        setProjectName(String(msg?.name ?? ''));
       }
     });
   };
@@ -78,8 +81,8 @@ const Collection = () => {
     if (!id) return;
 
     toast('Deleting ...');
-    apiResource.remove(id).then((res: ApiStringResponse) => {
-      if (res.status === '200') {
+    apiResource.remove(id).then((res) => {
+      if (isApiResponse(res) && res.status === '200') {
         fetchResource();
       } else {
         toast.error('Error');
@@ -96,16 +99,20 @@ const Collection = () => {
 
     toast.promise(
       new Promise<string>((resolve, reject) => {
-        apiResource.removeAll(body).then((res: any) => {
-          if (res.status === '200') {
-            fetchResource();
-            setCheckedList([]);
-            resolve(String(res.message));
+        apiResource.removeAll(body).then((res) => {
+          if (!isApiResponse(res)) {
+            reject('Unknown error');
 
             return;
           }
 
-          reject(String(res.message));
+          if (res.status === '200') {
+            fetchResource();
+            setCheckedList([]);
+            resolve(String(res.message));
+          } else {
+            reject(String(res.message));
+          }
         });
       }),
       {
@@ -122,7 +129,7 @@ const Collection = () => {
       setIsCopied(true);
       toast.success('Copied !');
       setTimeout(() => setIsCopied(false), 5000);
-    } catch (err) {
+    } catch {
       toast.error("Couldn't copy !");
     }
   };
@@ -246,7 +253,9 @@ export default Collection;
 
 type ResourceProps = {
   resource: ResourceModel;
+  // eslint-disable-next-line no-unused-vars
   fetchResource: (signal?: AbortSignal) => void;
+  // eslint-disable-next-line no-unused-vars
   delResource: (id: string) => void;
 };
 
@@ -264,13 +273,12 @@ const Resource = ({ resource, fetchResource, delResource }: ResourceProps) => {
   const fetchResult = (signal?: AbortSignal) => {
     setLoading(true);
 
-    apiUser.getSingle(resource._id, signal).then((res: ApiResponse<ResultRow[]>) => {
-      if (res.status === '200') {
-        setResult(Array.isArray(res.message) ? res.message : []);
-        setLoading(false);
-      } else {
-        setLoading(false);
+    apiUser.getSingle(resource._id, signal).then((res) => {
+      if (isApiResponse(res) && res.status === '200') {
+        setResult(Array.isArray(res.message) ? (res.message as ResultRow[]) : []);
       }
+
+      setLoading(false);
     });
   };
 

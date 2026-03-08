@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { CustomLoadingModalBlock } from '@/components/common';
 import { apiResource } from '@/services/models/resourceModal';
 import type { Resource, RouteParams, SchemaItem } from '@/types';
+import { isApiResponse } from '@/types';
 
 import toast from 'react-hot-toast';
 import { useParams } from 'react-router-dom';
@@ -31,18 +32,19 @@ const CloneModal = ({ open, setOpen, result, fetchResources }: CloneModalProps) 
   const [schema, setSchema] = useState<SchemaItem[]>([]);
 
   const fetchResource = (signal: AbortSignal) => {
-    apiResource.getSingle(result, signal).then((res: any) => {
-      if (res?.status === '200') {
-        setInputs({
-          name: res?.message?.name ?? '',
-          number: Number(res?.message?.number ?? 1),
-          userId,
-          projectId,
-          id: res?.message?._id,
-        });
+    apiResource.getSingle(result, signal).then((res) => {
+      if (!isApiResponse(res) || res.status !== '200') return;
 
-        setSchema((res?.message?.schema ?? []) as SchemaItem[]);
-      }
+      const msg = res.message as Resource | undefined;
+
+      setInputs({
+        name: msg?.name ?? '',
+        number: Number(msg?.number ?? 1),
+        userId,
+        projectId,
+        id: msg?._id,
+      });
+      setSchema((msg?.schema ?? []) as SchemaItem[]);
     });
   };
 
@@ -66,9 +68,16 @@ const CloneModal = ({ open, setOpen, result, fetchResources }: CloneModalProps) 
     };
 
     try {
-      const res: any = await apiResource.post(body);
+      const res = await apiResource.post(body);
 
-      if (res?.status === '200') {
+      if (!isApiResponse(res)) {
+        toast.error('Error');
+        setOpen(false);
+
+        return;
+      }
+
+      if (res.status === '200') {
         toast.success('Cloned Successfully');
         setOpen(false);
         fetchResources();

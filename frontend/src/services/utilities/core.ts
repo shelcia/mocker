@@ -100,6 +100,12 @@ type ApiCoreMethods = {
   ) => Promise<unknown>;
 };
 
+/**
+ * Produces a type where the listed optional ApiCore method keys become required.
+ * Use this when casting a model instance so call sites need no `!`.
+ */
+export type RequiredMethods<K extends keyof ApiCore> = Omit<ApiCore, K> & Required<Pick<ApiCore, K>>;
+
 export class ApiCore implements ApiCoreMethods {
   // just declare the properties (no param names here, so eslint is happy)
   getAll?: ApiCoreMethods['getAll'];

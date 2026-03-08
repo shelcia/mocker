@@ -7,7 +7,7 @@
 // Maybe you want to log an error here or create custom actions for authorization based
 // on the response header.
 
-export function handleResponse(response) {
+export function handleResponse(response: { results?: unknown; data?: unknown; message?: unknown }) {
   if (response.results) {
     return response.results;
   }
@@ -23,15 +23,17 @@ export function handleResponse(response) {
   return response;
 }
 
-export function handleError(error) {
-  if (error.data) {
-    // toast.error(error.data);
-    return error.data;
+export function handleError(error: unknown) {
+  const err = error as { data?: unknown; message?: unknown };
+
+  if (err.data) {
+    // toast.error(err.data);
+    return err.data;
   }
 
-  if (error.message) {
-    // toast.error(error.message);
-    return error.message;
+  if (err.message) {
+    // toast.error(err.message);
+    return err.message;
   }
 
   // toast.error(error);

@@ -24,7 +24,7 @@ export const fromISO = (value?: string) => {
   };
 };
 
-export const copyTextToClipboard = async (text) => {
+export const copyTextToClipboard = async (text: string) => {
   if ('clipboard' in navigator) {
     return await navigator.clipboard.writeText(text);
   } else {
@@ -36,7 +36,8 @@ export const queryKeys = {
   projects: (userId: string) => ['projects', userId] as const,
 };
 
-export const logout = (setHasToken, navigate) => {
+// eslint-disable-next-line no-unused-vars
+export const logout = (setHasToken: (value: boolean) => void, navigate: (path: string) => void) => {
   localStorage.clear();
   setHasToken(false);
   navigate('/');

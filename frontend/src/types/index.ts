@@ -42,3 +42,17 @@ export type SchemaItem = {
   field: string;
   option?: ResultRow;
 };
+
+/**
+ * Runtime type guard for API responses. Validates the structural shape
+ * ({ status: string, message: unknown }) before any further casting.
+ */
+export function isApiResponse(res: unknown): res is ApiResponse<unknown> {
+  return (
+    typeof res === 'object' &&
+    res !== null &&
+    'status' in res &&
+    typeof (res as Record<string, unknown>).status === 'string' &&
+    'message' in res
+  );
+}

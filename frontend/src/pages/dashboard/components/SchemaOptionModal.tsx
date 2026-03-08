@@ -20,7 +20,15 @@ import { fromISO, toISO } from '@/utils';
 import dayjs from 'dayjs';
 import { Calendar as CalendarIcon } from 'lucide-react';
 
-const SchemaOptionModal = ({ optionOpen, setOptionOpen, fieldInfo, setOption }) => {
+interface SchemaOptionModalProps {
+  optionOpen: boolean;
+  setOptionOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  fieldInfo: any;
+  // eslint-disable-next-line no-unused-vars
+  setOption: (option: Record<string, unknown>) => void;
+}
+
+const SchemaOptionModal = ({ optionOpen, setOptionOpen, fieldInfo, setOption }: SchemaOptionModalProps) => {
   const [myOption, setMyOption] = useState({});
 
   useEffect(() => {
@@ -83,6 +91,7 @@ interface FieldProps {
   label: string;
   value: string;
   placeholder?: string;
+  // eslint-disable-next-line no-unused-vars
   onChange: (val: string) => void;
   inputMode?: React.HTMLAttributes<HTMLInputElement>['inputMode'];
   className?: string;
@@ -157,6 +166,7 @@ interface MinMaxProps extends OptionRendererProps {
   minPlaceholder?: string;
   maxPlaceholder?: string;
   // used by birthdate where message depends on mode
+  // eslint-disable-next-line no-unused-vars
   validateLabelMessage?: (mode: string) => { minMsg: string; maxMsg: string };
 }
 
