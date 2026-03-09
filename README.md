@@ -17,6 +17,9 @@
 <img src="https://img.shields.io/github/issues-raw/shelcia/mocker?style=for-the-badge"/>
 <img src="https://img.shields.io/github/issues-pr-closed-raw/shelcia/mocker?style=for-the-badge" >
 </p>
+<p align="center">
+<a href="https://www.producthunt.com/products/mocker-2?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-mocker-3" target="_blank" rel="noopener noreferrer"><img alt="Mocker - Generate usable endpoints for testing | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1092526&amp;theme=dark&amp;t=1773031161846"></a>
+</p>
 
 ## 📌 Introduction
 
