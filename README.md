@@ -1,8 +1,16 @@
-# Mocker
+<p align="center">
+  <a href="#"><img src="https://capsule-render.vercel.app/api?type=rect&color=326fa8&height=100&section=header&text=Mocker&fontSize=50%&fontColor=ffffff" alt="mocker"></a>
+</p>
 
-![Mocker Generator](https://socialify.git.ci/shelcia/mocker/image?description=1&font=KoHo&forks=1&issues=1&language=1&owner=1&pattern=Brick%20Wall&pulls=1&stargazers=1&theme=Dark)
+<!-- ![Mocker Generator](https://socialify.git.ci/shelcia/mocker/image?description=1&font=KoHo&forks=1&issues=1&language=1&owner=1&pattern=Brick%20Wall&pulls=1&stargazers=1&theme=Dark) -->
 
 <!-- [![DeepScan grade](https://deepscan.io/api/teams/19881/projects/23324/branches/705580/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=19881&pid=23324&bid=705580) -->
+
+<!-- <p align="center">
+ <h3>Watch Demo here</h3>
+ [![Watch the video](https://ph-files.imgix.net/72b813d9-35bd-4b00-b631-d7ee99758e5e.png?auto=compress&codec=mozjpeg&cs=strip&auto=format&w=420&h=320&fit=max&frame=1&dpr=2)](https://youtu.be/W-rMXSeJQIQ)
+</p>-->
+
 
 <p align="center">
 <img src="https://img.shields.io/badge/language-React-blue?style=for-the-badge">
