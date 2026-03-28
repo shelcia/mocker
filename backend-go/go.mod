@@ -5,6 +5,7 @@ go 1.22
 require (
 	github.com/99designs/gqlgen v0.17.48
 	github.com/google/wire v0.6.0
+	github.com/vektah/gqlparser/v2 v2.5.15
 	go.mongodb.org/mongo-driver v1.17.4
 )
 
@@ -21,7 +22,6 @@ require (
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/sosodev/duration v1.3.1 // indirect
 	github.com/urfave/cli/v2 v2.27.2 // indirect
-	github.com/vektah/gqlparser/v2 v2.5.12 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
 	github.com/xdg-go/scram v1.1.2 // indirect
 	github.com/xdg-go/stringprep v1.0.4 // indirect
